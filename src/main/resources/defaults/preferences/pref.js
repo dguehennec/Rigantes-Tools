@@ -1,0 +1,15 @@
+pref("extensions.rigantestools.option.nbMinSpearmanDefense", 300);
+pref("extensions.rigantestools.option.nbMinCrossbowmanDefense", 300);
+pref("extensions.rigantestools.option.nbMinScorpionRiderDefense", 300);
+pref("extensions.rigantestools.accessStatusBar", true);
+pref("extensions.rigantestools.option.notificationNewAttack", true);
+pref("extensions.rigantestools.option.notificationNewMessage", true);
+pref("extensions.rigantestools.option.notificationNewReport", true);
+pref("extensions.rigantestools.option.notificationNewAllianceMessage", true);
+pref("extensions.rigantestools.option.notificationHabitatesMissions", true);
+pref("extensions.rigantestools.option.notificationHabitatesTransits", true);
+pref("extensions.rigantestools.option.notificationUnitOrder", true);
+pref("extensions.rigantestools.option.notificationKnowledgeOrder", true);
+pref("extensions.rigantestools.option.notificationBuildingOrder", true);
+pref("extensions.rigantestools.option.castlesArea", "");
+pref("extensions.rigantestools.option.area", "");

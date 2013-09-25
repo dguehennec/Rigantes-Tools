@@ -1,0 +1,544 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css"?>
+<?xml-stylesheet href="chrome://rigantestools/skin/rigantestools.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://rigantestools/locale/rigantestools.dtd">
+
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    windowtype="window:rigantestoolsMainFrame"
+	id="rigantestools-MainFrame"
+    title="&mainframe.mainframe.label;"
+    width="940" height="740"
+    lxX="0" lxY="0" layout="1" tab="0"
+    onkeypress="" commentx="" onclick="" onblur="" 
+    persist="width height tab layout textSize textSizeList lxX lxY"
+    onload="com.rigantestools.MainFrame.init();" 
+    onunload="" 
+    onfocus="com.rigantestools.MainFrame.focus();" 
+    onclose="">
+
+    <stringbundleset id="stringbundleset">
+		<stringbundle id="rigantestools-bundle" src="chrome://rigantestools/locale/rigantestools.properties" />
+	</stringbundleset>
+	
+	<script type="application/x-javascript" src="chrome://rigantestools/content/class/constant/constants.js" />
+	<script type="application/x-javascript" src="chrome://rigantestools/content/class/domain/player.js"/>
+    <script type="application/x-javascript" src="chrome://rigantestools/content/class/domain/habitat.js"/>
+    <script type="application/x-javascript" src="chrome://rigantestools/content/class/domain/habitatTransit.js"/>
+    <script type="application/x-javascript" src="chrome://rigantestools/content/class/domain/unit.js"/>	
+    <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/logger.js" />
+    <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/utils.js" />
+    <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/AttackCalculate.js"/>	
+	<script type="application/x-javascript" src="chrome://rigantestools/content/class/service/slowAttackDefenseCalculate.js"/>	
+	<script type="application/x-javascript" src="chrome://rigantestools/content/mainFrame.js"/>
+    <script type="application/x-javascript" src="chrome://rigantestools/content/message.js"/>
+    <script type="application/x-javascript" src="chrome://rigantestools/content/options.js" />
+    
+	<tabbox id="rigantestools-tabbox" flex="1">
+		<tabs>
+			<tab label="&mainframe.tabPlayer.label;"/>
+			<tab label="&mainframe.tabWar.label;"/>
+			<tab id="rigantestools-tabWarInProgress" label="&mainframe.tabWarInProgress.label;"/>
+			<tab label="&mainframe.tabDefense.label;"/>
+			<tab label="&mainframe.tabAttackDefenseSlow.label;"/>
+			<tab label="&mainframe.tabSimulation.label;"/>
+		</tabs>
+		<tabpanels flex="1">
+			<tabpanel id="maintab" orient="vertical">
+				<label value="&mainframe.tabPlayer.description;"/>
+				<spacer style="height: 10px"/>
+				<groupbox orient="vertical">
+					<caption label="&mainframe.tabPlayer.player.caption.label;"/>
+					<hbox align="center">
+						<label value="&mainframe.tabPlayer.player.name.label;"/>
+						<label id="rigantestools-playerName"/>
+						<spacer flex="1"/>
+						<label value="&mainframe.tabPlayer.player.creationDate.label;"/>
+						<label id="rigantestools-playerCreationDate"/>
+					</hbox>
+					<hbox align="center">
+						<label value="&mainframe.tabPlayer.player.link.label;"/>
+						<label id="rigantestools-playerLink"/>
+						<spacer flex="1"/>
+					</hbox>
+					<hbox align="center">
+						<label value="&mainframe.tabPlayer.player.nbcastles.label;"/>
+						<label id="rigantestools-playerNbCastles"/>
+						<spacer flex="1"/>
+					</hbox>
+				</groupbox>
+				<tabbox flex="1" id="rigantestools-playerCastles-tabbox">
+				</tabbox>	
+				<spacer height="5"/>
+				<hbox align="center">
+					<spacer flex="1"/>
+					<button id="rigantestools-playerGenerateCastlesLinkButton" label="&mainframe.tabPlayer.player.generatecastleslink.button;" oncommand="com.rigantestools.MainFrame.onGenerateCasltesLinkPlayerButtonClick();"/>
+					<button id="rigantestools-playerGenerateCastlesUOButton" label="&mainframe.tabPlayer.player.generatecastlesUO.button;" oncommand="com.rigantestools.MainFrame.onGenerateCastlesUOPlayerButtonClick();"/>
+				</hbox>
+			</tabpanel>
+			<tabpanel id="wartab" orient="vertical" flex="1">
+				<label value="&mainframe.tabWar.description;"/>
+				<spacer style="height: 10px"/>
+				<groupbox orient="horizontal">
+					<caption label="&mainframe.tabWar.criterion.label;"/>
+					<vbox flex="1">
+						<hbox align="center">
+							<label value="&mainframe.tabWar.castleLinkPrompt.label;" width="200"/>
+							<textbox id="rigantestools-warTargetLink" value="" width="220" maxlength="40"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&mainframe.tabWar.attackType.label;" width="200"/>
+							<menulist id="rigantestools-attackType" oncommand="com.rigantestools.MainFrame.onWarAttackTypeChange();">
+								<menupopup>
+							    	<menuitem label="&mainframe.tabWar.attackTypeProgrammed.label;" value="programmed"/>
+							    	<menuitem label="&mainframe.tabWar.attackTypeFlash.label;" value="fast"/>
+							  	</menupopup>
+							</menulist>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center" id="rigantestools-programmedAttackBox">
+							<label value="&mainframe.tabWar.datetimePrompt.label;" width="200"/>
+							<datepicker id="rigantestools-warDate" firstdayofweek="NaN" width="145" type="popup"/>
+							<label value="&mainframe.tabWar.datetimePrompt1.label;"/>
+							<textbox id="rigantestools-warTime" width="50" value="20:00" maxlength="5"/>
+							<spacer width="20"/>
+							<label value="&mainframe.tabWar.durationPrompt.label;"/>
+							<textbox id="rigantestools-warMaxTime" value="10:00" width="50" maxlength="5"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center" id="rigantestools-programmedAttackBox1">
+							<label value="&mainframe.tabWar.area.label;" width="200"/>
+							<button id="rigantestools-warAreaButton" label="&mainframe.tabWar.area.button;" oncommand="com.rigantestools.MainFrame.onModifyAreaWarButtonClick();"/>						
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center" id="rigantestools-programmedAttackBox2" style="visibility:collapse;">
+							<label value="&mainframe.tabWar.minUO.label;" width="200"/>
+							<textbox id="rigantestools-warMinUO" value="0" width="50" maxlength="6"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&mainframe.tabWar.minPA.label;" width="200"/>
+							<textbox id="rigantestools-warMinPA" value="0" width="50" maxlength="5"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&mainframe.tabWar.showCastlesPrompt.label;"/>
+							<checkbox id="rigantestools-warShowAllCastles" value="false" onchange="this.value=this.checked" />
+							<spacer width="10"/>
+							<label value="&mainframe.tabWar.withUD.label;"/>
+							<checkbox id="rigantestools-warWithUD" value="false" onchange="this.value=this.checked" />						
+							<spacer flex="1"/>
+							<button id="rigantestools-warCalculateButton" label="&mainframe.tabWar.calculate.button;" oncommand="com.rigantestools.MainFrame.onCalculateWarButtonClick();"/>
+							<spacer width="10"/>
+						</hbox>
+					</vbox>
+				</groupbox>
+				<spacer style="height: 10px"/>
+				<tree id="rigantestools-war-tree" flex="1" hidecolumnpicker="true" oncontextmenu="com.rigantestools.MainFrame.activateWarTreeContext(event);" context="rigantestools-war-treechildren-contextmenu">
+				  <treecols>
+					<treecol name="castle" label="&mainframe.tabWar.castle.label;" flex="2" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnWarTree(this,false);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="castlePA" label="&mainframe.tabWar.castlePA.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnWarTree(this,false);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="swordman" label="&mainframe.tabWar.swordman.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnWarTree(this,false);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="archer" label="&mainframe.tabWar.archer.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnWarTree(this,false);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="lancer" label="&mainframe.tabWar.lancer.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnWarTree(this,false);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="totalUO" label="&mainframe.tabWar.totalUO.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnWarTree(this,false);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="slowUnit" label="&mainframe.tabWar.slowUnit.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnWarTree(this,false);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="duration" label="&mainframe.tabWar.duration.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnWarTree(this,false);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="startDatetime" label="&mainframe.tabWar.startDatetime.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnWarTree(this,false);" class="sortDirectionIndicator" sortDirection="natural"/>
+				  </treecols>
+
+				  <treechildren id="rigantestools-war-treechildren">
+				  </treechildren>
+				</tree>
+				<menupopup id="rigantestools-war-treechildren-contextmenu">
+					<menuitem id="rigantestools-war-treechildren-contextmenu-noUnit" label="&mainframe.tabWar.noUnit.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, '');" />
+					<menuseparator />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-spearman" name="Spearman" label="&mainframe.tabWar.spearman.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.SPEARMAN);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-crossbowman" name="Crossbowman" label="&mainframe.tabWar.crossbowman.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.CROSSBOWMAN);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-scorpionRider" name="ScorpionRider" label="&mainframe.tabWar.scorpionRider.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.SCORPIONRIDER);" />
+					<menuseparator />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-swordman" name="Swordman" label="&mainframe.tabWar.swordman.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.SWORDMAN);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-archer" name="Archer" label="&mainframe.tabWar.archer.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.ARCHER);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-lancer" name="Lancer" label="&mainframe.tabWar.lancer.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.LANCER);" />
+					<menuseparator />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-pushcart" name="Pushcart" label="&mainframe.tabWar.pushcart.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.PUSHCART);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-oxcart" name="Oxcart" label="&mainframe.tabWar.oxcart.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.OXCART);" />
+				</menupopup>
+				<groupbox orient="horizontal">
+					<caption label="&informations;"/>
+					<vbox>
+						<label value="&mainframe.tabWar.castleLink.label;"/>
+						<label id="rigantestools-warInfoAttackDateLabel" style="visibility:collapse;" value="&mainframe.tabWar.castleAttackDate.label;"/>
+						<label value="&mainframe.tabWar.nbcastleWar.label;"/>
+						<label value="&mainframe.tabWar.nbUO.label;"/>
+						<label value="&mainframe.tabWar.nbCapturation.label;"/>
+					</vbox>
+					<vbox>
+						<label id="rigantestools-warInfoTarget" value=""/>
+						<label id="rigantestools-warInfoAttackDate" style="visibility:collapse;" value=""/>
+						<label id="rigantestools-warInfoCastles" value=""/>
+						<label id="rigantestools-warNbUO" value=""/>
+						<label id="rigantestools-warNbCaptions" value=""/>
+					</vbox>
+					<spacer flex="1"/>
+					<vbox>
+						<label value="&mainframe.tabWar.minTargetTime.label;"/>
+						<label value="&mainframe.tabWar.maxTargetTime.label;"/>
+						<label value="&mainframe.tabWar.firstTargetDate.label;"/>
+						<label value="&mainframe.tabWar.lasttargetDate.label;"/>
+					</vbox>
+					<vbox>
+						<label id="rigantestools-warInfoTimeTargetMin" value=""/>
+						<label id="rigantestools-warInfoTimeTargetMax" value=""/>
+						<label id="rigantestools-warInfoStartTimeTargetMax" value=""/>
+						<label id="rigantestools-warInfoStartTimeTargetMin" value=""/>
+					</vbox>
+					<spacer flex="1"/>
+				</groupbox>
+				
+				<hbox id="rigantestools-warActionBar" style="visibility:collapse;" align="center">
+					<spacer flex="1"/>
+					<button id="rigantestools-warGenerateButton" style="margin: 2px;" label="&mainframe.tabWar.generateWarInformations.button;" oncommand="com.rigantestools.MainFrame.onGenerateWarButtonClick();"/>
+					<button id="rigantestools-warSimulateButton" style="margin: 2px;" label="&mainframe.tabWar.simulateWarInformations.button;" oncommand="com.rigantestools.MainFrame.onSimulateWarButtonClick();"/>
+					<button id="rigantestools-warExportButton" style="margin: 2px;" label="&mainframe.tabWar.exportWarInformation.button;" oncommand="com.rigantestools.MainFrame.onExportWarButtonClick();"/>
+					<button id="rigantestools-warPrintButton" style="margin: 2px;" label="&mainframe.tabWar.printWarInformation.button;" oncommand="com.rigantestools.MainFrame.onPrintWarButtonClick();"/>
+				</hbox>
+			</tabpanel>
+			<tabpanel id="warinprogresstab" orient="vertical">
+				<label value="&mainframe.tabWarInProgress.description;"/>
+				<spacer style="height: 10px"/>
+				<label id="rigantestools-warinprogressNoWarInProgress" value="&mainframe.tabWarInProgress.noWarInProgress;"/>
+				<tabbox flex="1" id="rigantestools-warinprogress-tabbox">
+				</tabbox>
+				<spacer height="5"/>
+				<hbox id="rigantestools-warinprogressActionBar" align="center">
+					<spacer flex="1"/>
+					<button id="rigantestools-warinprogressGenerateSummaryButton" style="margin: 2px;" label="&mainframe.tabWarInProgress.generateWarInProgressSummaryInformations.button;" oncommand="com.rigantestools.MainFrame.onGenerateWarInProgressSummaryButtonClick();"/>
+					<button id="rigantestools-warinprogressGenerateButton" style="margin: 2px;" label="&mainframe.tabWarInProgress.generateWarInProgressInformations.button;" oncommand="com.rigantestools.MainFrame.onGenerateWarInProgressButtonClick();"/>
+				</hbox>
+			</tabpanel>
+			<tabpanel id="defensetab" orient="vertical" flex="1">
+				<label value="&mainframe.tabDefense.description;"/>
+				<spacer style="height: 10px"/>
+				<groupbox orient="horizontal">
+					<caption label="&mainframe.tabDefense.criterion.label;"/>
+					<vbox flex="1">
+						<hbox align="center">
+							<label value="&mainframe.tabDefense.castleLinkPrompt.label;" width="200"/>
+							<textbox id="rigantestools-defenseTargetLink" value="" width="220" maxlength="40"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&mainframe.tabDefense.datetimePrompt.label;" width="200"/>
+							<datepicker id="rigantestools-defenseDate" firstdayofweek="NaN" width="145" type="popup"/>
+							<label value="à"/>
+							<textbox id="rigantestools-defenseTime" width="50" value="20:00" maxlength="5"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&mainframe.tabDefense.unit.label;" width="200"/>
+							<button id="rigantestools-defenseUnitButton" label="&mainframe.tabDefense.unit.button;" oncommand="com.rigantestools.MainFrame.onModifyUnitDefenseButtonClick();"/>						
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&mainframe.tabDefense.showCastlesPrompt.label;" width="200"/>
+							<checkbox id="rigantestools-defenseShowAllCastles" value="false" onchange="this.value=this.checked" /> 						
+							<spacer flex="1"/>
+							<button id="rigantestools-defenseCalculateButton" label="&mainframe.tabWar.calculate.button;" oncommand="com.rigantestools.MainFrame.onCalculateDefenseButtonClick();"/>
+							<spacer width="10"/>
+						</hbox>
+					</vbox>
+				</groupbox>
+				<spacer style="height: 10px"/>
+				<tree flex="1" hidecolumnpicker="true">
+				  <treecols>
+					<treecol name="castle" label="&mainframe.tabDefense.castle.label;" flex="4" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnDefenseTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="spearman" label="&mainframe.tabDefense.spearman.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnDefenseTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="crossbowman" label="&mainframe.tabDefense.crossbowman.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnDefenseTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="scorpionRider" label="&mainframe.tabDefense.scorpionRider.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnDefenseTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="totalUD" label="&mainframe.tabDefense.totalUD.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnDefenseTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="duration" label="&mainframe.tabDefense.duration.label;" flex="2" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnDefenseTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="duration" label="&mainframe.tabDefense.ArrivalDatetime.label;" flex="2" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnDefenseTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+				  </treecols>
+
+				  <treechildren id="rigantestools-defense-tree">
+				  </treechildren>
+				</tree>
+				<groupbox orient="horizontal">
+					<caption label="&informations;"/>
+					<vbox>
+						<label value="&mainframe.tabDefense.castleLink.label;"/>
+						<label value="&mainframe.tabDefense.nbcastleDefense.label;"/>
+						<label value="&mainframe.tabDefense.nbUD.label;"/>
+					</vbox>
+					<vbox>
+						<label id="rigantestools-defenseInfoTarget" value=""/>
+						<label id="rigantestools-defenseInfoCastles" value=""/>
+						<label id="rigantestools-defenseNbUD" value=""/>
+					</vbox>
+					<spacer flex="1"/>
+					<vbox>
+						<label value="&mainframe.tabDefense.minTargetTime.label;"/>
+						<label value="&mainframe.tabDefense.maxTargetTime.label;"/>
+						<label value="&mainframe.tabDefense.firstTargetDate.label;"/>
+						<label value="&mainframe.tabDefense.lasttargetDate.label;"/>
+					</vbox>
+					<vbox>
+						<label id="rigantestools-defenseInfoTimeTargetMin" value=""/>
+						<label id="rigantestools-defenseInfoTimeTargetMax" value=""/>
+						<label id="rigantestools-defenseInfoArrivalTimeTargetMin" value=""/>
+						<label id="rigantestools-defenseInfoArrivalTimeTargetMax" value=""/>
+					</vbox>
+					<spacer flex="1"/>
+				</groupbox>
+			</tabpanel>
+			<tabpanel id="attackdefensetab" orient="vertical" flex="1">
+				<label value="&mainframe.tabAttackDefenseSlow.description;"/>
+				<spacer style="height: 10px"/>
+				<groupbox orient="horizontal">
+					<caption label="&mainframe.tabAttackDefenseSlow.criterion.label;"/>
+					<vbox flex="1">
+						<hbox align="center">
+							<label value="&mainframe.tabAttackDefenseSlow.castleLinkPrompt.label;" width="230"/>
+							<textbox id="rigantestools-attackDefenseSlowTargetLink" value="" width="220" maxlength="40"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&mainframe.tabAttackDefenseSlow.datetimePrompt.label;" width="230"/>
+							<datepicker id="rigantestools-attackDefenseSlowDate" firstdayofweek="NaN" width="145" type="popup"/>
+							<label value="à"/>
+							<textbox id="rigantestools-attackDefenseSlowTime" width="50" value="20:00" maxlength="5"/>
+							<spacer width="20"/>
+							<label value="&mainframe.tabAttackDefenseSlow.durationPrompt.label;"/>
+							<textbox id="rigantestools-attackDefenseSlowDuration" value="03:00" width="50" maxlength="5"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&mainframe.tabAttackDefenseSlow.datetimeStartUnitPrompt.label;" width="230"/>
+							<textbox id="rigantestools-attackDefenseSlowStartUnitTime" value="10:00" width="50" maxlength="5"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&mainframe.tabAttackDefenseSlow.typeUnit.label;" width="230"/>
+							<menulist id="rigantestools-attackDefenseSlowUnitType">
+								<menupopup>
+							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnitUD.label;" value="UD"/>
+							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnitUO.label;" value="UO"/>
+							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnitUD.label; + &mainframe.tabAttackDefenseSlow.typeUnitUO.label;" value="ALL"/>
+							  	</menupopup>
+							</menulist>
+							<label value="&mainframe.tabAttackDefenseSlow.UnitCount.label;" width="74"/>
+							<menulist id="rigantestools-attackDefenseSlowUnitCount">
+								<menupopup>
+							    	<menuitem label="101" value="101"/>
+							    	<menuitem label="202" value="202"/>
+							    	<menuitem label="404" value="404"/>
+							  	</menupopup>
+							</menulist>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&mainframe.tabAttackDefenseSlow.UsedAllCastles.label;" width="230"/>
+							<checkbox id="rigantestools-defenseAttackDefenseSlowUsedAllCastles" checked="false" /> 						
+							<spacer flex="1"/>
+							<button id="rigantestools-attackDefenseSlowCalculateButton" label="&mainframe.tabAttackDefenseSlow.calculate.button;" oncommand="com.rigantestools.MainFrame.onCalculateAttackDefenseSlowButtonClick();"/>
+							<spacer width="10"/>
+						</hbox>
+					</vbox>
+				</groupbox>
+				<spacer style="height: 10px"/>
+				<tree flex="1" hidecolumnpicker="true">
+				  <treecols>
+					<treecol name="castle" label="&mainframe.tabAttackDefenseSlow.castle.label;" flex="4" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="unitType" label="&mainframe.tabAttackDefenseSlow.unitType.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="unitCount" label="&mainframe.tabAttackDefenseSlow.unitCount.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="startDate" label="&mainframe.tabAttackDefenseSlow.startDateTime.label;" flex="2" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="ArrivalDatetime" label="&mainframe.tabAttackDefenseSlow.ArrivalDatetime.label;" flex="2" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+				  </treecols>
+				  <treechildren id="rigantestools-attackDefenseSlow-treechildren">
+				  </treechildren>
+				</tree>
+				<spacer height="5"/>
+				<groupbox orient="horizontal">
+					<caption label="&informations;"/>
+					<vbox>
+						<label value="&mainframe.tabAttackDefenseSlow.castleLink.label;"/>
+						<label value="&mainframe.tabAttackDefenseSlow.nbcastle.label;"/>
+					</vbox>
+					<vbox>
+						<label id="rigantestools-attackDefenseSlowInfoTarget" value=""/>
+						<label id="rigantestools-attackDefenseSlowInfoCastles" value=""/>
+					</vbox>
+					<spacer flex="1"/>
+					<vbox>
+						<label value="&mainframe.tabAttackDefenseSlow.firstArrivalDate.label;"/>
+						<label value="&mainframe.tabAttackDefenseSlow.lastArrivalDate.label;"/>
+						<label value="&mainframe.tabAttackDefenseSlow.firstTargetDate.label;"/>
+						<label value="&mainframe.tabAttackDefenseSlow.lasttargetDate.label;"/>
+					</vbox>
+					<vbox>
+						<label id="rigantestools-attackDefenseSlowInfoFirstArrivalDate" value=""/>
+						<label id="rigantestools-attackDefenseSlowInfoLastArrivalDate" value=""/>
+						<label id="rigantestools-attackDefenseSlowInfoStartTimeTargetMin" value=""/>
+						<label id="rigantestools-attackDefenseSlowInfoStartTimeTargetMax" value=""/>
+					</vbox>
+					<spacer flex="1"/>
+				</groupbox>
+				<hbox id="rigantestools-attackDefenseSlowActionBar" style="visibility:collapse;" align="center">
+					<spacer flex="1"/>
+					<button id="rigantestools-attackDefenseSlowGenerateButton" style="visibility:collapse;margin: 2px;" label="&mainframe.tabAttackDefenseSlow.generateInformations.button;" oncommand="com.rigantestools.MainFrame.onGenerateAttackDefenseSlowButtonClick();"/>
+					<button id="rigantestools-attackDefenseSlowExportButton" style="margin: 2px;" label="&mainframe.tabAttackDefenseSlow.exportWarInformation.button;" oncommand="com.rigantestools.MainFrame.onExportAttackDefenseSlowButtonClick();"/>
+					<button id="rigantestools-attackDefenseSlowPrintButton" style="margin: 2px;" label="&mainframe.tabAttackDefenseSlow.printWarInformation.button;" oncommand="com.rigantestools.MainFrame.onPrintAttackDefenseSlowButtonClick();"/>
+				</hbox>
+			</tabpanel>
+			<tabpanel id="simulationtab" orient="vertical" flex="1">
+				<label value="&mainframe.tabSimulation.description;"/>
+				<spacer style="height: 10px"/>
+				<groupbox orient="vertical">
+					<caption label="&mainframe.tabSimulation.attacker.label;"/>
+					<groupbox orient="horizontal">
+						<caption label="&mainframe.tabSimulation.units.label;"/>
+						<hbox align="center">
+							<label value="&mainframe.tabSimulation.spearman.label; :"/>
+							<textbox id="rigantestools-simulationAttaqueSpearman" width="50" value="" maxlength="6"/>
+							<label value="&mainframe.tabSimulation.swordman.label; :"/>
+							<textbox id="rigantestools-simulationAttaqueSwordman" width="50" value="" maxlength="6"/>
+							<label value="&mainframe.tabSimulation.archer.label; :"/>
+							<textbox id="rigantestools-simulationAttaqueArcher" width="50" value="" maxlength="6"/>
+							<label value="&mainframe.tabSimulation.crossbowman.label; :"/>
+							<textbox id="rigantestools-simulationAttaqueCrossbowman" width="50" value="" maxlength="6"/>
+							<label value="&mainframe.tabSimulation.scorpionRider.label; :"/>
+							<textbox id="rigantestools-simulationAttaqueScorpionRider" width="50" value="" maxlength="6"/>
+							<label value="&mainframe.tabSimulation.lancer.label; :"/>
+							<textbox id="rigantestools-simulationAttaqueLancer" width="50" value="" maxlength="6"/>
+						</hbox>
+					</groupbox>
+					<groupbox orient="horizontal">
+						<caption label="&mainframe.tabSimulation.research.label;"/>
+						<hbox align="center">
+							<checkbox id="rigantestools-simulationAttaqueSmithWeapons" value="true" checked="true" onchange="this.value=this.checked" /> 	
+							<label value="&mainframe.tabSimulation.smithWeapons.label;"/>
+							<checkbox id="rigantestools-simulationAttaqueWeaponsmithing" value="true" checked="true" onchange="this.value=this.checked" /> 						
+							<label value="&mainframe.tabSimulation.weaponsmithing.label;"/>
+							<checkbox id="rigantestools-simulationAttaqueFlamingArrows" value="true" checked="true" onchange="this.value=this.checked" /> 							
+							<label value="&mainframe.tabSimulation.flamingArrows.label;"/>
+							<checkbox id="rigantestools-simulationAttaqueSmith" value="true" checked="true" onchange="this.value=this.checked" /> 									
+							<label value="&mainframe.tabSimulation.smith.label;"/>					
+						</hbox>
+					</groupbox>
+				</groupbox>
+				<groupbox orient="vertical">
+					<caption label="&mainframe.tabSimulation.defense.label;"/>
+					<groupbox orient="horizontal">
+						<caption label="&mainframe.tabSimulation.units.label;"/>
+						<hbox align="center">
+							<label value="&mainframe.tabSimulation.spearman.label; :"/>
+							<textbox id="rigantestools-simulationDefenseSpearman" width="50" value="" maxlength="6"/>
+							<label value="&mainframe.tabSimulation.swordman.label; :"/>
+							<textbox id="rigantestools-simulationDefenseSwordman" width="50" value="" maxlength="6"/>
+							<label value="&mainframe.tabSimulation.archer.label; :"/>
+							<textbox id="rigantestools-simulationDefenseArcher" width="50" value="" maxlength="6"/>
+							<label value="&mainframe.tabSimulation.crossbowman.label; :"/>
+							<textbox id="rigantestools-simulationDefenseCrossbowman" width="50" value="" maxlength="6"/>
+							<label value="&mainframe.tabSimulation.scorpionRider.label; :"/>
+							<textbox id="rigantestools-simulationDefenseScorpionRider" width="50" value="" maxlength="6"/>
+							<label value="&mainframe.tabSimulation.lancer.label; :"/>
+							<textbox id="rigantestools-simulationDefenseLancer" width="50" value="" maxlength="6"/>
+						</hbox>
+					</groupbox>
+					<hbox align="center">
+						<groupbox orient="horizontal" flex="1">
+							<caption label="&mainframe.tabSimulation.research.label;"/>
+							<hbox align="center">
+								<checkbox id="rigantestools-simulationDefenseGunsmith" value="true" checked="true" onchange="this.value=this.checked" /> 
+								<label value="&mainframe.tabSimulation.gunsmith.label;"/>
+								<checkbox id="rigantestools-simulationDefenseIronReinforcements" value="true" checked="true" onchange="this.value=this.checked" />						
+								<label value="&mainframe.tabSimulation.ironReinforcements.label;"/>
+								<checkbox id="rigantestools-simulationDefensePoisonedArrowsh" value="true" checked="true" onchange="this.value=this.checked" />							
+								<label value="&mainframe.tabSimulation.poisonedArrows.label;"/>
+								<checkbox id="rigantestools-simulationDefenseHorseBreeding" value="true" checked="true" onchange="this.value=this.checked" />
+								<label value="&mainframe.tabSimulation.horseBreeding.label;"/>
+								<checkbox id="rigantestools-simulationDefenseTank" value="true" checked="true" onchange="this.value=this.checked" />
+								<label value="&mainframe.tabSimulation.tank.label;"/>													
+							</hbox>
+						</groupbox>
+						<groupbox orient="horizontal" flex="1">
+							<caption label="&mainframe.tabSimulation.fortification.label;"/>
+							<hbox align="center">
+								<label value="&mainframe.tabSimulation.fortificationLevel.label;"/>
+								<textbox id="rigantestools-simulationDefenseFortification" width="30" value="20" maxlength="2"/>
+							</hbox>
+						</groupbox>
+						<groupbox orient="horizontal" flex="1">
+							<caption label="&mainframe.tabSimulation.period.button;"/>
+							<hbox align="center">
+								<checkbox id="rigantestools-simulationDefenseNight" value="false" onchange="this.value=this.checked" />
+								<label value="&mainframe.tabSimulation.night.button;"/> 
+							</hbox>
+						</groupbox>
+					</hbox>
+				</groupbox>
+				<hbox align="center">					
+					<spacer flex="1"/>
+					<button id="rigantestools-simulationCalculateButton" label="&mainframe.tabSimulation.calculate.button;" oncommand="com.rigantestools.MainFrame.onCalculateSimulationButtonClick();"/>
+					<spacer width="10"/>
+				</hbox>
+				<groupbox orient="vertical" flex="1">
+					<caption label="&mainframe.tabSimulation.simulationResult.button;"/>
+					<hbox flex="1">
+						<vbox width="270" >
+							<label id="rigantestools-simulationResultLabel" class="rigantestools-simulationResult" height="20" width="240"/>
+							<groupbox orient="horizontal" flex="1">
+								<caption label="&mainframe.tabSimulation.evolution.label;"/>
+								<tree flex="1" seltype="single" id="rigantestools-simulation-rounds-tree" onselect="com.rigantestools.MainFrame.onSelectTreeSimulationClick();" hidecolumnpicker="true">
+								  <treecols>
+									<treecol label="&mainframe.tabSimulation.round.label;" width="70"/>
+									<treecol label="&mainframe.tabSimulation.attacker.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.defense.label;" flex="1"/>
+								  </treecols>
+								  <treechildren id="rigantestools-simulation-rounds-treechildren">
+								  </treechildren>
+								</tree>
+							</groupbox>
+						</vbox>
+						<vbox flex="4">
+							<groupbox orient="horizontal" flex="1">
+								<caption label="&mainframe.tabSimulation.simulationResultAttacker.label;"/>
+								<tree flex="1" hidecolumnpicker="true">
+								  <treecols>
+									<treecol label="" width="80"/>
+									<treecol label="&mainframe.tabSimulation.spearman.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.swordman.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.archer.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.crossbowman.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.scorpionRider.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.lancer.label;" flex="1"/>
+								  </treecols>
+								  <treechildren id="rigantestools-simulation-attacker-treechildren">
+								  </treechildren>
+								</tree>
+							</groupbox>
+							<groupbox orient="horizontal" flex="1">
+								<caption label="&mainframe.tabSimulation.simulationResultDefenseur.label;"/>
+								<tree flex="1" hidecolumnpicker="true">
+								  <treecols>
+									<treecol label="" width="80"/>
+									<treecol label="&mainframe.tabSimulation.spearman.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.swordman.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.archer.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.crossbowman.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.scorpionRider.label;" flex="1"/>
+									<treecol label="&mainframe.tabSimulation.lancer.label;" flex="1"/>
+								  </treecols>
+								  <treechildren id="rigantestools-simulation-defenser-treechildren">
+								  </treechildren>
+								</tree>
+							</groupbox>
+						</vbox>
+					</hbox>
+				</groupbox>
+			</tabpanel>
+		</tabpanels>
+	</tabbox>
+</window>

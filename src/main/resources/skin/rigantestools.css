@@ -1,0 +1,146 @@
+window {
+	font-size: 12px;
+}
+
+toolbar #rigantestools-toolbar-button-label {
+	padding: 0px;
+	margin:0px 0px -4px -4px;
+	text-align:left;
+	color:#FF0000;
+	font-weight:bold;
+	font-size:12px;
+	text-shadow: -1px -1px #CCC, 1px -1px #CCC;
+}
+
+toolbar[iconsize="small"] #rigantestools-toolbar-button-label {
+ 	font-size:11px;
+}
+
+#rigantestools-toolbar-button {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(32px 80px 56px 56px);	
+}
+
+toolbar #rigantestools-toolbar-button {
+    -moz-binding: url('chrome://rigantestools/content/overlay.xml#rigantestools-toolbarbutton');
+}
+
+toolbar #rigantestools-toolbar-button {
+	-moz-image-region: rect(32px 56px 56px 32px);	
+}
+
+toolbar #rigantestools-toolbar-button[status="1"] {
+    -moz-image-region: rect(32px 80px 56px 56px);	
+}
+
+toolbar[iconsize="small"] #rigantestools-toolbar-button {
+	-moz-image-region: rect(0px 16px 16px 0px);	
+}
+
+toolbar[iconsize="small"] #rigantestools-toolbar-button[status="1"] {
+	-moz-image-region: rect(0px 32px 16px 16px);	
+}
+
+#rigantestools-status-icon,#rigantestools-mainToolsApp {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(0px 16px 16px 0px);	
+}
+
+#rigantestools-status-icon[status="1"],#rigantestools-mainToolsApp[status="1"] {
+	-moz-image-region: rect(0px 32px 16px 16px);	
+}
+
+#rigantestools-mainOption,#rigantestools-mainToolsOption {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(0px 128px 16px 112px);	
+}
+
+#rigantestools-warAreaButton,#rigantestools-defenseUnitButton {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(16px 132px 32px 110px);	
+}
+
+#rigantestools-warCalculateButton,#rigantestools-defenseCalculateButton,#rigantestools-simulationCalculateButton,#rigantestools-attackDefenseSlowCalculateButton {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(16px 22px 32px 0px);	
+}
+
+#rigantestools-warPrintButton,#rigantestools-attackDefenseSlowPrintButton {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(16px 110px 32px 88px);	
+}
+
+#rigantestools-message-icon {
+	padding: 0px 10px;
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(32px 32px 64px 0px);	
+}
+
+#rigantestools-warSimulateButton {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(16px 88px 32px 66px);	
+}
+
+#rigantestools-warExportButton,#rigantestools-attackDefenseSlowExportButton {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(16px 66px 32px 44px);	
+}
+
+#rigantestools-warGenerateButton,#rigantestools-warinprogressGenerateButton,#rigantestools-warinprogressGenerateSummaryButton,#rigantestools-playerGenerateCastlesLinkButton,#rigantestools-playerGenerateCastlesUOButton,#rigantestools-attackDefenseSlowGenerateButton {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(16px 44px 32px 22px);	
+}
+
+#rigantestools-mainURL,#rigantestools-mainToolsURL {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(0px 80px 16px 64px);	
+}
+
+#rigantestools-mainAbout,#rigantestools-mainToolsAbout {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(0px 48px 16px 32px);	
+}
+
+#rigantestools-mainHelp,#rigantestools-mainToolsHelp {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(0px 64px 16px 48px);	
+}
+
+#rigantestools-contextMenuItemAttack,#rigantestools-contextMenuItemCopyAttackReport {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(0px 96px 16px 80px);
+}
+
+#rigantestools-contextMenuItemDefense {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(0px 112px 16px 96px);	
+}
+
+#rigantestools-contextMenuItemCopyProfile {
+	list-style-image: url("chrome://rigantestools/skin/images/rigantes_buttons.png");
+    -moz-image-region: rect(0px 144px 16px 128px);	
+}
+
+.rigantestools-simulationResult[status="def"] {
+	font-weight: bold;
+	color: red;
+}
+
+.rigantestools-simulationResult[status="off"] {
+	font-weight: bold;
+	color: green;
+}
+
+treechildren::-moz-tree-row(inGrey) {
+	background-color: #F0F0F0;
+}
+
+treechildren::-moz-tree-row(selected) {
+	background-color: #0099FF;
+}
+
+groupbox caption {
+	font-weight: bold;
+	font-size:11px;
+	color: #003333;
+}
