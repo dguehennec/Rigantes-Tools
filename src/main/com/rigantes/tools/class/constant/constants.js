@@ -140,6 +140,7 @@ com.rigantestools.constant.UNITTYPE = {
     'PUSHCART' : 'Pushcart',
     'OXCART' : 'Oxcart'
 };
+
 /**
  * List of battle units values
  * 
@@ -156,7 +157,8 @@ com.rigantestools.constant.BATTLEVALUES = {
             'inf' : 30,
             'art' : 19,
             'cav' : 56
-        }
+        },
+        'speed' : 700
     },
     'SWORDMAN' : {
         'off' : {
@@ -168,7 +170,8 @@ com.rigantestools.constant.BATTLEVALUES = {
             'inf' : 24,
             'art' : 12,
             'cav' : 36
-        }
+        },
+        'speed' : 800
     },
     'ARCHER' : {
         'off' : {
@@ -180,7 +183,8 @@ com.rigantestools.constant.BATTLEVALUES = {
             'inf' : 30,
             'art' : 14,
             'cav' : 10
-        }
+        },
+        'speed' : 500
     },
     'CROSSBOWMAN' : {
         'off' : {
@@ -192,7 +196,8 @@ com.rigantestools.constant.BATTLEVALUES = {
             'inf' : 87,
             'art' : 57,
             'cav' : 31
-        }
+        },
+        'speed' : 600
     },
     'SCORPIONRIDER' : {
         'off' : {
@@ -204,7 +209,8 @@ com.rigantestools.constant.BATTLEVALUES = {
             'inf' : 26,
             'art' : 57,
             'cav' : 35
-        }
+        },
+        'speed' : 300
     },
     'LANCER' : {
         'off' : {
@@ -216,7 +222,36 @@ com.rigantestools.constant.BATTLEVALUES = {
             'inf' : 12,
             'art' : 24,
             'cav' : 15
-        }
+        },
+        'speed' : 400
+    },
+	'PUSHCART' : {
+	        'off' : {
+	            'inf' : 0,
+	            'art' : 0,
+	            'cav' : 0
+	        },
+	        'def' : {
+	            'inf' : 0,
+	            'art' : 0,
+	            'cav' : 0
+	        },
+	        'speed' : 800
+	   
+    },
+    'OXCART' : {
+        'off' : {
+            'inf' : 0,
+            'art' : 0,
+            'cav' : 0
+        },
+        'def' : {
+            'inf' : 0,
+            'art' : 0,
+            'cav' : 0
+        },
+        'speed' : 1000
+   
     }
 };
 
