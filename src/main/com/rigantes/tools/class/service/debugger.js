@@ -127,6 +127,9 @@ com.rigantestools.service.Debugger.prototype.onDebuggerActivated = function() {
         this._jsd.errorHook = null;
         this._jsd.interruptHook = null;
         this._jsd.throwHook = null;
+        
+        this.foundCastleLinkBreakpoint = false;
+        this.foundPlayerBreakpoint = false;
 
     } catch (e) {
         this._logger.error("onDebuggerActivated error:" + e);
@@ -143,10 +146,12 @@ com.rigantestools.service.Debugger.prototype.onDebuggerActivated = function() {
 com.rigantestools.service.Debugger.prototype.onScriptCreated = function(script) {
     if (script.fileName.indexOf("landk.js") !== -1) {
         try {
-            if (script.functionSource.indexOf("function (t,e){var i=this.getTypeOfCastle(t);") === 0) {
+            if (!this.foundCastleLinkBreakpoint && script.functionSource.indexOf('e==="copyCastleLink"') > 0) {
                 script.setBreakpoint(0);
-            } else if (script.functionSource.indexOf("function (){this.stats={units:{own:this.getOwnUnits()") === 0) {
+                this.foundCastleLinkBreakpoint = true;
+            } else if (!this.foundPlayerBreakpoint && script.functionSource.indexOf("function (){this.stats={units:{own:this.getOwnUnits()") === 0) {
                 script.setBreakpoint(0);
+                this.foundPlayerBreakpoint = true;
             }
         } catch (e) {
             // do nothing
