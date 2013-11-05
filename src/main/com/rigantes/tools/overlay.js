@@ -413,7 +413,6 @@ com.rigantestools.Main.onStatusBarClick = function(evt) {
             this.showMainFrame();
         } else {
             this._util.showMessage(this._util.getBundleString("error.site.invalid.title"), this._util.getBundleString("error.site.invalid.message"));
-            this._util.openURL('http://lordsandknights.com/');
         }
     }
 };

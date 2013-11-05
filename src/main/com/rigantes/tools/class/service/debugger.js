@@ -63,7 +63,13 @@ com.rigantestools.service.Debugger = function(parent) {
     /** @private */
     /** the debugger */
     this._jsd = Components.classes["@mozilla.org/js/jsd/debugger-service;1"].getService(Components.interfaces.jsdIDebuggerService);
-
+    /** @private */
+    /** if found Castle Link Breakpoint */
+    this.foundCastleLinkBreakpoint = false;
+    /** @private */
+    /** if found Player Breakpoint */
+    this.foundPlayerBreakpoint = false;
+    
     this._logger.trace("JSD running: " + this._jsd.isOn);
     // starting debugging
     if (this._jsd.isOn) {
@@ -83,6 +89,10 @@ com.rigantestools.service.Debugger = function(parent) {
  */
 com.rigantestools.service.Debugger.prototype.reset = function() {
     this._logger.trace("reset");
+    
+    this.foundCastleLinkBreakpoint = false;
+    this.foundPlayerBreakpoint = false;
+    
     this._jsd.clearAllBreakpoints();
 };
 
@@ -94,6 +104,8 @@ com.rigantestools.service.Debugger.prototype.reset = function() {
 com.rigantestools.service.Debugger.prototype.release = function() {
     this._logger.trace("release");
 
+    this.reset();
+    
     this._jsd.functionHook = null;
     this._jsd.breakpointHook = null;
     this._jsd.debuggerHook = null;
@@ -102,7 +114,6 @@ com.rigantestools.service.Debugger.prototype.release = function() {
     this._jsd.scriptHook = null;
     this._jsd.interruptHook = null;
     this._jsd.throwHook = null;
-    this._jsd.clearAllBreakpoints();
     this._jsd.GC();
     if (this._jsd.isOn) {
         this._jsd.off();
@@ -127,10 +138,6 @@ com.rigantestools.service.Debugger.prototype.onDebuggerActivated = function() {
         this._jsd.errorHook = null;
         this._jsd.interruptHook = null;
         this._jsd.throwHook = null;
-        
-        this.foundCastleLinkBreakpoint = false;
-        this.foundPlayerBreakpoint = false;
-
     } catch (e) {
         this._logger.error("onDebuggerActivated error:" + e);
     }
@@ -187,7 +194,7 @@ com.rigantestools.service.Debugger.prototype.onExecute = function(frame, type, v
     try {
         var mplayer = frame.thisValue.getWrappedValue();
         if ((typeof (mplayer.creationDate) !== 'undefined') && (mplayer.creationDate !== null) && (this._parent._mplayer === null)) {
-            this._logger.trace("Found player");
+        	this._logger.trace("Found player");
             this._parent._mplayer = mplayer;
             frame.script.clearBreakpoint(0);
         } else {
