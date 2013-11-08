@@ -47,7 +47,7 @@ if (!com.rigantestools.service) {
 }
 
 /**
- * Creates an instance of debugger.
+ * Creates an instance of InterfaceMapping.
  * 
  * @constructor
  * @this {InterfaceMapping}

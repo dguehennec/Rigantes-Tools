@@ -2456,62 +2456,12 @@ com.rigantestools.MainFrame.onSimulateWarButtonClick = function(evt) {
  *            evt event of the element
  */
 com.rigantestools.MainFrame.onExportWarButtonClick = function(evt) {  
-    if(this._util.getPref(com.rigantestools.constant.PREF_XLS_EXPORT_FORMAT) !== true) {
-        var generatedExportInformations = this._util.getBundleString("mainframe.war.csv.title").replace("%TARGETLINK%", com.rigantestools.MainFrame.currentTargetLink) + "\n"; 
-        var treechildren = document.getElementById("rigantestools-war-treechildren"); 
-        for ( var i = 0; i < treechildren.childNodes.length; i++) { 
-            var item = treechildren.childNodes[i].childNodes[0];
-            var length = item.childNodes.length; 
-            for ( var j = 0; j < length; j++) {
-                if(j===1) {
-                    var palist = item.childNodes[j].getAttribute('label').replace("(","").replace(")","").split(" "); 
-                    generatedExportInformations += palist[0] + ";";
-                    if(palist.length>1) {
-                        generatedExportInformations += palist[1] + ";";
-                    }
-                    else {
-                        generatedExportInformations += palist[0] + ";";
-                    }
-                }
-                else {
-                    generatedExportInformations += item.childNodes[j].getAttribute('label') + ";";
-                }
-            }
-            generatedExportInformations += "\n"; 
-        }
-        this._util.saveContentToFile(this._util.getBundleString("mainframe.war.csv.export.title"), this._util.getBundleString("mainframe.war.csv.export.filename"), generatedExportInformations);
+	var exporter = new com.rigantestools.service.Exporter();
+	if(this._util.getPref(com.rigantestools.constant.PREF_XLS_EXPORT_FORMAT) !== true) {
+    	exporter.WarInCSV(document.getElementById("rigantestools-war-treechildren")); 
     }  
     else {
-    	var generatedExportInformations =  this._util.getBundleString("mainframe.war.csv.title").replace("%TARGETLINK%", com.rigantestools.MainFrame.currentTargetLink);
-    	generatedExportInformations = generatedExportInformations.replace("\n\n","</br><table><tr><td>");
-    	generatedExportInformations = generatedExportInformations.replace(/;/g,"</td><td>");
-    	generatedExportInformations += '</td></tr>';
-        var treechildren = document.getElementById("rigantestools-war-treechildren");
-        for ( var i = 0; i < treechildren.childNodes.length; i++) {
-            var item = treechildren.childNodes[i].childNodes[0];
-            var length = item.childNodes.length;
-            generatedExportInformations += "<tr>";
-            for ( var j = 0; j < length; j++) {
-                if(j===1) {
-                    var palist = item.childNodes[j].getAttribute('label').replace("(","").replace(")","").split(" "); 
-                    generatedExportInformations += "<td>" + palist[0] + "</td>";
-                    if(palist.length>1) {
-                        generatedExportInformations += "<td>"+ palist[1] + "</td>";
-                    }
-                    else {
-                        generatedExportInformations += "<td>" +palist[0] + "</td>";
-                    }
-                }
-                else {
-                    generatedExportInformations += "<td>" + item.childNodes[j].getAttribute('label') + "</td>";
-                }
-    
-            }
-            generatedExportInformations += "</tr>";
-        }
-        var date = new Date();
-        generatedExportInformations += "</table></br><div>" + this._util.formatDateTime(date) + "</div>";
-        this._util.saveContentToXLSFile(this._util.getBundleString("mainframe.war.csv.export.filename"), generatedExportInformations);
+    	exporter.WarInXLS(document.getElementById("rigantestools-war-treechildren")); 
     }
 };
 
@@ -2524,38 +2474,12 @@ com.rigantestools.MainFrame.onExportWarButtonClick = function(evt) {
  *            evt event of the element
  */
 com.rigantestools.MainFrame.onExportAttackDefenseSlowButtonClick = function(evt) {
-    if(this._util.getPref(com.rigantestools.constant.PREF_XLS_EXPORT_FORMAT) !== true) {
-        var generatedExportInformations = this._util.getBundleString("mainframe.attackDefenseSlow.csv.title").replace("%TARGETLINK%", this._util.getAttribute('rigantestools-attackDefenseSlowInfoTarget', 'value')) + "\n";
-    	var treechildren = document.getElementById("rigantestools-attackDefenseSlow-treechildren");
-    	for ( var i = 0; i < treechildren.childNodes.length; i++) {
-    		var item = treechildren.childNodes[i].childNodes[0];
-    		var length = item.childNodes.length;
-    		for ( var j = 0; j < length; j++) {
-    			generatedExportInformations += item.childNodes[j].getAttribute('label') + ";";
-    		}
-    		generatedExportInformations += "\n";
-    	}
-    	this._util.saveContentToFile(this._util.getBundleString("mainframe.attackDefenseSlow.csv.export.title"), this._util.getBundleString("mainframe.attackDefenseSlow.csv.export.filename"), generatedExportInformations);
+	var exporter = new com.rigantestools.service.Exporter();
+	if(this._util.getPref(com.rigantestools.constant.PREF_XLS_EXPORT_FORMAT) !== true) {
+    	exporter.AttackDefenseSlowInCSV(document.getElementById("rigantestools-attackDefenseSlow-treechildren"));
     }
     else {
-        var generatedExportInformations =  this._util.getBundleString("mainframe.attackDefenseSlow.csv.title").replace("%TARGETLINK%", this._util.getAttribute('rigantestools-attackDefenseSlowInfoTarget', 'value'));
-        generatedExportInformations = generatedExportInformations.replace("\n\n","</br><table><tr><td>");
-        generatedExportInformations = generatedExportInformations.replace(/;/g,"</td><td>");
-        generatedExportInformations += '</td></tr>';
-        var treechildren = document.getElementById("rigantestools-attackDefenseSlow-treechildren");
-        for ( var i = 0; i < treechildren.childNodes.length; i++) {
-            var item = treechildren.childNodes[i].childNodes[0];
-            var length = item.childNodes.length;
-            generatedExportInformations += "<tr>";
-            for ( var j = 0; j < length; j++) {
-                generatedExportInformations += "<td>" + item.childNodes[j].getAttribute('label') + "</td>";
-    
-            }
-            generatedExportInformations += "</tr>";
-        }
-        var date = new Date();
-        generatedExportInformations += "</table></br><div>" + this._util.formatDateTime(date) + "</div>";
-        this._util.saveContentToXLSFile(this._util.getBundleString("mainframe.attackDefenseSlow.csv.export.filename"), generatedExportInformations);
+    	exporter.AttackDefenseSlowInXLS(document.getElementById("rigantestools-attackDefenseSlow-treechildren"));
     }
 };
 
@@ -2567,26 +2491,8 @@ com.rigantestools.MainFrame.onExportAttackDefenseSlowButtonClick = function(evt)
  *            evt event of the element
  */
 com.rigantestools.MainFrame.onPrintWarButtonClick = function(evt) {
-	var reg = new RegExp("(##)", "g");
-	var printHeader = com.rigantestools.MainFrame._generatedWarInformations;
-	printHeader = printHeader.substring(0, printHeader.lastIndexOf("##"));
-	printHeader = printHeader.substring(0, printHeader.lastIndexOf("##"));
-	printHeader = printHeader.replace(reg, "</br>");
-	var generatedPrintInformations = this._util.getBundleString("mainframe.war.html.header").replace("%TARGETLINK%", printHeader);
-	var treechildren = document.getElementById("rigantestools-war-treechildren");
-	for ( var i = 0; i < treechildren.childNodes.length; i++) {
-		var item = treechildren.childNodes[i].childNodes[0];
-		var length = item.childNodes.length;
-		generatedPrintInformations += "<tr class=\"color" + (i % 2) + "\">";
-		for ( var j = 0; j < length; j++) {
-			generatedPrintInformations += "<td>" + item.childNodes[j].getAttribute('label') + "</td>";
-
-		}
-		generatedPrintInformations += "</tr>";
-	}
-	var date = new Date();
-	generatedPrintInformations += "</table><div id=\"footer\">" + this._util.formatDateTime(date) + "</div></body></html>";
-	this._util.printContent(generatedPrintInformations);
+	var exporter = new com.rigantestools.service.Exporter();
+	exporter.WarInHTML(document.getElementById("rigantestools-war-treechildren"));
 };
 
 /**
@@ -2597,21 +2503,8 @@ com.rigantestools.MainFrame.onPrintWarButtonClick = function(evt) {
  *            evt event of the element
  */
 com.rigantestools.MainFrame.onPrintAttackDefenseSlowButtonClick = function(evt) {
-	var generatedPrintInformations = this._util.getBundleString("mainframe.attackDefenseSlow.html.header").replace("%TARGETLINK%", this._util.getAttribute('rigantestools-attackDefenseSlowInfoTarget', 'value'));
-	var treechildren = document.getElementById("rigantestools-attackDefenseSlow-treechildren");
-	for ( var i = 0; i < treechildren.childNodes.length; i++) {
-		var item = treechildren.childNodes[i].childNodes[0];
-		var length = item.childNodes.length;
-		generatedPrintInformations += "<tr class=\"color" + (i % 2) + "\">";
-		for ( var j = 0; j < length; j++) {
-			generatedPrintInformations += "<td>" + item.childNodes[j].getAttribute('label') + "</td>";
-
-		}
-		generatedPrintInformations += "</tr>";
-	}
-	var date = new Date();
-	generatedPrintInformations += "</table><div id=\"footer\">" + this._util.formatDateTime(date) + "</div></body></html>";
-	this._util.printContent(generatedPrintInformations);
+	var exporter = new com.rigantestools.service.Exporter();
+	exporter.AttackDefenseSlowInHTML(document.getElementById("rigantestools-attackDefenseSlow-treechildren"));
 };
 
 /**

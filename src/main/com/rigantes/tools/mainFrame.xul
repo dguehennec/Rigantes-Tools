@@ -28,6 +28,7 @@
     <script type="application/x-javascript" src="chrome://rigantestools/content/class/domain/unit.js"/>	
     <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/logger.js" />
     <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/utils.js" />
+    <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/exporter.js" />
     <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/AttackCalculate.js"/>	
 	<script type="application/x-javascript" src="chrome://rigantestools/content/class/service/slowAttackDefenseCalculate.js"/>	
 	<script type="application/x-javascript" src="chrome://rigantestools/content/mainFrame.js"/>
