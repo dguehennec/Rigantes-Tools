@@ -1076,7 +1076,7 @@ com.rigantestools.MainFrame.calculateAttackDefenseSlowTimeAndShow = function() {
 		this._generatedAttackDefenseSlowInformations += this._util.getBundleString("mainframe.attackDefenseSlow.nbLaunch") + " : " + slowAttackDefenseCalculate.getNbAttacks() + "##";
 		this._generatedAttackDefenseSlowInformations += this._util.getBundleString("mainframe.attackDefenseSlow.firstDate") + " : " + this._util.formatDateTime(slowAttackDefenseCalculate.getFirstArrivalDate()) + "##";
 		this._generatedAttackDefenseSlowInformations += this._util.getBundleString("mainframe.attackDefenseSlow.lastDate") + " : " + this._util.formatDateTime(slowAttackDefenseCalculate.getLastArrivalDate()) + "##";
-		alert(this._generatedAttackDefenseSlowInformations);
+		
 		this._util.setAttribute('rigantestools-attackDefenseSlowInfoTarget', 'value', slowAttackDefenseCalculate.getTargetLink());
 		this._util.setAttribute('rigantestools-attackDefenseSlowInfoCastles', 'value', slowAttackDefenseCalculate.getNbAttacks());
 		this._util.setAttribute('rigantestools-attackDefenseSlowInfoFirstArrivalDate', 'value', this._util.formatDateTime(slowAttackDefenseCalculate.getFirstArrivalDate()));
