@@ -64,9 +64,15 @@ com.rigantestools.service.Exporter = function() {
  * @this {Exporter}
  * @param {treechildren}
  */
-com.rigantestools.service.Exporter.prototype.WarInCSV = function(treechildren) {
-	var generatedExportInformations = this._util.getBundleString("mainframe.war.csv.title").replace("%TARGETLINK%", com.rigantestools.MainFrame.currentTargetLink) + "\n"; 
-    for ( var i = 0; i < treechildren.childNodes.length; i++) { 
+com.rigantestools.service.Exporter.prototype.WarInCSV = function(treechildren, informations) {
+	//generate header
+	var informationContent = "";
+	for(var index = 0; index < informations.length; index++) {
+		informationContent += informations[index] + "\n";
+	}
+	var generatedExportInformations = this._util.getBundleString("mainframe.war.csv.title").replace("%INFORMATIONS%", informationContent) + "\n";
+	//generate tree
+	for ( var i = 0; i < treechildren.childNodes.length; i++) {
         var item = treechildren.childNodes[i].childNodes[0];
         var length = item.childNodes.length; 
         for ( var j = 0; j < length; j++) {
@@ -86,6 +92,7 @@ com.rigantestools.service.Exporter.prototype.WarInCSV = function(treechildren) {
         }
         generatedExportInformations += "\n"; 
     }
+    //save content in file
     this._util.saveContentToFile(this._util.getBundleString("mainframe.war.csv.export.title"), this._util.getBundleString("mainframe.war.csv.export.filename"), generatedExportInformations);
 }
 
@@ -96,34 +103,44 @@ com.rigantestools.service.Exporter.prototype.WarInCSV = function(treechildren) {
  * @this {Exporter}
  * @param {treechildren}
  */
-com.rigantestools.service.Exporter.prototype.WarInXLS = function(treechildren) {
-	var generatedExportInformations =  this._util.getBundleString("mainframe.war.csv.title").replace("%TARGETLINK%", com.rigantestools.MainFrame.currentTargetLink);
+com.rigantestools.service.Exporter.prototype.WarInXLS = function(treechildren, informations) {
+	var generatedExportInformations =  this._util.getBundleString("mainframe.war.csv.title");
 	generatedExportInformations = generatedExportInformations.replace("\n\n","</br><table><tr><td>");
 	generatedExportInformations = generatedExportInformations.replace(/;/g,"</td><td>");
 	generatedExportInformations += '</td></tr>';
-	
+	//sanitizing informations
+	var jsonInformationItem = ["html:div", {id: "header"}];
+	for(var index = 0; index < informations.length; index++) {
+		jsonInformationItem.push(["html:div", {}, informations[index]]);
+	}
+	generatedExportInformations = generatedExportInformations.replace("%INFORMATIONS%", this._util.JSONToDOM(jsonInformationItem, document, {}).outerHTML);
+	//generate tree with sanitizing parameters
+	var jsonTableItem = ["html:table", {}];
 	for ( var i = 0; i < treechildren.childNodes.length; i++) {
         var item = treechildren.childNodes[i].childNodes[0];
         var length = item.childNodes.length;
-        var jsonTreeItem = ["html:tr", {}];
+        var jsonTrItem = ["html:tr", {}];
         for ( var j = 0; j < length; j++) {
             if(j===1) {
                 var palist = item.childNodes[j].getAttribute('label').replace("(","").replace(")","").split(" "); 
-                jsonTreeItem.push([ "html:td", {}, palist[0]]);
+                jsonTrItem.push([ "html:td", {}, palist[0]]);
                 if(palist.length>1) {
-                    jsonTreeItem.push([ "html:td", {},  palist[1]]);
+                    jsonTrItem.push([ "html:td", {},  palist[1]]);
                 }
                 else {
-                    jsonTreeItem.push([ "html:td", {}, palist[0]]);
+                    jsonTrItem.push([ "html:td", {}, palist[0]]);
                 }
             }
             else {
-                jsonTreeItem.push([ "html:td", {}, item.childNodes[j].getAttribute('label')]);
+                jsonTrItem.push([ "html:td", {}, item.childNodes[j].getAttribute('label')]);
             }
         }
-        generatedExportInformations += this._util.JSONToDOM(jsonTreeItem, document, {}).outerHTML;
+        jsonTableItem.push(jsonTrItem);
     }
+	generatedExportInformations += this._util.JSONToDOM(jsonTableItem, document, {}).innerHTML;
+	//add footer
 	generatedExportInformations += "</table></br><div>" + this._util.formatDateTime(new Date()) + "</div>";
+	//save content in file
     this._util.saveContentToXLSFile(this._util.getBundleString("mainframe.war.csv.export.filename"), generatedExportInformations);
 }
 
@@ -133,23 +150,29 @@ com.rigantestools.service.Exporter.prototype.WarInXLS = function(treechildren) {
  * @this {Exporter}
  * @param {treechildren}
  */
-com.rigantestools.service.Exporter.prototype.WarInHTML = function(treechildren) {
-	var reg = new RegExp("(##)", "g");
-	var printHeader = com.rigantestools.MainFrame._generatedWarInformations;
-	printHeader = printHeader.substring(0, printHeader.lastIndexOf("##"));
-	printHeader = printHeader.substring(0, printHeader.lastIndexOf("##"));
-	printHeader = printHeader.replace(reg, "</br>");
-	var generatedPrintInformations = this._util.getBundleString("mainframe.war.html.header").replace("%TARGETLINK%", printHeader);
+com.rigantestools.service.Exporter.prototype.WarInHTML = function(treechildren, informations) {
+	var generatedPrintInformations = this._util.getBundleString("mainframe.war.html.header");
+	//sanitizing informations
+	var jsonInformationItem = ["html:div", {id: "header"}];
+	for(var index = 0; index < informations.length; index++) {
+		jsonInformationItem.push(["html:div", {}, informations[index]]);
+	}
+	generatedPrintInformations = generatedPrintInformations.replace("%INFORMATIONS%", this._util.JSONToDOM(jsonInformationItem, document, {}).outerHTML);
+	//generate tree with sanitizing parameters
+	var jsonTableItem = ["html:table", {}];
 	for ( var i = 0; i < treechildren.childNodes.length; i++) {
 		var item = treechildren.childNodes[i].childNodes[0];
 		var length = item.childNodes.length;
-		var jsonTreeItem = ["html:tr", {class : "color" + (i % 2)}];
+		var jsonTrItem = ["html:tr", {class : "color" + (i % 2)}];
 		for ( var j = 0; j < length; j++) {
-			jsonTreeItem.push([ "html:td", {},  item.childNodes[j].getAttribute('label')]);
+			jsonTrItem.push([ "html:td", {},  item.childNodes[j].getAttribute('label')]);
 		}
-		generatedPrintInformations += this._util.JSONToDOM(jsonTreeItem, document, {}).outerHTML;
+		jsonTableItem.push(jsonTrItem);
 	}
+	generatedPrintInformations += this._util.JSONToDOM(jsonTableItem, document, {}).innerHTML;
+	//add footer
 	generatedPrintInformations += "</table><div id=\"footer\">" + this._util.formatDateTime(new Date()) + "</div></body></html>";
+	//print content
 	this._util.printContent(generatedPrintInformations);
 }
 
@@ -159,9 +182,15 @@ com.rigantestools.service.Exporter.prototype.WarInHTML = function(treechildren) 
  * @this {Exporter}
  * @param {treechildren}
  */
-com.rigantestools.service.Exporter.prototype.AttackDefenseSlowInCSV = function(treechildren) {
-	var generatedExportInformations = this._util.getBundleString("mainframe.attackDefenseSlow.csv.title").replace("%TARGETLINK%", this._util.getAttribute('rigantestools-attackDefenseSlowInfoTarget', 'value')) + "\n";
- 	for ( var i = 0; i < treechildren.childNodes.length; i++) {
+com.rigantestools.service.Exporter.prototype.AttackDefenseSlowInCSV = function(treechildren, informations) {
+	//generate header
+	var informationContent = "";
+	for(var index = 0; index < informations.length; index++) {
+		informationContent += informations[index] + "\n";
+	}
+	var generatedExportInformations = this._util.getBundleString("mainframe.attackDefenseSlow.csv.title").replace("%INFORMATIONS%", informationContent) + "\n";
+	//generate tree
+	for ( var i = 0; i < treechildren.childNodes.length; i++) {
  		var item = treechildren.childNodes[i].childNodes[0];
  		var length = item.childNodes.length;
  		for ( var j = 0; j < length; j++) {
@@ -169,6 +198,7 @@ com.rigantestools.service.Exporter.prototype.AttackDefenseSlowInCSV = function(t
  		}
  		generatedExportInformations += "\n";
  	}
+    //save content in file
  	this._util.saveContentToFile(this._util.getBundleString("mainframe.attackDefenseSlow.csv.export.title"), this._util.getBundleString("mainframe.attackDefenseSlow.csv.export.filename"), generatedExportInformations);
 }
 
@@ -178,22 +208,33 @@ com.rigantestools.service.Exporter.prototype.AttackDefenseSlowInCSV = function(t
  * @this {Exporter}
  * @param {treechildren}
  */
-com.rigantestools.service.Exporter.prototype.AttackDefenseSlowInXLS = function(treechildren) {
-	var generatedExportInformations =  this._util.getBundleString("mainframe.attackDefenseSlow.csv.title").replace("%TARGETLINK%", this._util.getAttribute('rigantestools-attackDefenseSlowInfoTarget', 'value'));
+com.rigantestools.service.Exporter.prototype.AttackDefenseSlowInXLS = function(treechildren, informations) {
+	var generatedExportInformations =  this._util.getBundleString("mainframe.attackDefenseSlow.csv.title");
     generatedExportInformations = generatedExportInformations.replace("\n\n","</br><table><tr><td>");
     generatedExportInformations = generatedExportInformations.replace(/;/g,"</td><td>");
     generatedExportInformations += '</td></tr>';
+    //sanitizing informations
+	var jsonInformationItem = ["html:div", {id: "header"}];
+	for(var index = 0; index < informations.length; index++) {
+		jsonInformationItem.push(["html:div", {}, informations[index]]);
+	}
+	generatedExportInformations = generatedExportInformations.replace("%INFORMATIONS%", this._util.JSONToDOM(jsonInformationItem, document, {}).outerHTML);
+	//generate tree with sanitizing parameters
+	var jsonTableItem = ["html:table", {}];
     for ( var i = 0; i < treechildren.childNodes.length; i++) {
         var item = treechildren.childNodes[i].childNodes[0];
         var length = item.childNodes.length;
-        var jsonTreeItem = ["html:tr", {}];
+        var jsonTrItem = ["html:tr", {}];
         for ( var j = 0; j < length; j++) {
-            jsonTreeItem.push([ "html:td", {},  item.childNodes[j].getAttribute('label')]);
+            jsonTrItem.push([ "html:td", {},  item.childNodes[j].getAttribute('label')]);
 
         }
-        generatedExportInformations += this._util.JSONToDOM(jsonTreeItem, document, {}).outerHTML;
+        jsonTableItem.push(jsonTrItem);
     }
+    generatedExportInformations += this._util.JSONToDOM(jsonTableItem, document, {}).innerHTML;
+    //add footer
     generatedExportInformations += "</table></br><div>" + this._util.formatDateTime(new Date()) + "</div>";
+    //save content in file
     this._util.saveContentToXLSFile(this._util.getBundleString("mainframe.attackDefenseSlow.csv.export.filename"), generatedExportInformations);
 }
 
@@ -203,17 +244,28 @@ com.rigantestools.service.Exporter.prototype.AttackDefenseSlowInXLS = function(t
  * @this {Exporter}
  * @param {treechildren}
  */
-com.rigantestools.service.Exporter.prototype.AttackDefenseSlowInHTML = function(treechildren) {
-	var generatedPrintInformations = this._util.getBundleString("mainframe.attackDefenseSlow.html.header").replace("%TARGETLINK%", this._util.getAttribute('rigantestools-attackDefenseSlowInfoTarget', 'value'));
+com.rigantestools.service.Exporter.prototype.AttackDefenseSlowInHTML = function(treechildren, informations) {
+	var generatedPrintInformations = this._util.getBundleString("mainframe.attackDefenseSlow.html.header");
+	//sanitizing informations
+	var jsonInformationItem = ["html:div", {id: "header"}];
+	for(var index = 0; index < informations.length; index++) {
+		jsonInformationItem.push(["html:div", {}, informations[index]]);
+	}
+	generatedPrintInformations = generatedPrintInformations.replace("%INFORMATIONS%", this._util.JSONToDOM(jsonInformationItem, document, {}).outerHTML);
+	//generate tree with sanitizing parameters
+	var jsonTableItem = ["html:table", {}];
 	for ( var i = 0; i < treechildren.childNodes.length; i++) {
 		var item = treechildren.childNodes[i].childNodes[0];
 		var length = item.childNodes.length;
-		var jsonTreeItem = ["html:tr", {class : "color" + (i % 2)}];
+		var jsonTrItem = ["html:tr", {class : "color" + (i % 2)}];
 		for ( var j = 0; j < length; j++) {
-			jsonTreeItem.push([ "html:td", {},  item.childNodes[j].getAttribute('label')]);
+			jsonTrItem.push([ "html:td", {},  item.childNodes[j].getAttribute('label')]);
 		}
-		generatedPrintInformations += this._util.JSONToDOM(jsonTreeItem, document, {}).outerHTML;
+		jsonTableItem.push(jsonTrItem);
 	}
+	generatedPrintInformations += this._util.JSONToDOM(jsonTableItem, document, {}).innerHTML;
+	//add footer
 	generatedPrintInformations += "</table><div id=\"footer\">" + this._util.formatDateTime(new Date()) + "</div></body></html>";
+	//print content
 	this._util.printContent(generatedPrintInformations);
 }

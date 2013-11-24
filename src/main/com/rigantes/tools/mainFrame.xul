@@ -388,7 +388,7 @@
 				</groupbox>
 				<hbox id="rigantestools-attackDefenseSlowActionBar" style="visibility:collapse;" align="center">
 					<spacer flex="1"/>
-					<button id="rigantestools-attackDefenseSlowGenerateButton" style="visibility:collapse;margin: 2px;" label="&mainframe.tabAttackDefenseSlow.generateInformations.button;" oncommand="com.rigantestools.MainFrame.onGenerateAttackDefenseSlowButtonClick();"/>
+					<button id="rigantestools-attackDefenseSlowGenerateButton" style="margin: 2px;" label="&mainframe.tabAttackDefenseSlow.generateInformations.button;" oncommand="com.rigantestools.MainFrame.onGenerateAttackDefenseSlowButtonClick();"/>
 					<button id="rigantestools-attackDefenseSlowExportButton" style="margin: 2px;" label="&mainframe.tabAttackDefenseSlow.exportWarInformation.button;" oncommand="com.rigantestools.MainFrame.onExportAttackDefenseSlowButtonClick();"/>
 					<button id="rigantestools-attackDefenseSlowPrintButton" style="margin: 2px;" label="&mainframe.tabAttackDefenseSlow.printWarInformation.button;" oncommand="com.rigantestools.MainFrame.onPrintAttackDefenseSlowButtonClick();"/>
 				</hbox>

@@ -73,6 +73,8 @@ com.rigantestools.MainFrame.init = function() {
 	/** @private */
 	/** the generated War Informations */
 	this._generatedWarInformations = "";
+	/** the generated Attack Defense Slow Informations */
+	this._generatedAttackDefenseSlowInformations = "";
 	/** @private */
 	/** the current Habitats Column Tree Sort */
 	this._currentHabitatsColumnTreeSort = null;
@@ -512,7 +514,6 @@ com.rigantestools.MainFrame.calculateWarTimeAndShow = function() {
 		if (targetLink === null) {
 			return false;
         }	
-		this.currentTargetLink = targetLink;
 	
 		var attackType = this.getAttackType();
 		if(attackType===0) {
@@ -1070,6 +1071,12 @@ com.rigantestools.MainFrame.calculateAttackDefenseSlowTimeAndShow = function() {
 		var slowAttackDefenseCalculate = new com.rigantestools.service.SlowAttackDefenseCalculate(this._player.getHabitatList(), targetLink, date, duration, unitTypeUD, unitTypeUO, unitCount, startTimeUnit, allCastles);
 		this.currentHabitatsAttackDefenseSlow = slowAttackDefenseCalculate.getResultList();
 		this.sortcolumnAttackDefenseSlowTree(null);
+		
+		this._generatedAttackDefenseSlowInformations = this._util.getBundleString("mainframe.attackDefenseSlow.target") + " : " + slowAttackDefenseCalculate.getTargetLink() + "##";
+		this._generatedAttackDefenseSlowInformations += this._util.getBundleString("mainframe.attackDefenseSlow.nbLaunch") + " : " + slowAttackDefenseCalculate.getNbAttacks() + "##";
+		this._generatedAttackDefenseSlowInformations += this._util.getBundleString("mainframe.attackDefenseSlow.firstDate") + " : " + this._util.formatDateTime(slowAttackDefenseCalculate.getFirstArrivalDate()) + "##";
+		this._generatedAttackDefenseSlowInformations += this._util.getBundleString("mainframe.attackDefenseSlow.lastDate") + " : " + this._util.formatDateTime(slowAttackDefenseCalculate.getLastArrivalDate()) + "##";
+		alert(this._generatedAttackDefenseSlowInformations);
 		this._util.setAttribute('rigantestools-attackDefenseSlowInfoTarget', 'value', slowAttackDefenseCalculate.getTargetLink());
 		this._util.setAttribute('rigantestools-attackDefenseSlowInfoCastles', 'value', slowAttackDefenseCalculate.getNbAttacks());
 		this._util.setAttribute('rigantestools-attackDefenseSlowInfoFirstArrivalDate', 'value', this._util.formatDateTime(slowAttackDefenseCalculate.getFirstArrivalDate()));
@@ -2023,7 +2030,6 @@ com.rigantestools.MainFrame.refreshWarTree = function() {
 
 	this.clearWarTree();
 
-	var targetLink = this.currentTargetLink;
 	var date = this.currentDateTime;
 	var nbCastlesWar = 0;
 	var swordmanCount = 0;
@@ -2123,6 +2129,7 @@ com.rigantestools.MainFrame.refreshWarTree = function() {
 	}
 	// update war informations
 	var nbCastles = this._player.getHabitatList().length;
+	var targetLink = this._util.getAttribute('rigantestools-warTargetLink', 'value');
 	this._generatedWarInformations = this._util.getBundleString("mainframe.war.target") + " : " + targetLink + "##";
 	this._generatedWarInformations += this._util.getBundleString("mainframe.war.nbCastles") + " : " + nbCastlesWar + "##";
 	this._generatedWarInformations += this._util.getBundleString("mainframe.war.nbUO") + " : " + totalUO + " (" + swordmanCount + "/" + archerCount + "/" + lancerCount + ")##";
@@ -2457,11 +2464,12 @@ com.rigantestools.MainFrame.onSimulateWarButtonClick = function(evt) {
  */
 com.rigantestools.MainFrame.onExportWarButtonClick = function(evt) {  
 	var exporter = new com.rigantestools.service.Exporter();
+	var informations = com.rigantestools.MainFrame._generatedWarInformations.split(new RegExp("[#]+", "g"));
 	if(this._util.getPref(com.rigantestools.constant.PREF_XLS_EXPORT_FORMAT) !== true) {
-    	exporter.WarInCSV(document.getElementById("rigantestools-war-treechildren")); 
+        exporter.WarInCSV(document.getElementById("rigantestools-war-treechildren"), informations);
     }  
     else {
-    	exporter.WarInXLS(document.getElementById("rigantestools-war-treechildren")); 
+        exporter.WarInXLS(document.getElementById("rigantestools-war-treechildren"), informations);
     }
 };
 
@@ -2475,11 +2483,12 @@ com.rigantestools.MainFrame.onExportWarButtonClick = function(evt) {
  */
 com.rigantestools.MainFrame.onExportAttackDefenseSlowButtonClick = function(evt) {
 	var exporter = new com.rigantestools.service.Exporter();
+	var informations = com.rigantestools.MainFrame._generatedAttackDefenseSlowInformations.split(new RegExp("[#]+", "g"));
 	if(this._util.getPref(com.rigantestools.constant.PREF_XLS_EXPORT_FORMAT) !== true) {
-    	exporter.AttackDefenseSlowInCSV(document.getElementById("rigantestools-attackDefenseSlow-treechildren"));
+        exporter.AttackDefenseSlowInCSV(document.getElementById("rigantestools-attackDefenseSlow-treechildren"), informations);
     }
     else {
-    	exporter.AttackDefenseSlowInXLS(document.getElementById("rigantestools-attackDefenseSlow-treechildren"));
+        exporter.AttackDefenseSlowInXLS(document.getElementById("rigantestools-attackDefenseSlow-treechildren"), informations);
     }
 };
 
@@ -2492,7 +2501,8 @@ com.rigantestools.MainFrame.onExportAttackDefenseSlowButtonClick = function(evt)
  */
 com.rigantestools.MainFrame.onPrintWarButtonClick = function(evt) {
 	var exporter = new com.rigantestools.service.Exporter();
-	exporter.WarInHTML(document.getElementById("rigantestools-war-treechildren"));
+	var informations = com.rigantestools.MainFrame._generatedWarInformations.split(new RegExp("[#]+", "g"));
+	exporter.WarInHTML(document.getElementById("rigantestools-war-treechildren"), informations);
 };
 
 /**
@@ -2504,7 +2514,8 @@ com.rigantestools.MainFrame.onPrintWarButtonClick = function(evt) {
  */
 com.rigantestools.MainFrame.onPrintAttackDefenseSlowButtonClick = function(evt) {
 	var exporter = new com.rigantestools.service.Exporter();
-	exporter.AttackDefenseSlowInHTML(document.getElementById("rigantestools-attackDefenseSlow-treechildren"));
+	var informations = com.rigantestools.MainFrame._generatedAttackDefenseSlowInformations.split(new RegExp("[#]+", "g"));
+	exporter.AttackDefenseSlowInHTML(document.getElementById("rigantestools-attackDefenseSlow-treechildren"), informations);
 };
 
 /**
@@ -2515,8 +2526,7 @@ com.rigantestools.MainFrame.onPrintAttackDefenseSlowButtonClick = function(evt) 
  *            evt event of the element
  */
 com.rigantestools.MainFrame.onGenerateWarButtonClick = function(evt) {
-	var reg = new RegExp("(##)", "g");
-	this._util.copieToClipboard(com.rigantestools.MainFrame._generatedWarInformations.replace(reg, "\n"));
+	this._util.copieToClipboard(com.rigantestools.MainFrame._generatedWarInformations.replace(new RegExp("(##)", "g"), "\n"));
 };
 
 /**
@@ -2527,7 +2537,7 @@ com.rigantestools.MainFrame.onGenerateWarButtonClick = function(evt) {
  *            evt event of the element
  */
 com.rigantestools.MainFrame.onGenerateAttackDefenseSlowButtonClick = function(evt) {
-	this._util.copieToClipboard("todo");
+	this._util.copieToClipboard(com.rigantestools.MainFrame._generatedAttackDefenseSlowInformations.replace(new RegExp("(##)", "g"), "\n"));
 };
 
 /**
