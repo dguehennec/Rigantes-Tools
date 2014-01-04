@@ -63,8 +63,8 @@ com.rigantestools.constant.LOGGER_LEVEL = 0;
  * 
  * @constant
  */
-com.rigantestools.constant.VERSION = "2.3.3";
-com.rigantestools.constant.VERSION_NUMBER = 233;
+com.rigantestools.constant.VERSION = "2.3.4";
+com.rigantestools.constant.VERSION_NUMBER = 234;
 
 /**
  * Preferences

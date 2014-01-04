@@ -57,119 +57,180 @@ if (!com.rigantestools.domain) {
 com.rigantestools.domain.Habitat = function(mhabitat, world) {
     this._logger = new com.rigantestools.service.Logger("Habitat");
     this._logger.trace("init(" + mhabitat.name + ", " + world + ")");
-    /** @private */
-    this._util = new com.rigantestools.service.Util();
-    /** @private */
-    this.name = mhabitat.name;
-    /** @private */
-    this.id = mhabitat.id;
-    /** @private */
-    this.orgX = mhabitat.mapX;
-    /** @private */
-    this.orgY = mhabitat.mapY;
-    /** @private */
-    this.link = 'l+k://coordinates?' + this.orgX + ',' + this.orgY + '&' + world;
-    /** @private */
-    this.nextBattleDate = mhabitat.nextBattleDate;
-    /** @private */
-    this.newUpgrateDate = mhabitat.nextNPCUpgrateDate;
-    /** @private */
-    this.points = mhabitat.points;
-    /** @private */
-    this._ressources = [];
-    /** @private */
-    this._units = [];
-    /** @private */
-    this._externalUnits = [];
-    /** @private */
-    this._attackersUnits = [];
-    /** @private */
-    this._missionUnits = [];
-    /** @private */
-    this._habitatTransits = [];
-    /** @private */
-    this._modifiers = [];
-    /** @private */
-    this.isAttacked = false;
 
-    if ((typeof (mhabitat.habitatUnitOrders) !== 'undefined') && mhabitat.habitatUnitOrders !== null) {
-        this.nbUnitOrder = mhabitat.habitatUnitOrders.length;
-    }
-    /** @private */
-    if ((typeof (mhabitat.habitatKnowledgeOrders) !== 'undefined') && mhabitat.habitatKnowledgeOrders !== null) {
-        this.nbKnowledgeOrder = mhabitat.habitatKnowledgeOrders.length;
-    }
-    /** @private */
-    if ((typeof (mhabitat.habitatBuildingUpgrades) !== 'undefined') && mhabitat.habitatBuildingUpgrades !== null) {
-        this.nbHabitatBuildingOrder = mhabitat.habitatBuildingUpgrades.length;
-    }
-    /** @private */
-    if ((typeof (mhabitat.habitatTransits) !== 'undefined') && mhabitat.habitatTransits !== null) {
-        this.nbhabitatesTransits = mhabitat.habitatTransits.length;
-    }
-    /** @private */
-    if ((typeof (mhabitat.habitatMissions) !== 'undefined') && mhabitat.habitatMissions !== null) {
-        this.nbhabitatesMissions = mhabitat.habitatMissions.length;
-    }
-    // get resources
-    if ((typeof (mhabitat.habitatResources) !== 'undefined') && mhabitat.habitatResources !== null) {
-        var mresources = mhabitat.habitatResources;
-        for ( var key in mresources) {
-            if (mresources.hasOwnProperty(key)) {
-                this._ressources.push(mresources[key].amount);
-            }
-        }
-    }
+    try {
+        /** @private */
+        this._util = new com.rigantestools.service.Util();
+        /** @private */
+        this.name = mhabitat.name;
+        /** @private */
+        this.id = mhabitat.id;
+        /** @private */
+        this.orgX = mhabitat.mapX;
+        /** @private */
+        this.orgY = mhabitat.mapY;
+        /** @private */
+        this.link = 'l+k://coordinates?' + this.orgX + ',' + this.orgY + '&' + world;
+        /** @private */
+        this.nextBattleDate = mhabitat.nextBattleDate;
+        /** @private */
+        this.newUpgrateDate = mhabitat.nextNPCUpgrateDate;
+        /** @private */
+        this.points = mhabitat.points;
+        /** @private */
+        this._ressources = [];
+        /** @private */
+        this._units = [];
+        /** @private */
+        this._externalUnits = [];
+        /** @private */
+        this._attackersUnits = [];
+        /** @private */
+        this._missionUnits = [];
+        /** @private */
+        this._habitatTransits = [];
+        /** @private */
+        this._modifiers = [];
+        /** @private */
+        this.isAttacked = false;
 
-    var munits, units, unit, index, indexUnit;
-    // get Unites available
-    if ((typeof (mhabitat.habitatUnits) !== 'undefined') && mhabitat.habitatUnits !== null) {
-        munits = mhabitat.habitatUnits;
-        for (index = 0; index < munits.length; index++) {
-            if (munits[index].battleType === com.rigantestools.constant.BATTLETYPE.OWN_HABITAT) {
-                units = munits[index].units;
-                for (indexUnit = 0; indexUnit < units.length; indexUnit++) {
-                    unit = new com.rigantestools.domain.Unit(units[indexUnit]);
-                    this._units.push(unit);
-                }
-            } else if (munits[index].battleType === com.rigantestools.constant.BATTLETYPE.EXTERNAL_UNITS_TO_DEFENSE) {
-                units = munits[index].units;
-                for (indexUnit = 0; indexUnit < units.length; indexUnit++) {
-                    unit = new com.rigantestools.domain.Unit(units[indexUnit]);
-                    this._externalUnits.push(unit);
-                }
-            } else if (munits[index].battleType === com.rigantestools.constant.BATTLETYPE.ATTACKER) {
-                units = munits[index].units;
-                for (indexUnit = 0; indexUnit < units.length; indexUnit++) {
-                    unit = new com.rigantestools.domain.Unit(units[indexUnit]);
-                    this._attackersUnits.push(unit);
+        if ((typeof (mhabitat.habitatUnitOrders) !== 'undefined') && mhabitat.habitatUnitOrders !== null) {
+            this.nbUnitOrder = mhabitat.habitatUnitOrders.length;
+        }
+        /** @private */
+        if ((typeof (mhabitat.habitatKnowledgeOrders) !== 'undefined') && mhabitat.habitatKnowledgeOrders !== null) {
+            this.nbKnowledgeOrder = mhabitat.habitatKnowledgeOrders.length;
+        }
+        /** @private */
+        if ((typeof (mhabitat.habitatBuildingUpgrades) !== 'undefined') && mhabitat.habitatBuildingUpgrades !== null) {
+            this.nbHabitatBuildingOrder = mhabitat.habitatBuildingUpgrades.length;
+        }
+        /** @private */
+        if ((typeof (mhabitat.habitatTransits) !== 'undefined') && mhabitat.habitatTransits !== null) {
+            this.nbhabitatesTransits = mhabitat.habitatTransits.length;
+        }
+        /** @private */
+        if ((typeof (mhabitat.habitatMissions) !== 'undefined') && mhabitat.habitatMissions !== null) {
+            this.nbhabitatesMissions = mhabitat.habitatMissions.length;
+        }
+        // get resources
+        if ((typeof (mhabitat.habitatResources) !== 'undefined') && mhabitat.habitatResources !== null) {
+            var mresources = mhabitat.habitatResources;
+            for ( var key in mresources) {
+                if (mresources.hasOwnProperty(key)) {
+                    this._ressources.push(mresources[key].amount);
                 }
             }
         }
-    }
-    // get Unites in transits
-    if ((typeof (mhabitat.habitatTransits) !== 'undefined') && mhabitat.habitatTransits !== null) {
-        var mhabitatTransit = mhabitat.habitatTransits;
-        for (index = 0; index < mhabitatTransit.length; index++) {
-            var habitatTransit = new com.rigantestools.domain.HabitatTransit(mhabitatTransit[index], world);
-            this._habitatTransits.push(habitatTransit);
-        }
-    }
-    this.isAttacked = ((this.getHabitatTransits(com.rigantestools.constant.TRANSITTYPE.ATTACKER, true).length > 0) || (this.getUnitAttackersCount() > 0));
-    // get Units in mission
-    if ((typeof (mhabitat.habitatMissions) !== 'undefined') && mhabitat.habitatMissions !== null) {
-        munits = mhabitat.habitatMissions;
-        for (index = 0; index < munits.length; index++) {
-            units = munits[index].getAllUnits();
-            for (indexUnit = 0; indexUnit < units.length; indexUnit++) {
-                unit = new com.rigantestools.domain.Unit(units[indexUnit]);
-                this._missionUnits.push(unit);
+
+        var munits, units, unit, index, indexUnit;
+        try {
+            // get Units available
+            this._logger.trace("get Units available");
+            if (mhabitat.habitatUnits) {
+                munits = mhabitat.habitatUnits;
+                for (index = 0; index < munits.length; index++) {
+                    if (munits[index].battleType === com.rigantestools.constant.BATTLETYPE.OWN_HABITAT) {
+                        units = munits[index].units;
+                        for (indexUnit = 0; indexUnit < units.length; indexUnit++) {
+                            unit = new com.rigantestools.domain.Unit(units[indexUnit]);
+                            this._units.push(unit);
+                        }
+                    } else if (munits[index].battleType === com.rigantestools.constant.BATTLETYPE.EXTERNAL_UNITS_TO_DEFENSE) {
+                        units = munits[index].units;
+                        for (indexUnit = 0; indexUnit < units.length; indexUnit++) {
+                            unit = new com.rigantestools.domain.Unit(units[indexUnit]);
+                            this._externalUnits.push(unit);
+                        }
+                    } else if (munits[index].battleType === com.rigantestools.constant.BATTLETYPE.ATTACKER) {
+                        units = munits[index].units;
+                        for (indexUnit = 0; indexUnit < units.length; indexUnit++) {
+                            unit = new com.rigantestools.domain.Unit(units[indexUnit]);
+                            this._attackersUnits.push(unit);
+                        }
+                    }
+                }
             }
+        } catch (e) {
+            this._logger.error("init error in get Unites available:" + e);
         }
-    }
-    // get Modifier
-    if ((typeof (mhabitat.habitatModifier) !== 'undefined') && mhabitat.habitatModifier !== null) {
-        this._modifiers = mhabitat.habitatModifier;
+
+        try {
+            // get Units in transits
+            this._logger.trace("get Units in transits");
+            if (mhabitat.habitatTransits) {
+                var mhabitatTransit = mhabitat.habitatTransits;
+                for (index = 0; index < mhabitatTransit.length; index++) {
+                    var habitatTransit = new com.rigantestools.domain.HabitatTransit(mhabitatTransit[index], world);
+                    this._habitatTransits.push(habitatTransit);
+                }
+            }
+            this.isAttacked = ((this.getHabitatTransits(com.rigantestools.constant.TRANSITTYPE.ATTACKER, true).length > 0) || (this.getUnitAttackersCount() > 0));
+        } catch (e) {
+            this._logger.error("init error in get Unites in transits:" + e);
+        }
+
+        try {
+            // get Units in mission
+            this._logger.trace("get Units in mission");
+            if (mhabitat.habitatMissions) {
+                munits = mhabitat.habitatMissions;
+                for (index = 0; index < munits.length; index++) {
+                    var units=[];
+                    for(var key in munits[index].mission.unitProductions){
+                        var c={};
+                        c.count= munits[index].mission.unitProductions[key];
+                        switch(key) {
+                            case "1":
+                                c.identifier=com.rigantestools.constant.UNITTYPE.SPEARMAN;
+                                c.corps='Infantry';
+                                c.storeAmount = 12;
+                                break;
+                            case "2":
+                                c.identifier=com.rigantestools.constant.UNITTYPE.SWORDMAN;
+                                c.corps='Infantry';
+                                c.storeAmount = 10;
+                                break;
+                            case "101":
+                                c.identifier=com.rigantestools.constant.UNITTYPE.ARCHER;
+                                c.corps='Artillery';
+                                c.storeAmount = 16;
+                                break;
+                            case "102":
+                                c.identifier=com.rigantestools.constant.UNITTYPE.CROSSBOWMAN;
+                                c.corps='Artillery';
+                                c.storeAmount = 13;
+                                break;
+                            case "201":
+                                c.identifier=com.rigantestools.constant.UNITTYPE.SCORPIONRIDER;
+                                c.corps='Cavalry';
+                                c.storeAmount = 22;
+                                break;
+                            case "202":
+                                c.identifier=com.rigantestools.constant.UNITTYPE.LANCER;
+                                c.corps='Cavalry';
+                                c.storeAmount = 20;
+                                break;
+                        }
+                        if(c.identifier) {
+                            units.push(c);
+                        }
+                    }
+                    for (indexUnit = 0; indexUnit < units.length; indexUnit++) {
+                        unit = new com.rigantestools.domain.Unit(units[indexUnit]);
+                        this._missionUnits.push(unit);
+                    }
+                }
+            }
+        } catch (e) {
+            this._logger.error("init error in get Units in mission:" + e);
+        }
+        // get Modifier
+        if (mhabitat.habitatModifier) {
+            this._modifiers = mhabitat.habitatModifier;
+        }
+    } catch (e) {
+        this._logger.error("init error:" + e);
     }
 };
 
