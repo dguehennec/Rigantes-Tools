@@ -102,10 +102,10 @@
 							<label value="&mainframe.tabWar.datetimePrompt.label;" width="200"/>
 							<datepicker id="rigantestools-warDate" firstdayofweek="NaN" width="145" type="popup"/>
 							<label value="&mainframe.tabWar.datetimePrompt1.label;"/>
-							<textbox id="rigantestools-warTime" width="50" value="20:00" maxlength="5"/>
+							<textbox id="rigantestools-warTime" width="50" value="07:00" maxlength="5"/>
 							<spacer width="20"/>
 							<label value="&mainframe.tabWar.durationPrompt.label;"/>
-							<textbox id="rigantestools-warMaxTime" value="10:00" width="50" maxlength="5"/>
+							<textbox id="rigantestools-warMaxTime" value="010:00" width="60" maxlength="6"/>
 							<spacer flex="1"/>
 						</hbox>
 						<hbox align="center" id="rigantestools-programmedAttackBox1">
