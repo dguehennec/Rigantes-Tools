@@ -26,7 +26,7 @@ No interaction with the game is accomplish through this tool and no user data is
 	# Maven is used to generate Firefox extension (xpi) of Rigantes Tools sources.
 	# There are 2 profiles (Dev en Prod)
 	
-	# In Dev mode, just des sources is packaging, use the next command line
+	# In Dev mode, just sources is packaging, use the next command line
 	mvn clean install -PDev
 	
 	# In Prod mode, sources is closure, jsDoc is generated and Sonar is executed

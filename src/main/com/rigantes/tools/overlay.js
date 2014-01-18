@@ -385,6 +385,16 @@ com.rigantestools.Main.contentLoaded = function(evt) {
  */
 com.rigantestools.Main.contentUnload = function(evt) {
     this._logger.trace("contentUnload");
+    //close mainFrame if opened
+    var topWindow = this._util.getXULWindow("window:rigantestoolsMainFrame");
+    if (topWindow) {
+        try {
+            topWindow.close();
+        } catch (e) {
+            this._logger.error("closeMainFrame = " + e);
+            return false;
+        }
+    }
     // reset interface mapping
     this._interfaceMapping.reset();
     // update events listener
@@ -413,6 +423,7 @@ com.rigantestools.Main.onStatusBarClick = function(evt) {
             this.showMainFrame();
         } else {
             this._util.showMessage(this._util.getBundleString("error.site.invalid.title"), this._util.getBundleString("error.site.invalid.message"));
+            this._util.openURL("http://lordsandknights.com");
         }
     }
 };
