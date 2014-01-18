@@ -58,7 +58,7 @@ com.rigantestools.domain.HabitatTransit = function(mhabitatTransit, world) {
     /** @private */
     this.transitType = mhabitatTransit.transitType;
 
-    if (mhabitatTransit.sourceHabitat !== null) {
+    if (mhabitatTransit.sourceHabitat) {
         /** @private */
         this.sourceHabitatName = mhabitatTransit.sourceHabitat.name;
         /** @private */
@@ -70,7 +70,7 @@ com.rigantestools.domain.HabitatTransit = function(mhabitatTransit, world) {
         /** @private */
         this.sourceHabitatLink = 'l+k://coordinates?' + this.sourceHabitatOrgX + ',' + this.sourceHabitatOrgY + '&' + world;
 
-        if (mhabitatTransit.sourceHabitat.player !== null) {
+        if (mhabitatTransit.sourceHabitat.player) {
             /** @private */
             this.sourceHabitatPlayerName = mhabitatTransit.sourceHabitat.player.nick;
             /** @private */
@@ -82,7 +82,7 @@ com.rigantestools.domain.HabitatTransit = function(mhabitatTransit, world) {
         /** @private */
         this.sourceHabitatPoints = mhabitatTransit.sourceHabitat.points;
     }
-    if (mhabitatTransit.destinationHabitat !== null) {
+    if (mhabitatTransit.destinationHabitat) {
         /** @private */
         this.destinationHabitatName = mhabitatTransit.destinationHabitat.name;
         /** @private */
@@ -113,7 +113,7 @@ com.rigantestools.domain.HabitatTransit = function(mhabitatTransit, world) {
     this._units = [];
 
     // get resources
-    if ((typeof (mhabitatTransit.resources) !== 'undefined') && mhabitatTransit.resources !== null) {
+    if (mhabitatTransit.resources) {
         var ressources = mhabitatTransit.resources;
         for ( var key in ressources) {
             if (ressources.hasOwnProperty(key)) {
@@ -122,9 +122,9 @@ com.rigantestools.domain.HabitatTransit = function(mhabitatTransit, world) {
         }
     }
     // get Unites available
-    if ((typeof (mhabitatTransit.units) !== 'undefined') && mhabitatTransit.units !== null) {
+    if (mhabitatTransit.units) {
         var units = mhabitatTransit.units;
-        for ( var indexUnit = 0; indexUnit < units.length; indexUnit++) {
+        for (var indexUnit = 0; indexUnit < units.length; indexUnit++) {
             var unit = new com.rigantestools.domain.Unit(units[indexUnit]);
             this._units.push(unit);
         }
@@ -141,7 +141,7 @@ com.rigantestools.domain.HabitatTransit = function(mhabitatTransit, world) {
  */
 com.rigantestools.domain.HabitatTransit.prototype.getUnitCount = function(unitType) {
     var nb = 0;
-    for ( var index = 0; index < this._units.length; index++) {
+    for (var index = 0; index < this._units.length; index++) {
         var unit = this._units[index];
         if (unit.getType() === unitType) {
             nb += unit.getCount();

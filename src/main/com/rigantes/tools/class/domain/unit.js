@@ -65,7 +65,7 @@ com.rigantestools.domain.Unit = function(munit) {
     this._secondsPerField = 0;
     /** @private */
     this._count = munit.count;
-    
+
     this.initializeSecondsPerField();
 };
 
@@ -76,32 +76,32 @@ com.rigantestools.domain.Unit = function(munit) {
  * @return {number} seconds per field of the unit.
  */
 com.rigantestools.domain.Unit.prototype.initializeSecondsPerField = function() {
-    switch(this._type) {
-    	case com.rigantestools.constant.UNITTYPE.SPEARMAN:
-    		this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.SPEARMAN.speed;
-    		break;
-    	case com.rigantestools.constant.UNITTYPE.SWORDMAN:
-    		this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.SWORDMAN.speed;
-    		break;
-    	case com.rigantestools.constant.UNITTYPE.ARCHER:
-    		this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.ARCHER.speed;
-    		break;
-    	case com.rigantestools.constant.UNITTYPE.CROSSBOWMAN:
-    		this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.CROSSBOWMAN.speed;
-    		break;
-    	case com.rigantestools.constant.UNITTYPE.SCORPIONRIDER:
-    		this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.SCORPIONRIDER.speed;
-    		break;
-    	case com.rigantestools.constant.UNITTYPE.LANCER:
-    		this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.LANCER.speed;
-    		break;
-    	case com.rigantestools.constant.UNITTYPE.PUSHCART:
-    		this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.PUSHCART.speed;
-    		break;
-    	case com.rigantestools.constant.UNITTYPE.OXCART:
-    		this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.OXCART.speed;
-    		break;
-    	default:
+    switch (this._type) {
+        case com.rigantestools.constant.UNITTYPE.SPEARMAN:
+            this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.SPEARMAN.speed;
+            break;
+        case com.rigantestools.constant.UNITTYPE.SWORDMAN:
+            this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.SWORDMAN.speed;
+            break;
+        case com.rigantestools.constant.UNITTYPE.ARCHER:
+            this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.ARCHER.speed;
+            break;
+        case com.rigantestools.constant.UNITTYPE.CROSSBOWMAN:
+            this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.CROSSBOWMAN.speed;
+            break;
+        case com.rigantestools.constant.UNITTYPE.SCORPIONRIDER:
+            this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.SCORPIONRIDER.speed;
+            break;
+        case com.rigantestools.constant.UNITTYPE.LANCER:
+            this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.LANCER.speed;
+            break;
+        case com.rigantestools.constant.UNITTYPE.PUSHCART:
+            this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.PUSHCART.speed;
+            break;
+        case com.rigantestools.constant.UNITTYPE.OXCART:
+            this._secondsPerField = com.rigantestools.constant.BATTLEVALUES.OXCART.speed;
+            break;
+        default:
     }
 };
 

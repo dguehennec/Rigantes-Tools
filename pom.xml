@@ -4,9 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.rigantes</groupId>
-	<artifactId>extension</artifactId>
+	<artifactId>rigantestools</artifactId>
+	<version>2.3.5</version>
 	<packaging>pom</packaging>
-
+	
 	<name>RignantesTools</name>
 
 	<properties>
@@ -243,5 +244,4 @@
 		</developer>
 	</developers>
 
-	<version>2.3.4</version>
 </project>

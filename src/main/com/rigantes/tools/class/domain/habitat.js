@@ -93,31 +93,38 @@ com.rigantestools.domain.Habitat = function(mhabitat, world) {
         this._modifiers = [];
         /** @private */
         this.isAttacked = false;
+        /** @private */
+        this.nbUnitOrder = 0;
+        /** @private */
+        this.nbKnowledgeOrder = 0;
+        /** @private */
+        this.nbHabitatBuildingOrder = 0;
+        /** @private */
+        this.nbhabitatesTransits = 0;
+        /** @private */
+        this.nbhabitatesMissions = 0;
 
-        if ((typeof (mhabitat.habitatUnitOrders) !== 'undefined') && mhabitat.habitatUnitOrders !== null) {
+        // get length informations
+        if (mhabitat.habitatUnitOrders) {
             this.nbUnitOrder = mhabitat.habitatUnitOrders.length;
         }
-        /** @private */
-        if ((typeof (mhabitat.habitatKnowledgeOrders) !== 'undefined') && mhabitat.habitatKnowledgeOrders !== null) {
+        if (mhabitat.habitatKnowledgeOrders) {
             this.nbKnowledgeOrder = mhabitat.habitatKnowledgeOrders.length;
         }
-        /** @private */
-        if ((typeof (mhabitat.habitatBuildingUpgrades) !== 'undefined') && mhabitat.habitatBuildingUpgrades !== null) {
+        if (mhabitat.habitatBuildingUpgrades) {
             this.nbHabitatBuildingOrder = mhabitat.habitatBuildingUpgrades.length;
         }
-        /** @private */
-        if ((typeof (mhabitat.habitatTransits) !== 'undefined') && mhabitat.habitatTransits !== null) {
+        if (mhabitat.habitatTransits) {
             this.nbhabitatesTransits = mhabitat.habitatTransits.length;
         }
-        /** @private */
-        if ((typeof (mhabitat.habitatMissions) !== 'undefined') && mhabitat.habitatMissions !== null) {
+        if (mhabitat.habitatMissions) {
             this.nbhabitatesMissions = mhabitat.habitatMissions.length;
         }
         // get resources
-        if ((typeof (mhabitat.habitatResources) !== 'undefined') && mhabitat.habitatResources !== null) {
+        if (mhabitat.habitatResources) {
             var mresources = mhabitat.habitatResources;
             for ( var key in mresources) {
-                if (mresources.hasOwnProperty(key)) {
+                if (mresources.hasOwnProperty(key) && mresources[key].amount) {
                     this._ressources.push(mresources[key].amount);
                 }
             }
@@ -176,43 +183,43 @@ com.rigantestools.domain.Habitat = function(mhabitat, world) {
             if (mhabitat.habitatMissions) {
                 munits = mhabitat.habitatMissions;
                 for (index = 0; index < munits.length; index++) {
-                    var units=[];
-                    for(var key in munits[index].mission.unitProductions){
-                        var c={};
-                        c.count= munits[index].mission.unitProductions[key];
-                        switch(key) {
+                    var units = [];
+                    for ( var key in munits[index].mission.unitProductions) {
+                        var c = {};
+                        c.count = munits[index].mission.unitProductions[key];
+                        switch (key) {
                             case "1":
-                                c.identifier=com.rigantestools.constant.UNITTYPE.SPEARMAN;
-                                c.corps='Infantry';
+                                c.identifier = com.rigantestools.constant.UNITTYPE.SPEARMAN;
+                                c.corps = 'Infantry';
                                 c.storeAmount = 12;
                                 break;
                             case "2":
-                                c.identifier=com.rigantestools.constant.UNITTYPE.SWORDMAN;
-                                c.corps='Infantry';
+                                c.identifier = com.rigantestools.constant.UNITTYPE.SWORDMAN;
+                                c.corps = 'Infantry';
                                 c.storeAmount = 10;
                                 break;
                             case "101":
-                                c.identifier=com.rigantestools.constant.UNITTYPE.ARCHER;
-                                c.corps='Artillery';
+                                c.identifier = com.rigantestools.constant.UNITTYPE.ARCHER;
+                                c.corps = 'Artillery';
                                 c.storeAmount = 16;
                                 break;
                             case "102":
-                                c.identifier=com.rigantestools.constant.UNITTYPE.CROSSBOWMAN;
-                                c.corps='Artillery';
+                                c.identifier = com.rigantestools.constant.UNITTYPE.CROSSBOWMAN;
+                                c.corps = 'Artillery';
                                 c.storeAmount = 13;
                                 break;
                             case "201":
-                                c.identifier=com.rigantestools.constant.UNITTYPE.SCORPIONRIDER;
-                                c.corps='Cavalry';
+                                c.identifier = com.rigantestools.constant.UNITTYPE.SCORPIONRIDER;
+                                c.corps = 'Cavalry';
                                 c.storeAmount = 22;
                                 break;
                             case "202":
-                                c.identifier=com.rigantestools.constant.UNITTYPE.LANCER;
-                                c.corps='Cavalry';
+                                c.identifier = com.rigantestools.constant.UNITTYPE.LANCER;
+                                c.corps = 'Cavalry';
                                 c.storeAmount = 20;
                                 break;
                         }
-                        if(c.identifier) {
+                        if (c.identifier) {
                             units.push(c);
                         }
                     }
@@ -274,7 +281,7 @@ com.rigantestools.domain.Habitat.prototype.getDistanceTo = function(destX, destY
  */
 com.rigantestools.domain.Habitat.prototype.getHabitatTransits = function(transitType, onMe) {
     var listHabitatTransits = [];
-    for ( var index = 0; index < this._habitatTransits.length; index++) {
+    for (var index = 0; index < this._habitatTransits.length; index++) {
         var currentHabitatTransit = this._habitatTransits[index];
         if (currentHabitatTransit.transitType === transitType) {
             if (onMe) {
@@ -300,7 +307,7 @@ com.rigantestools.domain.Habitat.prototype.getHabitatTransits = function(transit
  */
 com.rigantestools.domain.Habitat.prototype.getMovementSpeed = function() {
     var a = 1;
-    for ( var index = 0; index < this._modifiers.length; index++) {
+    for (var index = 0; index < this._modifiers.length; index++) {
         var modifier = this._modifiers[index];
         if ((modifier.type === com.rigantestools.constant.MODIFIERTYPE.MOVEMENTSPEED) && (modifier.targets.indexOf("Unit") > -1)) {
             a += (modifier.percentage - 1);
@@ -322,7 +329,7 @@ com.rigantestools.domain.Habitat.prototype.getMovementSpeed = function() {
 com.rigantestools.domain.Habitat.prototype.getUnitDurationTo = function(unitType, link) {
     var unitsTime = [];
     var speed = this.getMovementSpeed();
-    for ( var index = 0; index < this._units.length; index++) {
+    for (var index = 0; index < this._units.length; index++) {
         var unit = this._units[index];
         if (unit.getType() === unitType) {
             unitsTime[index] = Math.floor(unit.getSecondsPerField() * speed);
@@ -416,7 +423,7 @@ com.rigantestools.domain.Habitat.prototype.getUnitAttackersCount = function(unit
  */
 com.rigantestools.domain.Habitat.prototype.getUnitStoreAmount = function(unitType) {
     var nb = 0;
-    for ( var index = 0; index < this._units.length; index++) {
+    for (var index = 0; index < this._units.length; index++) {
         var unit = this._units[index];
         if (unit.getType() === unitType) {
             nb += unit.getCount() * unit.getStoreAmount();

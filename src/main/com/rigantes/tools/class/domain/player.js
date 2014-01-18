@@ -110,8 +110,10 @@ com.rigantestools.domain.Player.prototype.init = function(mplayer) {
         this.link = 'l+k://player?' + mplayer.id + '&' + this.world;
         this.id = mplayer.id;
         this.points = mplayer.points;
-        this.allianceName = mplayer.alliance.name;
-        this.allianceId = mplayer.alliance.id;
+        if (mplayer.alliance) {
+            this.allianceName = mplayer.alliance.name;
+            this.allianceId = mplayer.alliance.id;
+        }
         this.creationDate = mplayer.creationDate;
         this.habitateisAttacked = mplayer.habitateisAttacked;
         this.unreadDiscussionCount = mplayer.unreadDiscussionCount;
@@ -120,7 +122,7 @@ com.rigantestools.domain.Player.prototype.init = function(mplayer) {
         this.refreshDate = mplayer.touchDate;
 
         // Update Habitate
-        if (typeof (mplayer.habitate) === 'undefined') {
+        if (!mplayer.habitate) {
             return false;
         }
 
