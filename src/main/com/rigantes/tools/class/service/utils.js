@@ -266,7 +266,7 @@ com.rigantestools.service.Util.prototype.valideReportLink = function(link) {
  * @return {boolean} true if a good time.
  */
 com.rigantestools.service.Util.prototype.valideTimeHHMM = function(time, twentyHoursMax) {
-    var reg = new RegExp("[0-9]{2,3}:[0-5][0-9]", "g");
+    var reg = new RegExp("^[0-9]{2,3}:[0-5][0-9]$", "g");
     if (!reg.test(time)) {
         return false;
     }
