@@ -101,7 +101,7 @@ com.rigantestools.MainFrame.init = function() {
 	}
 	
 	this._util.setAttribute("rigantestools-playerName", "value", this._player.name);
-	if(this._player.creationDate !== null) {
+	if(this._player.creationDate) {
 	    this._util.setAttribute("rigantestools-playerCreationDate", "value", this._util.formatDateTime(new Date(this._player.creationDate)));
 	}
 	this._util.setAttribute("rigantestools-playerLink", "value", this._player.link);

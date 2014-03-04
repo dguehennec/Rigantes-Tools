@@ -87,6 +87,7 @@
 <!ENTITY mainframe.tabPlayer.player.caption.label "Player">
 <!ENTITY mainframe.tabPlayer.player.name.label "Name :">
 <!ENTITY mainframe.tabPlayer.player.creationDate.label "Creation date of account :">
+<!ENTITY mainframe.tabPlayer.player.creationDate.unknown "Unknown">
 <!ENTITY mainframe.tabPlayer.player.link.label "Link :">
 <!ENTITY mainframe.tabPlayer.player.nbcastles.label "Number of castles :">
 <!ENTITY mainframe.tabPlayer.player.generatecastleslink.button "Generate lists of castles">

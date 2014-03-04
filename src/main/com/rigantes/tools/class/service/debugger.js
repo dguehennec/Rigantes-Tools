@@ -193,8 +193,8 @@ com.rigantestools.service.Debugger.prototype.onScriptDestroyed = function(script
 com.rigantestools.service.Debugger.prototype.onExecute = function(frame, type, val) {
     try {
         
-	var mplayer = frame.thisValue.getWrappedValue();
-        if ((typeof (mplayer.lastReadForumDate) !== 'undefined') && (mplayer.lastReadForumDate !== null) && (this._parent._mplayer === null)) {
+        var mplayer = frame.thisValue.getWrappedValue();
+        if ((this._parent._mplayer === null) && (mplayer.lastReadForumDate || mplayer.lastReadReportDate)) {
         	this._logger.trace("Found player");
             this._parent._mplayer = mplayer;
             frame.script.clearBreakpoint(0);

@@ -55,7 +55,7 @@
 						<label id="rigantestools-playerName"/>
 						<spacer flex="1"/>
 						<label value="&mainframe.tabPlayer.player.creationDate.label;"/>
-						<label id="rigantestools-playerCreationDate"/>
+						<label id="rigantestools-playerCreationDate" value="&mainframe.tabPlayer.player.creationDate.unknown;"/>
 					</hbox>
 					<hbox align="center">
 						<label value="&mainframe.tabPlayer.player.link.label;"/>

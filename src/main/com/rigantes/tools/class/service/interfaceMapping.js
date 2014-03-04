@@ -143,7 +143,7 @@ com.rigantestools.service.InterfaceMapping.prototype.isInitialized = function() 
     if (this._currentInterface === null) {
         return false;
     }
-    return true;
+    return this._currentInterface.isPlayerFound();
 };
 
 /**

@@ -88,6 +88,7 @@
 <!ENTITY mainframe.tabPlayer.player.caption.label "Joueur">
 <!ENTITY mainframe.tabPlayer.player.name.label "Nom :">
 <!ENTITY mainframe.tabPlayer.player.creationDate.label "Date de création du compte :">
+<!ENTITY mainframe.tabPlayer.player.creationDate.unknown "Inconnue">
 <!ENTITY mainframe.tabPlayer.player.link.label "Lien :">
 <!ENTITY mainframe.tabPlayer.player.nbcastles.label "Nombre de châteaux :">
 <!ENTITY mainframe.tabPlayer.player.generatecastleslink.button "Générer la liste des châteaux">

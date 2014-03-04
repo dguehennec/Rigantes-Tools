@@ -83,6 +83,17 @@ com.rigantestools.service.InterfaceMappingV2.prototype.initialize = function() {
 };
 
 /**
+ * isPlayerFound.
+ * 
+ * @this {InterfaceMappingV2}
+ * @return {Boolean} true if player found
+ */
+com.rigantestools.service.InterfaceMappingV2.prototype.isPlayerFound = function() {
+    var contentWinWrapper = this._util.getWindow(this._parent._parent.getDocument());
+    return (this._mplayer !== null);
+}
+
+/**
  * reset.
  * 
  * @this {InterfaceMappingV2}
