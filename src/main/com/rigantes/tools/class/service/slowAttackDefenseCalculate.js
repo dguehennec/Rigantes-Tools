@@ -74,9 +74,9 @@ com.rigantestools.service.SlowAttackDefenseCalculate = function(habitats, target
     var step;
 
     this.nbNewUnits = unitCount;
-    this.nbCurrentUnits = 356;
+    this.nbCurrentUnits = 352;
     if (unitCount < 400) {
-        this.nbCurrentUnits = 154;
+        this.nbCurrentUnits = 152;
         if (unitCount < 200) {
             this.nbNewUnits = 101;
             this.nbCurrentUnits = 52;

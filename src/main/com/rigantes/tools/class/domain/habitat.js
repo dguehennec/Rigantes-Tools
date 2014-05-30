@@ -85,7 +85,9 @@ com.rigantestools.domain.Habitat = function(mhabitat, world) {
         this._externalUnits = [];
         /** @private */
         this._attackersUnits = [];
-        /** @private */
+         /** @private */
+        this.listAttackersOnTarget = [];
+         /** @private */
         this._missionUnits = [];
         /** @private */
         this._habitatTransits = [];
@@ -144,12 +146,34 @@ com.rigantestools.domain.Habitat = function(mhabitat, world) {
                             this._units.push(unit);
                         }
                     } else if (munits[index].battleType === com.rigantestools.constant.BATTLETYPE.EXTERNAL_UNITS_TO_DEFENSE) {
+                        this._logger.trace("Castle Defender: " + munits[index].sourceHabitat.name) ;
                         units = munits[index].units;
                         for (indexUnit = 0; indexUnit < units.length; indexUnit++) {
                             unit = new com.rigantestools.domain.Unit(units[indexUnit]);
                             this._externalUnits.push(unit);
                         }
                     } else if (munits[index].battleType === com.rigantestools.constant.BATTLETYPE.ATTACKER) {
+                        this._logger.trace("Castle Attacker: " + munits[index].sourceHabitat.name) ;
+                        var habitat = munits[index].sourceHabitat ;
+                        var player = habitat.player;
+                        if (player) {
+                            var name = player.nick;
+                            var link = 'l+k://player?' + player.id + '&' + world;
+                            var id = player.id;
+                            var found = false;
+                            for(var indexlistAttackers=0;indexlistAttackers<this.listAttackersOnTarget.length; indexlistAttackers++) {
+                                var item = this.listAttackersOnTarget[indexlistAttackers];
+                                if(item.id===id) {
+                                    found = true;
+                                    item.nb = item.nb+1 ;
+                                    break;
+                                    }
+                            }
+                            if(!found){
+                                var item = {'name':name,'link':link,'id':id,'nb':1};
+                                this.listAttackersOnTarget.push(item);
+                            }
+						}
                         units = munits[index].units;
                         for (indexUnit = 0; indexUnit < units.length; indexUnit++) {
                             unit = new com.rigantestools.domain.Unit(units[indexUnit]);

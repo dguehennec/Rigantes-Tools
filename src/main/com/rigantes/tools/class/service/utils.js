@@ -347,6 +347,17 @@ com.rigantestools.service.Util.prototype.formatDayTime = function(date) {
     return a + " " + e + ":" + f;
 };
 
+
+com.rigantestools.service.Util.prototype.formatTime = function(date) {
+    if (date === null) {
+        return "";
+    }
+
+    var e = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours();
+    var f = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
+    return e + ":" + f;
+};
+
 /**
  * convert seconds to date string jj.mm.aaaa
  * 

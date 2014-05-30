@@ -332,9 +332,9 @@
 							<label value="&mainframe.tabAttackDefenseSlow.UnitCount.label;" width="74"/>
 							<menulist id="rigantestools-attackDefenseSlowUnitCount">
 								<menupopup>
-							    	<menuitem label="101" value="101"/>
-							    	<menuitem label="202" value="202"/>
-							    	<menuitem label="404" value="404"/>
+									<menuitem label="100" value="100"/>
+									<menuitem label="200" value="200"/>
+									<menuitem label="400" value="400"/>
 							  	</menupopup>
 							</menulist>
 							<spacer flex="1"/>

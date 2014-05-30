@@ -1218,6 +1218,8 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
     	var nbAttackFound = 0;
     	this._generatedAttacks = [];
     	this._generatedAttacksSummary = "";
+    	this._generatedAttacksSummary2OnTarget = "";
+    	this._generatedAttacksSummary2OnTransit = "";
     	
     	// Add attaks to player
     	var habitats = this._player.getHabitatList();
@@ -1227,6 +1229,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
     		this.addProability(habitatTransits);
     		var listAttackers = [];
     		var listCastlesAttackers = [];
+    		//var listImpactTimes = [];
     		if( (habitatTransits.length>0) || (habitat.getUnitAttackersCount()>0) ) {
     			nbAttackFound++;
     			// generate tab element
@@ -1240,6 +1243,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
     			// generate treechildren JSON
     			var minDate = null;
     			var maxDate = null;
+    			//var probableDate = null ;
     			var maxLuck = 0;
     			var treechildren = [ "xul:treechildren", {}];
     			for(var indexHabTrans =0; indexHabTrans<habitatTransits.length; indexHabTrans++){
@@ -1248,11 +1252,12 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
     					var item = listAttackers[indexlistAttackers];
     					if(item.link===habitatTransits[indexHabTrans].sourceHabitatPlayerLink) {
     						found = true;
+    						item.nb = item.nb+1 ;
     						break;
     					}
     				}
     				if(!found){
-    					var item = {'name':habitatTransits[indexHabTrans].sourceHabitatPlayerName,'link':habitatTransits[indexHabTrans].sourceHabitatPlayerLink};
+    					var item = {'name':habitatTransits[indexHabTrans].sourceHabitatPlayerName,'link':habitatTransits[indexHabTrans].sourceHabitatPlayerLink,'nb':1};
     					listAttackers.push(item);
     				}
     				found = false;
@@ -1277,6 +1282,21 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
     					maxLuck = Math.round(habitatTransits[indexHabTrans].luck);
     				}
     				
+    				// TODO test to determine the date of the impact "likely"
+    				//found=false ;
+    				//for( var i=0; i<listImpactTimes.length; ++i ) {
+    				//	var item = listImpactTimes[i] ;
+    				//	if( item.date == habitatTransits[indexHabTrans].date ) {
+    				//		item.n = item.n+1 ;
+    				//		found = true ;
+    				//	}
+    				//}
+    				//if(!found) {
+     				//	var item = {'date':habitatTransits[indexHabTrans].date,'n':1};
+   					//	listImpactTimes.push(item);
+   					//}
+    				
+    				
     				var properties = '';
     				if(indexHabTrans%2) {
     					properties = 'inGrey';
@@ -1294,23 +1314,67 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
     				    ]
     				);
     			}
-    			var totalUD = habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.SPEARMAN,true)+habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.CROSSBOWMAN,true)+habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.SCORPIONRIDER,true);
-    			var totalUDDet = " ("+habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.SPEARMAN,true)+"/"+habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.CROSSBOWMAN,true)+"/"+habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.SCORPIONRIDER,true)+")";
+    			
+    			// TODO test to determine the date of the impact "likely"
+                //if( minDate!==null && minDate !=maxDate ) {
+                //	listImpactTimes.sort(function(a, b) {
+                //    	return a.date.getTime() - b.date.getTime();
+               	//	 });
+               	//	
+               	//	
+	   			//	for( var i=0; i<listImpactTimes.length; ++i ) {
+   				//		if( listImpactTimes[0].n > 1 ) {
+   				//			 probableDate = listImpactTimes[0].date ;
+   				//			 break;
+    			//		}
+    			//	}
+    			//}
+    				
+ 				//Add attackers on target
+    			for(var i =0; i<habitat.listAttackersOnTarget.length; i++){
+    				var found = false;
+    				for(var indexlistAttackers=0;indexlistAttackers<listAttackers.length; indexlistAttackers++) {
+    					var item = listAttackers[indexlistAttackers];
+    					if(item.link===habitat.listAttackersOnTarget[i].link) {
+    						found = true;
+    						item.nb = habitat.listAttackersOnTarget[i].nb+item.nb ;
+    						break;
+    					}
+    				}
+    				if(!found){
+    					var item = {'name':habitat.listAttackersOnTarget[i].name,'link':habitat.listAttackersOnTarget[i].link,'nb':habitat.listAttackersOnTarget[i].nb};
+    					listAttackers.push(item);
+    				}
+    			}
+ 
+ 
+ 
+     			var nbS1 = Math.round( habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.SPEARMAN,true) + habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.SWORDMAN,true)/2 ) ;
+     			var nbC1 = Math.round( habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.CROSSBOWMAN,true) + habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.ARCHER,true)/3 ) ;
+     			var nbCL1 = Math.round( habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.SCORPIONRIDER,true) + habitat.getUnitCount(com.rigantestools.constant.UNITTYPE.LANCER,true)/3 ) ;
+     				
+   			
+    			var totalUD = (nbS1+nbC1+nbCL1) ;
+    			var totalUDDet = " ("+nbS1+"/"+nbC1+"/"+nbCL1+")";
     			var habitatTransitsDefense = habitat.getHabitatTransits(com.rigantestools.constant.TRANSITTYPE.DEFENSE,true);
                 var nbS =0;
                 var nbC=0;
                 var nbCL=0;
                 for(var key in habitatTransitsDefense) {
                     if (habitatTransitsDefense.hasOwnProperty(key)) {
-                        nbS += habitatTransitsDefense[key].getUnitCount(com.rigantestools.constant.UNITTYPE.SPEARMAN);
-                        nbC += habitatTransitsDefense[key].getUnitCount(com.rigantestools.constant.UNITTYPE.CROSSBOWMAN);
-                        nbCL += habitatTransitsDefense[key].getUnitCount(com.rigantestools.constant.UNITTYPE.SCORPIONRIDER);
+                        nbS += Math.round(habitatTransitsDefense[key].getUnitCount(com.rigantestools.constant.UNITTYPE.SPEARMAN) + habitatTransitsDefense[key].getUnitCount(com.rigantestools.constant.UNITTYPE.SWORDMAN)/2) ;
+                        nbC += Math.round(habitatTransitsDefense[key].getUnitCount(com.rigantestools.constant.UNITTYPE.CROSSBOWMAN) + habitatTransitsDefense[key].getUnitCount(com.rigantestools.constant.UNITTYPE.ARCHER)/3) ;
+                        nbCL += Math.round(habitatTransitsDefense[key].getUnitCount(com.rigantestools.constant.UNITTYPE.SCORPIONRIDER) + habitatTransitsDefense[key].getUnitCount(com.rigantestools.constant.UNITTYPE.LANCER)/3) ;
                     }
                 }
                 var totalUDInProgress = (nbS+nbC+nbCL);
                 var totalUDInProgressDet = " ("+nbS+"/"+nbC+"/"+nbCL+")";
-                var totalUO = habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.SWORDMAN)+habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.ARCHER)+habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.LANCER);
-                var totalUODet = " ("+habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.SWORDMAN)+"/"+habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.ARCHER)+"/"+habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.LANCER)+")";
+                
+                var xx1 = Math.round(habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.SWORDMAN) + habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.SPEARMAN)/5) ;
+                var xx2 = Math.round(habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.ARCHER) + habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.CROSSBOWMAN)/2) ;
+                var xx3 = Math.round(habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.LANCER) + habitat.getUnitAttackersCount(com.rigantestools.constant.UNITTYPE.SCORPIONRIDER)/3) ;
+                var totalUO = xx1+xx2+xx3 ;
+                var totalUODet = " ("+xx1+"/"+xx2+"/"+xx3+")";
                 // generate tabpanel element
                 var tabpanel = this._util.JSONToDOM([ "xul:tabpanel", { orient : "vertical"} ,
                   [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecols, treechildren],
@@ -1380,22 +1444,84 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
         			}
     			}
     			this._generatedAttacks.push(message);
+ 
+              	listAttackers.sort(function(a, b) {
+                    return b.nb - a.nb;
+                });
+  			
     			// generate summary
+
+    			if( this._generatedAttacksSummary.length==0 ) {
+    				this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.LabelSummaryDetails") + "\n\n" ;
+				}
+
     			this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryLink").replace("%LINK%", habitat.link).replace("%NAME%", habitat.name);
-    			if(listCastlesAttackers.length>0) {
-    				this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryCastles").replace("%NBCASTLES%", listCastlesAttackers.length).replace("%NBATTACKERS%", listAttackers.length);
-    			}
+    			
+    			if(listAttackers.length>0) {
+      				this._generatedAttacksSummary += " " + listAttackers[0].link + " " + listAttackers[0].name ;    				
+   					if(listAttackers.length>1) {
+   						this._generatedAttacksSummary += " + " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryOtherPlayers").replace("%NBPLAYERS%", (listAttackers.length-1));
+    				}
+    				this._generatedAttacksSummary += "\n" ;
+      			}
     			else {
+   					// This code is normally never reached, since list of attackers shouldn't be empty
     			    this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryFight");
     			}
-    			if( (minDate!==null) && (totalUO===0) ) {
-    			    this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryDate").replace("%FISRTDATE%", this._util.formatDayTime(minDate)).replace("%LASTDATE%", this._util.formatDayTime(maxDate));
+ 
+ 
+
+   				if( habitat.nextBattleDate !==null ) {
+    				this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryIconeDate") ;
+    			    this._generatedAttacksSummary += " " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryNextRound") + " " + this._util.formatTime(habitat.nextBattleDate) + "\n" ;
+     			}
+   				
+   				if( (minDate!==null) ) { // incoming attacks
+   					this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryIconeDate") ;
+  					this._generatedAttacksSummary += " " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryCastles").replace("%NBCASTLES%", listCastlesAttackers.length);
+    				if( minDate===maxDate ) {
+   			    		this._generatedAttacksSummary += " " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryDateOne").replace("%FISRTDATE%", this._util.formatDayTime(minDate));
+    				}
+    				else {
+   			    		this._generatedAttacksSummary += " " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryDate").replace("%FISRTDATE%", this._util.formatDayTime(minDate)).replace("%LASTDATE%", this._util.formatDayTime(maxDate));
+    					//if( probableDate !==null) {
+    					//	this._generatedAttacksSummary += " (Probable: " + probableDate + ")" ;
+    					//}
+    				}
+    				this._generatedAttacksSummary += "\n" ; 
     			}
+    			
+    			
     			this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryUD").replace("%NBUDTOTAL%", totalUD+totalUDInProgress).replace("%NBUD%", totalUD).replace("%NBUDPROGRESS%", totalUDInProgress);
     			if(totalUO>0) {
-    			    this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryUO").replace("%NBUO%", totalUO);
+    			    this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryUO").replace("%NBUO%", totalUO) + " " + totalUODet + "\n";
                 }
     			this._generatedAttacksSummary += "\n";
+ 
+ 
+     			if( habitat.nextBattleDate !==null )
+    			{
+    				if( this._generatedAttacksSummary2OnTarget.length==0 ) {
+    					this._generatedAttacksSummary2OnTarget += this._util.getBundleString("mainframe.warinprogress.LabelSummaryFight") + "\n" ;
+    				}
+    				this._generatedAttacksSummary2OnTarget += habitat.link ;
+    				this._generatedAttacksSummary2OnTarget += ", " + totalUO + " UO" ;
+     				this._generatedAttacksSummary2OnTarget += ", " + (totalUD+totalUDInProgress) + " UD" ;
+   					this._generatedAttacksSummary2OnTarget += ", " + this._util.formatTime(habitat.nextBattleDate) ;
+   					this._generatedAttacksSummary2OnTarget += "\n" ;
+   				}
+   				else
+   				{
+   					if( this._generatedAttacksSummary2OnTransit.length==0 ) {
+   						this._generatedAttacksSummary2OnTransit += this._util.getBundleString("mainframe.warinprogress.LabelSummaryProgress") + "\n" ;
+    				}
+    				this._generatedAttacksSummary2OnTransit += habitat.link ;
+    				this._generatedAttacksSummary2OnTransit += ", " + this._util.formatDayTime(minDate) ;
+     				this._generatedAttacksSummary2OnTransit += ", " + listCastlesAttackers.length + " ch" ;
+     				this._generatedAttacksSummary2OnTransit += ", " + (totalUD+totalUDInProgress) + " UD" ;
+   					this._generatedAttacksSummary2OnTransit += "\n" ;
+				}     				
+   				 
     		}
     	}
     	// add player attaks
@@ -2562,7 +2688,10 @@ com.rigantestools.MainFrame.onGenerateWarInProgressButtonClick = function(evt) {
  *            evt event of the element
  */
 com.rigantestools.MainFrame.onGenerateWarInProgressSummaryButtonClick = function(evt) {
-	this._util.copieToClipboard(com.rigantestools.MainFrame._generatedAttacksSummary);
+	var ss =  com.rigantestools.MainFrame._generatedAttacksSummary2OnTarget + "\n\n" 
+	+ com.rigantestools.MainFrame._generatedAttacksSummary2OnTransit + "\n\n" 
+	+ com.rigantestools.MainFrame._generatedAttacksSummary ;
+	this._util.copieToClipboard(ss);
 };
 
 /**
