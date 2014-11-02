@@ -80,6 +80,8 @@ com.rigantestools.service.InterfaceMappingV2.prototype.initialize = function() {
     this._logger.trace("initialize");
     var contentWinWrapper = this._util.getWindow(this._parent._parent.getDocument());
     this._worldID = contentWinWrapper.cred.worldID;
+
+    this._debugger.initialize(contentWinWrapper);
 };
 
 /**

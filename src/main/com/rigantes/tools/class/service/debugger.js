@@ -62,25 +62,41 @@ com.rigantestools.service.Debugger = function(parent) {
     this._parent = parent;
     /** @private */
     /** the debugger */
-    this._jsd = Components.classes["@mozilla.org/js/jsd/debugger-service;1"].getService(Components.interfaces.jsdIDebuggerService);
+    this._jsd = undefined;
     /** @private */
     /** if found Castle Link Breakpoint */
     this.foundCastleLinkBreakpoint = false;
     /** @private */
     /** if found Player Breakpoint */
     this.foundPlayerBreakpoint = false;
-    
-    this._logger.trace("JSD running: " + this._jsd.isOn);
-    // starting debugging
-    if (this._jsd.isOn) {
-        this.onDebuggerActivated();
-    } else if ("asyncOn" in this._jsd) {
-        this._jsd.asyncOn(this);
-    } else {
-        this._jsd.on();
-        this.onDebuggerActivated();
-    }
 };
+
+/**
+ * initialize.
+ * 
+ * @this {Debugger}
+ * @return {Boolean} true, if correctly initialized
+ */
+com.rigantestools.service.Debugger.prototype.initialize = function(contentWinWrapper) {
+	if(Components.classes["@mozilla.org/js/jsd/debugger-service;1"]) {
+        this._jsd = Components.classes["@mozilla.org/js/jsd/debugger-service;1"].getService(Components.interfaces.jsdIDebuggerService);
+        this._logger.trace("JSD running: " + this._jsd.isOn);
+        // starting debugging
+        if (this._jsd.isOn) {
+            this.onDebuggerActivated();
+        } else if ("asyncOn" in this._jsd) {
+            this._jsd.asyncOn(this);
+        } else {
+            this._jsd.on();
+            this.onDebuggerActivated();
+        }
+        this._logger.trace("initialize ok");
+    }
+	else {
+        this._logger.trace("Debugger not supported yet");
+	}
+}
+
 
 /**
  * release debugger
@@ -93,7 +109,9 @@ com.rigantestools.service.Debugger.prototype.reset = function() {
     this.foundCastleLinkBreakpoint = false;
     this.foundPlayerBreakpoint = false;
     
-    this._jsd.clearAllBreakpoints();
+    if(this._jsd) {
+        this._jsd.clearAllBreakpoints();
+    }
 };
 
 /**
@@ -106,17 +124,19 @@ com.rigantestools.service.Debugger.prototype.release = function() {
 
     this.reset();
     
-    this._jsd.functionHook = null;
-    this._jsd.breakpointHook = null;
-    this._jsd.debuggerHook = null;
-    this._jsd.debugHook = null;
-    this._jsd.errorHook = null;
-    this._jsd.scriptHook = null;
-    this._jsd.interruptHook = null;
-    this._jsd.throwHook = null;
-    this._jsd.GC();
-    if (this._jsd.isOn) {
-        this._jsd.off();
+    if(this._jsd) {
+	    this._jsd.functionHook = null;
+	    this._jsd.breakpointHook = null;
+	    this._jsd.debuggerHook = null;
+	    this._jsd.debugHook = null;
+	    this._jsd.errorHook = null;
+	    this._jsd.scriptHook = null;
+	    this._jsd.interruptHook = null;
+	    this._jsd.throwHook = null;
+	    this._jsd.GC();
+	    if (this._jsd.isOn) {
+	        this._jsd.off();
+	    }
     }
 };
 
@@ -126,9 +146,8 @@ com.rigantestools.service.Debugger.prototype.release = function() {
  * @this {Debugger}
  */
 com.rigantestools.service.Debugger.prototype.onDebuggerActivated = function() {
-    try {
-        this._logger.trace("onDebuggerActivated");
-
+    this._logger.trace("onDebuggerActivated");
+    if(this._jsd) {
         this._jsd.scriptHook = this;
         this._jsd.breakpointHook = this;
         this._jsd.debuggerHook = this;
@@ -138,8 +157,6 @@ com.rigantestools.service.Debugger.prototype.onDebuggerActivated = function() {
         this._jsd.errorHook = null;
         this._jsd.interruptHook = null;
         this._jsd.throwHook = null;
-    } catch (e) {
-        this._logger.error("onDebuggerActivated error:" + e);
     }
 };
 
@@ -192,7 +209,6 @@ com.rigantestools.service.Debugger.prototype.onScriptDestroyed = function(script
  */
 com.rigantestools.service.Debugger.prototype.onExecute = function(frame, type, val) {
     try {
-        
         var mplayer = frame.thisValue.getWrappedValue();
         if ((this._parent._mplayer === null) && (mplayer.lastReadForumDate || mplayer.lastReadReportDate)) {
         	this._logger.trace("Found player");

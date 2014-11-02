@@ -79,8 +79,6 @@ com.rigantestools.service.InterfaceMapping = function(parent) {
  * initialize.
  * 
  * @this {InterfaceMapping}
- * @param {Document}
- *            document
  * @return {Boolean} true, if correctly initialized
  */
 com.rigantestools.service.InterfaceMapping.prototype.initialize = function() {
