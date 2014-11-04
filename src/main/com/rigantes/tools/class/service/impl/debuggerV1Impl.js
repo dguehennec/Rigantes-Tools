@@ -49,10 +49,10 @@ if (!com.rigantestools.service.impl) {
     com.rigantestools.service.impl = {};
 }
 /**
- * Creates an instance of debugger.
+ * Creates an instance of debuggerV1.
  * 
  * @constructor
- * @this {Debugger}
+ * @this {DebuggerV1}
  * 
  */
 com.rigantestools.service.impl.DebuggerV1 = function(parent) {
@@ -76,10 +76,13 @@ com.rigantestools.service.impl.DebuggerV1 = function(parent) {
 /**
  * initialize.
  * 
- * @this {Debugger}
+ * @this {DebuggerV1}
+ * @param {Object}
+ *            the window
  * @return {Boolean} true, if correctly initialized
  */
 com.rigantestools.service.impl.DebuggerV1.prototype.initialize = function(contentWinWrapper) {
+	this._logger.trace("initialize");
 	if(Components.classes["@mozilla.org/js/jsd/debugger-service;1"]) {
         this._jsd = Components.classes["@mozilla.org/js/jsd/debugger-service;1"].getService(Components.interfaces.jsdIDebuggerService);
         this._logger.trace("JSD running: " + this._jsd.isOn);
@@ -92,7 +95,6 @@ com.rigantestools.service.impl.DebuggerV1.prototype.initialize = function(conten
             this._jsd.on();
             this.onDebuggerActivated();
         }
-        this._logger.trace("initialize debugger-service ok");
         return true;
     }
 	return false;
@@ -100,9 +102,9 @@ com.rigantestools.service.impl.DebuggerV1.prototype.initialize = function(conten
 
 
 /**
- * release debugger
+ * reset debugger
  * 
- * @this {Debugger}
+ * @this {DebuggerV1}
  */
 com.rigantestools.service.impl.DebuggerV1.prototype.reset = function() {
     this._logger.trace("reset");
@@ -118,7 +120,7 @@ com.rigantestools.service.impl.DebuggerV1.prototype.reset = function() {
 /**
  * release debugger
  * 
- * @this {Debugger}
+ * @this {DebuggerV1}
  */
 com.rigantestools.service.impl.DebuggerV1.prototype.release = function() {
     this._logger.trace("release");
@@ -144,7 +146,7 @@ com.rigantestools.service.impl.DebuggerV1.prototype.release = function() {
 /**
  * on debugger activated
  * 
- * @this {Debugger}
+ * @this {DebuggerV1}
  */
 com.rigantestools.service.impl.DebuggerV1.prototype.onDebuggerActivated = function() {
     this._logger.trace("onDebuggerActivated");
@@ -165,7 +167,7 @@ com.rigantestools.service.impl.DebuggerV1.prototype.onDebuggerActivated = functi
 /**
  * on script created
  * 
- * @this {Debugger}
+ * @this {DebuggerV1}
  * @param {Object}
  *            script
  */
@@ -188,7 +190,7 @@ com.rigantestools.service.impl.DebuggerV1.prototype.onScriptCreated = function(s
 /**
  * on script destroyed
  * 
- * @this {Debugger}
+ * @this {DebuggerV1}
  * @param {Object}
  *            script
  */
@@ -199,7 +201,7 @@ com.rigantestools.service.impl.DebuggerV1.prototype.onScriptDestroyed = function
 /**
  * on breakpoint execute
  * 
- * @this {Debugger}
+ * @this {DebuggerV1}
  * @param {Object}
  *            frame
  * @param {Object}

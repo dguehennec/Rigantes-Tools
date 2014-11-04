@@ -49,16 +49,16 @@ if (!com.rigantestools.service.impl) {
     com.rigantestools.service.impl = {};
 }
 /**
- * Creates an instance of impl.DebuggerV2.
+ * Creates an instance of debuggerV2.
  * 
  * @constructor
- * @this {impl.DebuggerV2}
+ * @this {DebuggerV2}
  * 
  */
 com.rigantestools.service.impl.DebuggerV2 = function(parent) {
     /** @private */
     /** The logger. */
-    this._logger = new com.rigantestools.service.Logger("impl.DebuggerV2");
+    this._logger = new com.rigantestools.service.Logger("DebuggerV2");
     /** @private */
     /** the parent */
     this._parent = parent;
@@ -75,14 +75,16 @@ com.rigantestools.service.impl.DebuggerV2 = function(parent) {
 /**
  * initialize.
  * 
- * @this {impl.DebuggerV2}
+ * @this {DebuggerV2}
+ * @param {Object}
+ *            the window
  * @return {Boolean} true, if correctly initialized
  */
 com.rigantestools.service.impl.DebuggerV2.prototype.initialize = function(contentWinWrapper) {
 	this._logger.trace("initialize");
 	try {
 		// initialize debugger
-		Components.utils.import('resource://gre/modules/jsdebugger.jsm');
+		Components.utils.import("resource://gre/modules/jsdebugger.jsm");
 		addDebuggerToGlobal(window);
 		this._dbg = new Debugger();
 		this._dbg.addDebuggee(contentWinWrapper);
@@ -123,9 +125,9 @@ com.rigantestools.service.impl.DebuggerV2.prototype.initialize = function(conten
 
 
 /**
- * release impl.DebuggerV2
+ * reset debuggerV2
  * 
- * @this {impl.DebuggerV2}
+ * @this {DebuggerV2}
  */
 com.rigantestools.service.impl.DebuggerV2.prototype.reset = function() {
     this._logger.trace("reset");
@@ -139,9 +141,9 @@ com.rigantestools.service.impl.DebuggerV2.prototype.reset = function() {
 };
 
 /**
- * release impl.DebuggerV2
+ * release debuggerV2
  * 
- * @this {impl.DebuggerV2}
+ * @this {DebuggerV2}
  */
 com.rigantestools.service.impl.DebuggerV2.prototype.release = function() {
     this._logger.trace("release");
@@ -158,9 +160,16 @@ com.rigantestools.service.impl.DebuggerV2.prototype.release = function() {
     }
 };
 
+/**
+ * hit debuggerV2
+ * 
+ * @this {DebuggerV2}
+  * @param {Object}
+ *            the frame
+ */
 com.rigantestools.service.impl.DebuggerV2.prototype.hit = function (frame) { 
 	try {
-        var object = frame.eval("this").return;
+        var object = frame.eval("this")["return"];
         if (typeof(object) == "object") {
         	object = XPCNativeWrapper.unwrap(object.unsafeDereference());
         }
@@ -174,7 +183,7 @@ com.rigantestools.service.impl.DebuggerV2.prototype.hit = function (frame) {
             if(args.length>1) {
             	var e = args[1];
             	if ( e && (e === "copyCastleLink")) {
-                    this._parent.refreshLinks(frame.eval("t.mapX").return, frame.eval("t.mapY").return);
+                    this._parent.refreshLinks(frame.eval("t.mapX")["return"], frame.eval("t.mapY")["return"]);
                 }
             }
         }

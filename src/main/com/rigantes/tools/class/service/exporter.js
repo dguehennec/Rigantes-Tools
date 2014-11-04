@@ -163,7 +163,7 @@ com.rigantestools.service.Exporter.prototype.WarInHTML = function(treechildren, 
 	for ( var i = 0; i < treechildren.childNodes.length; i++) {
 		var item = treechildren.childNodes[i].childNodes[0];
 		var length = item.childNodes.length;
-		var jsonTrItem = ["html:tr", {class : "color" + (i % 2)}];
+		var jsonTrItem = ["html:tr", {"class" : "color" + (i % 2)}];
 		for ( var j = 0; j < length; j++) {
 			jsonTrItem.push([ "html:td", {},  item.childNodes[j].getAttribute('label')]);
 		}
@@ -257,7 +257,7 @@ com.rigantestools.service.Exporter.prototype.AttackDefenseSlowInHTML = function(
 	for ( var i = 0; i < treechildren.childNodes.length; i++) {
 		var item = treechildren.childNodes[i].childNodes[0];
 		var length = item.childNodes.length;
-		var jsonTrItem = ["html:tr", {class : "color" + (i % 2)}];
+		var jsonTrItem = ["html:tr", {"class" : "color" + (i % 2)}];
 		for ( var j = 0; j < length; j++) {
 			jsonTrItem.push([ "html:td", {},  item.childNodes[j].getAttribute('label')]);
 		}

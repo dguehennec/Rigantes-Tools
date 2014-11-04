@@ -65,7 +65,7 @@ com.rigantestools.service.Debugger = function(parent) {
     this._jsd = new com.rigantestools.service.impl.DebuggerV1(parent);
     this._dbg = new com.rigantestools.service.impl.DebuggerV2(parent);
     /** the current debugger */
-    this._currentdebugger = this._dbg;
+    this._currentdebugger = null;
    
 };
 
@@ -73,12 +73,17 @@ com.rigantestools.service.Debugger = function(parent) {
  * initialize.
  * 
  * @this {Debugger}
+ * @param {Object}
+ *            the window
  * @return {Boolean} true, if correctly initialized
  */
 com.rigantestools.service.Debugger.prototype.initialize = function(contentWinWrapper) {
 	 this._logger.trace("initialize");
 	 
-	 this._currentdebugger.release();
+	 if(this._currentdebugger) {
+		 this._currentdebugger.release();
+		 this._currentdebugger = null;
+	 }
 	 
 	 if(this._dbg.initialize(contentWinWrapper)) {
 		 this._currentdebugger = this._dbg;
@@ -87,19 +92,21 @@ com.rigantestools.service.Debugger.prototype.initialize = function(contentWinWra
 		 this._currentdebugger = this._jsd;
 		 return true;
 	 }
+	 this._logger.trace("no debugger found");
 	 return false;
 }
 
 
 /**
- * release debugger
+ * reset debugger
  * 
  * @this {Debugger}
  */
 com.rigantestools.service.Debugger.prototype.reset = function() {
     this._logger.trace("reset");
-    
-    this._currentdebugger.reset();
+    if(this._currentdebugger) {
+        this._currentdebugger.reset();
+    }
 };
 
 /**
@@ -109,6 +116,7 @@ com.rigantestools.service.Debugger.prototype.reset = function() {
  */
 com.rigantestools.service.Debugger.prototype.release = function() {
     this._logger.trace("release");
-
-    this._currentdebugger.release();
+    if(this._currentdebugger) {
+        this._currentdebugger.release();
+    }
 };
