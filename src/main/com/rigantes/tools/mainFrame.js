@@ -1638,7 +1638,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
         		// We generate the informations attack
         		var message = "👊" + this._util.getBundleString("mainframe.warinprogress.castleTarget") + " " + key+"\n"+habitatTransits[0].destinationHabitatLink;
         		message += "\n\n" + this._util.getBundleString("mainframe.warinprogress.attackFrom").replace("%NB%",listCastlesAttackers.length).replace("%PA%",nbPA);
-        		message += "\n" + this._util.getBundleString("mainframe.warinprogress.nbUDSend").replace("%NB%",habitatTransits.length) + " " + (nbSwordman+nbArcher+nbLancer)+" ("+nbSwordman+"/"+nbArcher+"/"+nbLancer+")";
+        		message += "\n" + this._util.getBundleString("mainframe.warinprogress.nbUOSend").replace("%NB%",habitatTransits.length) + " " + (nbSwordman+nbArcher+nbLancer)+" ("+nbSwordman+"/"+nbArcher+"/"+nbLancer+")";
         		message += "\n\n📅" + this._util.getBundleString("mainframe.warinprogress.date");
         		if(minDate>0) {
         			message += "\n" + this._util.getBundleString("mainframe.warinprogress.firstUnit") + " " + this._util.formatDateTime(minDate);

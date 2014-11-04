@@ -61,14 +61,12 @@ com.rigantestools.service.Debugger = function(parent) {
     /** the parent */
     this._parent = parent;
     /** @private */
-    /** the debugger */
-    this._jsd = undefined;
-    /** @private */
-    /** if found Castle Link Breakpoint */
-    this.foundCastleLinkBreakpoint = false;
-    /** @private */
-    /** if found Player Breakpoint */
-    this.foundPlayerBreakpoint = false;
+    /** the debuggers */
+    this._jsd = new com.rigantestools.service.impl.DebuggerV1(parent);
+    this._dbg = new com.rigantestools.service.impl.DebuggerV2(parent);
+    /** the current debugger */
+    this._currentdebugger = this._dbg;
+   
 };
 
 /**
@@ -78,23 +76,18 @@ com.rigantestools.service.Debugger = function(parent) {
  * @return {Boolean} true, if correctly initialized
  */
 com.rigantestools.service.Debugger.prototype.initialize = function(contentWinWrapper) {
-	if(Components.classes["@mozilla.org/js/jsd/debugger-service;1"]) {
-        this._jsd = Components.classes["@mozilla.org/js/jsd/debugger-service;1"].getService(Components.interfaces.jsdIDebuggerService);
-        this._logger.trace("JSD running: " + this._jsd.isOn);
-        // starting debugging
-        if (this._jsd.isOn) {
-            this.onDebuggerActivated();
-        } else if ("asyncOn" in this._jsd) {
-            this._jsd.asyncOn(this);
-        } else {
-            this._jsd.on();
-            this.onDebuggerActivated();
-        }
-        this._logger.trace("initialize ok");
-    }
-	else {
-        this._logger.trace("Debugger not supported yet");
-	}
+	 this._logger.trace("initialize");
+	 
+	 this._currentdebugger.release();
+	 
+	 if(this._dbg.initialize(contentWinWrapper)) {
+		 this._currentdebugger = this._dbg;
+		 return true;
+	 } else if(this._jsd.initialize(contentWinWrapper)) {
+		 this._currentdebugger = this._jsd;
+		 return true;
+	 }
+	 return false;
 }
 
 
@@ -106,12 +99,7 @@ com.rigantestools.service.Debugger.prototype.initialize = function(contentWinWra
 com.rigantestools.service.Debugger.prototype.reset = function() {
     this._logger.trace("reset");
     
-    this.foundCastleLinkBreakpoint = false;
-    this.foundPlayerBreakpoint = false;
-    
-    if(this._jsd) {
-        this._jsd.clearAllBreakpoints();
-    }
+    this._currentdebugger.reset();
 };
 
 /**
@@ -122,117 +110,5 @@ com.rigantestools.service.Debugger.prototype.reset = function() {
 com.rigantestools.service.Debugger.prototype.release = function() {
     this._logger.trace("release");
 
-    this.reset();
-    
-    if(this._jsd) {
-	    this._jsd.functionHook = null;
-	    this._jsd.breakpointHook = null;
-	    this._jsd.debuggerHook = null;
-	    this._jsd.debugHook = null;
-	    this._jsd.errorHook = null;
-	    this._jsd.scriptHook = null;
-	    this._jsd.interruptHook = null;
-	    this._jsd.throwHook = null;
-	    this._jsd.GC();
-	    if (this._jsd.isOn) {
-	        this._jsd.off();
-	    }
-    }
-};
-
-/**
- * on debugger activated
- * 
- * @this {Debugger}
- */
-com.rigantestools.service.Debugger.prototype.onDebuggerActivated = function() {
-    this._logger.trace("onDebuggerActivated");
-    if(this._jsd) {
-        this._jsd.scriptHook = this;
-        this._jsd.breakpointHook = this;
-        this._jsd.debuggerHook = this;
-        this._jsd.debugHook = this;
-
-        this._jsd.functionHook = null;
-        this._jsd.errorHook = null;
-        this._jsd.interruptHook = null;
-        this._jsd.throwHook = null;
-    }
-};
-
-/**
- * on script created
- * 
- * @this {Debugger}
- * @param {Object}
- *            script
- */
-com.rigantestools.service.Debugger.prototype.onScriptCreated = function(script) {
-    if (script.fileName.indexOf("landk.js") !== -1) {
-        try {
-            if (!this.foundCastleLinkBreakpoint && script.functionSource.indexOf('e==="copyCastleLink"') > 0) {
-                script.setBreakpoint(0);
-                this.foundCastleLinkBreakpoint = true;
-            } else if (!this.foundPlayerBreakpoint && script.functionSource.indexOf("function (){this.stats={units:{own:this.getOwnUnits()") === 0) {
-                script.setBreakpoint(0);
-                this.foundPlayerBreakpoint = true;
-            }
-        } catch (e) {
-            // do nothing
-        }
-    }
-};
-
-/**
- * on script destroyed
- * 
- * @this {Debugger}
- * @param {Object}
- *            script
- */
-com.rigantestools.service.Debugger.prototype.onScriptDestroyed = function(script) {
-
-};
-
-/**
- * on breakpoint execute
- * 
- * @this {Debugger}
- * @param {Object}
- *            frame
- * @param {Object}
- *            type
- * @param {Object}
- *            val
- * @return {Number} result of execution
- * 
- */
-com.rigantestools.service.Debugger.prototype.onExecute = function(frame, type, val) {
-    try {
-        var mplayer = frame.thisValue.getWrappedValue();
-        if ((this._parent._mplayer === null) && (mplayer.lastReadForumDate || mplayer.lastReadReportDate)) {
-        	this._logger.trace("Found player");
-            this._parent._mplayer = mplayer;
-            frame.script.clearBreakpoint(0);
-        } else {
-            var p = {};
-            frame.scope.getProperties(p, {});
-            p = p.value;
-            var t = null;
-            var e = null;
-            for ( var i = 0; i < p.length; ++i) {
-                if (p[i].name.stringValue === 't') {
-                    t = p[i].value.getWrappedValue();
-                } else if (p[i].name.stringValue === 'e') {
-                    e = p[i].value.getWrappedValue();
-                }
-            }
-            if ((t !== null) && (e !== null) && (e === "copyCastleLink")) {
-                this._parent.refreshLinks(t.mapX, t.mapY);
-            }
-        }
-    } catch (e) {
-        this._logger.error("onExecute: " + frame.script.fileName + ", type: " + type + " error:" + e);
-    }
-    return Components.interfaces.jsdIExecutionHook.RETURN_CONTINUE;
+    this._currentdebugger.release();
 };

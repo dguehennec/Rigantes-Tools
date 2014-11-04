@@ -87,6 +87,9 @@ com.rigantestools.domain.HabitatTransit = function(mhabitatTransit, world) {
         this.destinationHabitatName = mhabitatTransit.destinationHabitat.name;
         /** @private */
         this.destinationHabitatId = mhabitatTransit.destinationHabitat.id;
+        if(!this.destinationHabitatName) {
+        	this.destinationHabitatName = "Free castle " + this.destinationHabitatId;
+        }
         /** @private */
         this.destinationHabitatOrgX = mhabitatTransit.destinationHabitat.mapX;
         /** @private */
@@ -94,7 +97,7 @@ com.rigantestools.domain.HabitatTransit = function(mhabitatTransit, world) {
         /** @private */
         this.destinationHabitatLink = 'l+k://coordinates?' + this.destinationHabitatOrgX + ',' + this.destinationHabitatOrgY + '&' + world;
 
-        if (mhabitatTransit.destinationHabitat.player !== null) {
+        if (mhabitatTransit.destinationHabitat.player) {
             /** @private */
             this.destinationHabitatPlayerName = mhabitatTransit.destinationHabitat.player.nick;
             /** @private */

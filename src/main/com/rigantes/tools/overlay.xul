@@ -23,6 +23,8 @@
     <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/interfaceMapping.js" />
     <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/impl/interfaceMappingV1Impl.js" />
     <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/impl/interfaceMappingV2Impl.js" />
+    <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/impl/debuggerV1Impl.js" />
+    <script type="application/x-javascript" src="chrome://rigantestools/content/class/service/impl/debuggerV2Impl.js" />
     <script type="application/x-javascript" src="chrome://rigantestools/content/overlay.js" />
 	
 	<popupset id="mainPopupSet">
