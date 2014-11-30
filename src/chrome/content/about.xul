@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css"?>
+<?xml-stylesheet href="chrome://rigantestools/skin/rigantestools.css" type="text/css"?>
+
+
+<!DOCTYPE window SYSTEM "chrome://rigantestools/locale/rigantestools.dtd">
+
+<window title="&about.about.label;"	
+	orient="vertical"
+	windowtype="window:about"
+	autostretch="always"
+	onload="com.rigantestools.About.init();" 
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="rigantestools-bundle" src="chrome://rigantestools/locale/rigantestools.properties" />
+	</stringbundleset>
+	
+	<script type="application/x-javascript" src="chrome://rigantestools/content/about.js" />
+
+	<groupbox orient="vertical">
+		<hbox align="center">
+			<vbox >
+				<image src="chrome://rigantestools/skin/images/rigantes.png" onclick="com.rigantestools.About.openWebSite();"/>
+				<spacer flex="1"/>
+			</vbox>
+			<spring flex="1"/>
+			<vbox align="center" flex="1">
+				<label id="rigantestools-version" style="font-weight: bold; font-size: 18px;margin:10px;"/>
+				<separator class="thin" />
+				<text value="&about.createdby.label;" style="font-weight: bold;" />
+				<text value="David GUEHENNEC" />
+				<separator class="thin" />
+				<text value="&about.contributors.label;" style="font-weight: bold;" />
+				<text value="&about.contributors.value;" />
+				<separator class="thin" />
+				<text value="&about.homepage.label;" style="font-weight: bold;" />
+				<text value="http://rigantes.free.fr/" class="url" onclick="com.rigantestools.About.openWebSite();"/>
+				<separator class="thin" />
+				<text value="&about.support.label;" style="font-weight: bold;"/> 
+				<text value="rigantes@free.fr"/>
+				<separator class="thin"/>
+			</vbox>
+		</hbox>
+	</groupbox>
+	<hbox>
+		<spacer flex="1"/>
+		<button label="&about.close.label;" oncommand="window.close();"/>
+	</hbox>
+
+</window>

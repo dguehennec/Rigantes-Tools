@@ -1,7 +1,0 @@
-content	rigantestools	chrome/content/
-skin	rigantestools	classic/1.0	skin/
-locale	rigantestools	en-US	locale/en-US/
-locale  rigantestools	fr-FR   locale/fr-FR/
-style chrome://global/content/customizeToolbar.xul chrome://rigantestools/skin/rigantestools.css
-overlay chrome://browser/content/browser.xul chrome://rigantestools/content/overlay.xul
-

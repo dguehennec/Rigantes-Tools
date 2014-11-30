@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://rigantestools/skin/rigantestools.css" type="text/css"?>
+
+
+<!DOCTYPE overlay SYSTEM "chrome://rigantestools/locale/rigantestools.dtd">
+
+<overlay id="rigantestools-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="rigantestools-bundle" src="chrome://rigantestools/locale/rigantestools.properties" />
+	</stringbundleset>
+	<script type="application/x-javascript" src="chrome://rigantestools/content/util.js" />
+    <script type="application/x-javascript" src="chrome://rigantestools/content/mainFrame.js" />
+	<script type="application/x-javascript" src="chrome://rigantestools/content/overlay.js" />
+	
+	<popupset id="mainPopupSet">
+		<tooltip id="rigantestools_tip" noautohide="true" orient="horizontal">
+			<label id="rigantestools_tooltipTitle" value="Rigantes Tools"/>
+		</tooltip>
+		<menupopup id="rigantestools_clipmenu">
+			<menuitem class="menuitem-iconic" id="rigantestools-mainOption" label="&main.options.label;" oncommand="com.rigantestools.Main.openOptionsDialog();" />
+			<menuitem class="menuitem-iconic" id="rigantestools-mainHelp" label="&main.help.label;" oncommand="com.rigantestools.Main.openHelpDialog();" />
+			<menuitem class="menuitem-iconic" id="rigantestools-mainURL" label="&main.homepage.label;"  oncommand="com.rigantestools.Main.openWebSiteDialog();" />
+			<menuitem class="menuitem-iconic" id="rigantestools-mainAbout" label="&main.about.label;" oncommand="com.rigantestools.Main.openAboutDialog();"/>
+  		</menupopup>
+  	</popupset>    
+  	 
+  	 <menupopup id="menu_ToolsPopup">
+		<menu id="rigantestools-tools-menu" label="&titleSmall;" insertafter="devToolsSeparator">
+			<menupopup id="rigantestools_clipmenu">
+				<menuitem class="menuitem-iconic" id="rigantestools-mainToolsApp" label="&titleSmall;" status="0" oncommand="com.rigantestools.Main.onStatusBarClick();" />
+				<menuseparator id="rigantestools-mainToolsSeparator" />
+    			<menuitem class="menuitem-iconic" id="rigantestools-mainToolsOption" label="&main.options.label;" oncommand="com.rigantestools.Main.openOptionsDialog();" />
+				<menuitem class="menuitem-iconic" id="rigantestools-mainToolsHelp" label="&main.help.label;" oncommand="com.rigantestools.Main.openHelpDialog();" />
+				<menuitem class="menuitem-iconic" id="rigantestools-mainToolsURL" label="&main.homepage.label;"  oncommand="com.rigantestools.Main.openWebSiteDialog();" />
+				<menuitem class="menuitem-iconic" id="rigantestools-mainToolsAbout" label="&main.about.label;" oncommand="com.rigantestools.Main.openAboutDialog();"/>
+  			</menupopup>
+		</menu>
+	</menupopup>
+	
+	<popup id="contentAreaContextMenu">
+		<menuseparator id="rigantestools-contextMenuItemSeparator" />
+		<menuitem class="menuitem-iconic" id="rigantestools-contextMenuItemAttack" label="&main.contextmenu.attack.label;"  hidden="true" oncommand="com.rigantestools.Main.onAttackTargetClick();"/>
+		<menuitem class="menuitem-iconic" id="rigantestools-contextMenuItemDefense" label="&main.contextmenu.defense.label;" hidden="true" oncommand="com.rigantestools.Main.onDefenseTargetClick();"/>
+		<menuitem class="menuitem-iconic" id="rigantestools-contextMenuItemCopyAttackReport" label="&main.contextmenu.copyAttackReport.label;" hidden="true" oncommand="com.rigantestools.Main.onCopyAttackReportTargetClick();"/>
+		<menuitem class="menuitem-iconic" id="rigantestools-contextMenuItemCopyProfile" label="&main.contextmenu.copyprofile.label;" hidden="true" oncommand="com.rigantestools.Main.onCopyProfileTargetClick();"/>
+	</popup>
+	
+  	<statusbar id="status-bar">
+  		<statusbarpanel tooltip="rigantestools_tip" style="visibility:collapse;" status="0" context="rigantestools_clipmenu" class="statusbarpanel-iconic-text" label="" id="rigantestools-status-icon" onclick="com.rigantestools.Main.onStatusBarClick(event)">
+  		</statusbarpanel>
+	</statusbar>
+	
+	<toolbarbutton id="rigantestools-toolbar-button" label="&titleSmall;" status="0"
+		tooltip="rigantestools_tip" oncommand="com.rigantestools.Main.onStatusBarClick()"
+		class="toolbarbutton-1 chromeclass-toolbar-additional" 
+		context="rigantestools_clipmenu">
+	</toolbarbutton>
+	
+	<toolbarpalette id="BrowserToolbarPalette"> 
+  		<toolbarbutton id="rigantestools-toolbar-button"/>
+  	</toolbarpalette>
+	
+</overlay>

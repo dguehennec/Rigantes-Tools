@@ -1,0 +1,243 @@
+<!ENTITY title "Rigantes Tools">
+<!ENTITY titleSmall "Rigantes Tools">
+<!ENTITY informations "Informations">
+<!-- Main dialog -->
+<!ENTITY main.options.label "Options...">
+<!ENTITY main.homepage.label "Visiter le site Web">
+<!ENTITY main.about.label "À propos de &title;">
+<!ENTITY main.help.label "Aide">
+<!ENTITY main.contextmenu.attack.label "Attaquer ce château">
+<!ENTITY main.contextmenu.defense.label "Défendre ce château">
+<!ENTITY main.contextmenu.copyAttackReport.label "Copier l'attaque dans le simulateur">
+<!ENTITY main.contextmenu.copyprofile.label "Copier les informations du joueur">
+<!-- Option dialog -->
+<!ENTITY option.option.label "&main.options.label;">
+<!ENTITY option.close.label "Annuler">
+<!ENTITY option.save.label "Ok">
+<!ENTITY option.yes "Oui">
+<!ENTITY option.no "Non">
+<!ENTITY option.monday "Lundi">
+<!ENTITY option.tuesday "Mardi">
+<!ENTITY option.wednesday "Mercredi">
+<!ENTITY option.thursday "Jeudi">
+<!ENTITY option.friday "Vendredi">
+<!ENTITY option.saturday "Samedi">
+<!ENTITY option.sunday "Dimanche">
+<!ENTITY option.enable "Activé">
+<!-- Option General dialog -->
+<!ENTITY option.tabDefault.label "Général">
+<!ENTITY option.default.access.caption "Moyen d'accès au module">
+<!ENTITY option.default.toolbar "Barre de navigation">
+<!ENTITY option.default.statusbar "Barre des modules">
+<!ENTITY option.default.export.format.caption "Format pour l'export (défaut CSV)">
+<!ENTITY option.default.xlsformat "Format XLS">
+<!-- Option Advanced dialog -->
+<!ENTITY option.tabAdvanced.label "Zones">
+<!ENTITY option.advanced.area.caption "Zones de Prétentions Territoriales">
+<!ENTITY option.advanced.area.name.label "Nom de la zône">
+<!ENTITY option.advanced.area.centerlink.label "Lien du château au centre">
+<!ENTITY option.advanced.area.distance.label "Distance maximum">
+<!ENTITY option.advanced.area.add.button "Nouveau">
+<!ENTITY option.advanced.area.update.button "Sauvegarder">
+<!ENTITY option.advanced.area.delete.button "Supprimer">
+<!-- Option War dialog -->
+<!ENTITY option.tabWar.label "Attaque">
+<!ENTITY option.war.area.caption "Plage horaire d'indisponibilité">
+<!ENTITY option.war.area.startHours.label "Heure de début">
+<!ENTITY option.war.area.endHours.label "Heure de fin">
+<!ENTITY option.war.area.recurrence.label "Récurrence">
+<!ENTITY option.war.area.enable.label "Activé">
+<!ENTITY option.war.area.add.button "Nouveau">
+<!ENTITY option.war.area.update.button "Sauvegarder">
+<!ENTITY option.war.area.delete.button "Supprimer">
+<!-- Option Defense dialog -->
+<!ENTITY option.tabDefense.label "Défense">
+<!ENTITY option.defense.caption "Nombre d'unités minimum à conserver dans un château">
+<!ENTITY option.defense.spearman.label "Hastaire :">
+<!ENTITY option.defense.crossbowman.label "Arbalétrier :">
+<!ENTITY option.defense.scorpionRider.label "Cavalier Lourd :">
+<!-- Option Notification dialog -->
+<!ENTITY option.tabNotification.label "Notifications">
+<!ENTITY option.notification.caption "Gestion des notifications">
+<!ENTITY option.notification.newMessage.label "Nouveau message personnel">
+<!ENTITY option.notification.newAllianceMessage.label "Nouveau message sur le forum">
+<!ENTITY option.notification.newReport.label "Nouveau rapport">
+<!ENTITY option.notification.attaque.label "Attaque">
+<!ENTITY option.notification.habitatesMissions.label "Mission terminée">
+<!ENTITY option.notification.habitatesTransits.label "Troupe arrivée à destination">
+<!ENTITY option.notification.knowledgeOrder.label "Recherche terminée">
+<!ENTITY option.notification.unitOrder.label "Unité terminée">
+<!ENTITY option.notification.buildingOrder.label "Construction terminée">
+<!-- Message dialog -->
+<!ENTITY message.message.label "Message d'information">
+<!ENTITY message.close.label "Fermer">
+<!-- About dialog -->
+<!ENTITY about.homepage.label "Site Web :">
+<!ENTITY about.about.label "&main.about.label;">
+<!ENTITY about.createdby.label "Créée par :">
+<!ENTITY about.contributors.label "Contributeurs :">
+<!ENTITY about.contributors.value "L'ensemble des joueurs de mon alliance">
+<!ENTITY about.support.label "Support">
+<!ENTITY about.close.label "Fermer">
+<!-- MainFrame dialog -->
+<!ENTITY mainframe.mainframe.label "&title;">
+<!-- MainFrame Player dialog -->
+<!ENTITY mainframe.tabPlayer.label "Lien châteaux">
+<!ENTITY mainframe.tabPlayer.description "Ecran permettant de visualiser les informations générales">
+<!ENTITY mainframe.tabPlayer.player.caption.label "Joueur">
+<!ENTITY mainframe.tabPlayer.player.name.label "Nom :">
+<!ENTITY mainframe.tabPlayer.player.creationDate.label "Date de création du compte :">
+<!ENTITY mainframe.tabPlayer.player.creationDate.unknown "Inconnue">
+<!ENTITY mainframe.tabPlayer.player.link.label "Lien :">
+<!ENTITY mainframe.tabPlayer.player.nbcastles.label "Nombre de châteaux :">
+<!ENTITY mainframe.tabPlayer.player.generatecastleslink.button "Générer la liste des châteaux">
+<!ENTITY mainframe.tabPlayer.player.generatecastlesUO.button "Générer la liste des UO">
+<!ENTITY mainframe.tabPlayer.player.treeall.label "Tous les châteaux">
+<!ENTITY mainframe.tabPlayer.player.treecapital.label "En capitale">
+<!ENTITY mainframe.tabPlayer.player.treeeast.label "En province Est">
+<!ENTITY mainframe.tabPlayer.player.treesud.label "En province Sud">
+<!ENTITY mainframe.tabPlayer.player.treewest.label "En province Ouest">
+<!ENTITY mainframe.tabPlayer.player.treeother.label "Autres">
+<!ENTITY mainframe.tabPlayer.player.castle.label "Château">
+<!ENTITY mainframe.tabPlayer.player.castlePA.label "PA">
+<!ENTITY mainframe.tabPlayer.player.totalUO.label "Total UO :">
+<!ENTITY mainframe.tabPlayer.player.totalCaption.label "Nombre de captures possibles :">
+<!ENTITY mainframe.tabPlayer.player.totalUD.label "Total UD :">
+<!ENTITY mainframe.tabPlayer.player.nbUO.label "Nombre UO">
+<!ENTITY mainframe.tabPlayer.player.nbUD.label "Nombre UD">
+<!ENTITY mainframe.tabPlayer.loading.label "Chargement...">
+<!-- MainFrame War dialog -->
+<!ENTITY mainframe.tabWar.label "Préparation d'une attaque">
+<!ENTITY mainframe.tabWar.description "Ecran permettant de calculer le temps de trajet pour une cible donnée pour l'ensemble de vos châteaux.">
+<!ENTITY mainframe.tabWar.criterion.label "Critères">
+<!ENTITY mainframe.tabWar.castleLinkPrompt.label "Lien du château cible :">
+<!ENTITY mainframe.tabWar.attackType.label "Type d'attaque :">
+<!ENTITY mainframe.tabWar.attackTypeProgrammed.label "Programmée">
+<!ENTITY mainframe.tabWar.attackTypeFlash.label "Eclair">
+<!ENTITY mainframe.tabWar.datetimePrompt.label "Date et heure de l'attaque :">
+<!ENTITY mainframe.tabWar.durationPrompt.label "Temps de trajet maximum :">
+<!ENTITY mainframe.tabWar.datetimePrompt1.label "à">
+<!ENTITY mainframe.tabWar.area.label "Plage horaire d'indisponibilité :">
+<!ENTITY mainframe.tabWar.minPA.label "Minimum de PA dans le château :">
+<!ENTITY mainframe.tabWar.minUO.label "Minimum d'UO pour l'attaque :">
+<!ENTITY mainframe.tabWar.withUD.label "Utiliser les UD :">
+<!ENTITY mainframe.tabWar.showCastlesPrompt.label "Afficher l'ensemble des châteaux :">
+<!ENTITY mainframe.tabWar.castle.label "Château">
+<!ENTITY mainframe.tabWar.castleAttackDate.label "Date et heure de l'attaque :">
+<!ENTITY mainframe.tabWar.castlePA.label "PA portables">
+<!ENTITY mainframe.tabWar.noUnit.label "Aucune unité">
+<!ENTITY mainframe.tabWar.swordman.label "Epéiste">
+<!ENTITY mainframe.tabWar.archer.label "Archer">
+<!ENTITY mainframe.tabWar.lancer.label "Lancier">
+<!ENTITY mainframe.tabWar.spearman.label "Hastaire">
+<!ENTITY mainframe.tabWar.crossbowman.label "Arbalétrier">
+<!ENTITY mainframe.tabWar.scorpionRider.label "Cavalier lourd">
+<!ENTITY mainframe.tabWar.pushcart.label "Charrette à bras">
+<!ENTITY mainframe.tabWar.oxcart.label "Charrette à boeufs">
+<!ENTITY mainframe.tabWar.totalUO.label "Total UO">
+<!ENTITY mainframe.tabWar.slowUnit.label "Unité la plus lente">
+<!ENTITY mainframe.tabWar.duration.label "Temps de trajet">
+<!ENTITY mainframe.tabWar.startDatetime.label "Date et heure de lancement">
+<!ENTITY mainframe.tabWar.castleLink.label "Château cible :">
+<!ENTITY mainframe.tabWar.nbcastleWar.label "Nombre de châteaux attaquants :">
+<!ENTITY mainframe.tabWar.nbUO.label "Nombre total d'unités offensives :">
+<!ENTITY mainframe.tabWar.nbCapturation.label "Nombre de captures possibles :">
+<!ENTITY mainframe.tabWar.minTargetTime.label "Temps de trajet minimum :">
+<!ENTITY mainframe.tabWar.maxTargetTime.label "Temps de trajet maximum :">
+<!ENTITY mainframe.tabWar.firstTargetDate.label "Date du premier lancement :">
+<!ENTITY mainframe.tabWar.lasttargetDate.label "Date du dernier lancement :">
+<!ENTITY mainframe.tabWar.generateWarInformations.button "Générer les informations de l'attaque">
+<!ENTITY mainframe.tabWar.simulateWarInformations.button "Simuler l'attaque">
+<!ENTITY mainframe.tabWar.exportWarInformation.button "Exporter">
+<!ENTITY mainframe.tabWar.printWarInformation.button "Imprimer">
+<!ENTITY mainframe.tabWar.calculate.button "Calculer">
+<!ENTITY mainframe.tabWar.area.button "Modifier">
+<!-- MainFrame War dialog -->
+<!ENTITY mainframe.tabWarInProgress.label "Attaques en cours (0)">
+<!ENTITY mainframe.tabWarInProgress.description "Ecran permettant de visualiser les attaques en cours (vos attaques et celles de vos assaillants).">
+<!ENTITY mainframe.tabWarInProgress.generateWarInProgressSummaryInformations.button "Générer le résumé des attaques">
+<!ENTITY mainframe.tabWarInProgress.generateWarInProgressInformations.button "Générer les informations de l'attaque">
+<!ENTITY mainframe.tabWarInProgress.noWarInProgress "Aucune attaque en cours détectée.">
+<!-- MainFrame Defense dialog -->
+<!ENTITY mainframe.tabDefense.label "Préparation d'une défense">
+<!ENTITY mainframe.tabDefense.description "Ecran permettant de calculer le temps de trajet pour une cible donnée pour l'ensemble de vos châteaux.">
+<!ENTITY mainframe.tabDefense.criterion.label "Critères">
+<!ENTITY mainframe.tabDefense.castleLinkPrompt.label "Lien du château attaqué :">
+<!ENTITY mainframe.tabDefense.datetimePrompt.label "Date et heure de l'attaque :">
+<!ENTITY mainframe.tabDefense.showCastlesPrompt.label "Afficher l'ensemble des châteaux :">
+<!ENTITY mainframe.tabDefense.castle.label "Château">
+<!ENTITY mainframe.tabDefense.spearman.label "Hastaire">
+<!ENTITY mainframe.tabDefense.crossbowman.label "Arbalétrier">
+<!ENTITY mainframe.tabDefense.scorpionRider.label "Cavalier lourd">
+<!ENTITY mainframe.tabDefense.totalUD.label "Total UD">
+<!ENTITY mainframe.tabDefense.duration.label "Temps de trajet">
+<!ENTITY mainframe.tabDefense.ArrivalDatetime.label "Date et heure d'arrivée">
+<!ENTITY mainframe.tabDefense.castleLink.label "Château attaqué :">
+<!ENTITY mainframe.tabDefense.nbcastleDefense.label "Nombre de châteaux pouvant soutenir :">
+<!ENTITY mainframe.tabDefense.nbUD.label "Nombre total d'unités défensives :">
+<!ENTITY mainframe.tabDefense.minTargetTime.label "Temps de trajet minimum :">
+<!ENTITY mainframe.tabDefense.maxTargetTime.label "Temps de trajet maximum :">
+<!ENTITY mainframe.tabDefense.firstTargetDate.label "Date de la première arrivée :">
+<!ENTITY mainframe.tabDefense.lasttargetDate.label "Date de la dernière arrivée :">
+<!ENTITY mainframe.tabDefense.unit.label "Unités conservées dans un château :">
+<!ENTITY mainframe.tabDefense.unit.button "Modifier">
+<!-- MainFrame attack/defense slow dialog -->
+<!ENTITY mainframe.tabAttackDefenseSlow.label "Attaque/défense lente">
+<!ENTITY mainframe.tabAttackDefenseSlow.description "Ecran permettant de préparer une attaque ou une défense lente afin de tenir le plus longtemps face à l'ennemi">
+<!ENTITY mainframe.tabAttackDefenseSlow.criterion.label "Critères">
+<!ENTITY mainframe.tabAttackDefenseSlow.castleLinkPrompt.label "Lien du château attaqué :">
+<!ENTITY mainframe.tabAttackDefenseSlow.datetimePrompt.label "Date et heure de l'attaque (Début de tour) :">
+<!ENTITY mainframe.tabAttackDefenseSlow.durationPrompt.label "Durée :">
+<!ENTITY mainframe.tabAttackDefenseSlow.datetimeStartUnitPrompt.label "Temps max de lancement des unités avant l'attaque :">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.label "Type d'unité :">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnitUO.label "UO">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnitUD.label "UD">
+<!ENTITY mainframe.tabAttackDefenseSlow.UnitCount.label "Envoi par nombre de :">
+<!ENTITY mainframe.tabAttackDefenseSlow.UsedAllCastles.label "Utiliser aussi les châteaux attaqués :">
+<!ENTITY mainframe.tabAttackDefenseSlow.calculate.button "Calculer">
+<!ENTITY mainframe.tabAttackDefenseSlow.castle.label "Château">
+<!ENTITY mainframe.tabAttackDefenseSlow.unitType.label "Unité">
+<!ENTITY mainframe.tabAttackDefenseSlow.unitCount.label "Nombre">
+<!ENTITY mainframe.tabAttackDefenseSlow.startDateTime.label "Date et heure de départ">
+<!ENTITY mainframe.tabAttackDefenseSlow.ArrivalDatetime.label "Date et heure d'arrivée">
+<!ENTITY mainframe.tabAttackDefenseSlow.castleLink.label "Château attaqué :">
+<!ENTITY mainframe.tabAttackDefenseSlow.nbcastle.label "Nombre d'attaques">
+<!ENTITY mainframe.tabAttackDefenseSlow.firstArrivalDate.label "Date de première arrivée :">
+<!ENTITY mainframe.tabAttackDefenseSlow.lastArrivalDate.label "Date de dernière arrivée :">
+<!ENTITY mainframe.tabAttackDefenseSlow.firstTargetDate.label "Date de premier départ :">
+<!ENTITY mainframe.tabAttackDefenseSlow.lasttargetDate.label "Date de dernier départ:">
+<!ENTITY mainframe.tabAttackDefenseSlow.generateInformations.button "Générer les informations de l'attaque">
+<!ENTITY mainframe.tabAttackDefenseSlow.exportWarInformation.button "Exporter">
+<!ENTITY mainframe.tabAttackDefenseSlow.printWarInformation.button "Imprimer">
+<!-- MainFrame Simulation dialog -->
+<!ENTITY mainframe.tabSimulation.label "Simulateur de combat">
+<!ENTITY mainframe.tabSimulation.description "Ecran permettant de simuler un combat afin de déterminer son issue finale.">
+<!ENTITY mainframe.tabSimulation.attacker.label "Attaquant">
+<!ENTITY mainframe.tabSimulation.defense.label "Défenseur">
+<!ENTITY mainframe.tabSimulation.units.label "Unités">
+<!ENTITY mainframe.tabSimulation.swordman.label "Epéiste">
+<!ENTITY mainframe.tabSimulation.archer.label "Archer">
+<!ENTITY mainframe.tabSimulation.lancer.label "Lancier">
+<!ENTITY mainframe.tabSimulation.spearman.label "Hastaire">
+<!ENTITY mainframe.tabSimulation.crossbowman.label "Arbalétrier">
+<!ENTITY mainframe.tabSimulation.scorpionRider.label "Cavalier lourd">
+<!ENTITY mainframe.tabSimulation.research.label "Recherche">
+<!ENTITY mainframe.tabSimulation.fortification.label "Fortification">
+<!ENTITY mainframe.tabSimulation.smithWeapons.label "Forgeron d'armes">
+<!ENTITY mainframe.tabSimulation.weaponsmithing.label "Fabrication d'armes">
+<!ENTITY mainframe.tabSimulation.flamingArrows.label "Flèches enflammées">
+<!ENTITY mainframe.tabSimulation.smith.label "Maréchal-ferrant">
+<!ENTITY mainframe.tabSimulation.gunsmith.label "Armurier">
+<!ENTITY mainframe.tabSimulation.ironReinforcements.label "Renforts de fer">
+<!ENTITY mainframe.tabSimulation.poisonedArrows.label "Flèches empoisonnées">
+<!ENTITY mainframe.tabSimulation.horseBreeding.label "Elevage de chevaux">
+<!ENTITY mainframe.tabSimulation.tank.label "Réservoir">
+<!ENTITY mainframe.tabSimulation.fortificationLevel.label "Niveau de fortification">
+<!ENTITY mainframe.tabSimulation.calculate.button "Calculer">
+<!ENTITY mainframe.tabSimulation.period.button "Période">
+<!ENTITY mainframe.tabSimulation.night.button "Nuit">
+<!ENTITY mainframe.tabSimulation.simulationResult.button "Résultat de la simulation">
+<!ENTITY mainframe.tabSimulation.evolution.label "Evolution des unités par tour">
+<!ENTITY mainframe.tabSimulation.round.label "Tour">
+<!ENTITY mainframe.tabSimulation.simulationResultAttacker.label "Statistique attaquant">
+<!ENTITY mainframe.tabSimulation.simulationResultDefenseur.label "Statistique défenseur">

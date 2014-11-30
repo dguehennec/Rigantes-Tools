@@ -29,6 +29,6 @@ No interaction with the game is accomplish through this tool and no user data is
 	# In Dev mode, just sources is packaging, use the next command line
 	mvn clean install -PDev
 	
-	# In Prod mode, sources is closure, jsDoc is generated and Sonar is executed
+	# In Prod mode, jsDoc is generated and Sonar is executed
 	# (it is necessary to have Sonar installed on localhost), use the next command line
 	mvn clean install -PProd
