@@ -115,7 +115,14 @@ rigantestools_Player.prototype.init = function(mplayer) {
         this.habitateisAttacked = mplayer.habitateisAttacked;
         this.unreadDiscussionCount = mplayer.unreadDiscussionCount;
         this.unreadReportCount = mplayer.unreadReportCount;
-        this.unreadAllianceMessages = mplayer.unreadAllianceMessages;
+        this.unreadAllianceMessages = 0;
+        if (mplayer.unreadAllianceMessages) {
+            this.unreadAllianceMessages += mplayer.unreadAllianceMessages;
+        }
+        if (mplayer.unreadThreadCount) {
+            this.unreadAllianceMessages += mplayer.unreadThreadCount;
+        }
+
         this.refreshDate = mplayer.touchDate;
 
         // Update Habitate
