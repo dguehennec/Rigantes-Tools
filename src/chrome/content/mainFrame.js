@@ -47,6 +47,7 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://rigantestools/constant/constants.jsm", com);
 Components.utils.import("resource://rigantestools/controller/controller.jsm", com);
 Components.utils.import("resource://rigantestools/service/AttackCalculate.jsm", com);
+Components.utils.import("resource://rigantestools/service/currentSlowDefenseCalculate.jsm", com);
 Components.utils.import("resource://rigantestools/service/slowAttackDefenseCalculate.jsm", com);
 Components.utils.import("resource://rigantestools/service/exporter.jsm", com);
 Components.utils.import("resource://rigantestools/service/logger.jsm", com);
@@ -1225,13 +1226,15 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
         // generate tabpanels element
         var tabpanels = this._util.JSONToDOM([ "xul:tabpanels", { flex : 1 }], document, {});
         
-        
-        var cols = [this._util.getBundleString("mainframe.warinprogress.castle"), "2", this._util.getBundleString("mainframe.warinprogress.player"), "2", this._util.getBundleString("mainframe.warinprogress.castleLevel"), "1", this._util.getBundleString("mainframe.warinprogress.date"), "2", this._util.getBundleString("mainframe.warinprogress.luck"), "1"];
+        var colsAttacks = [this._util.getBundleString("mainframe.warinprogress.castle"), "2", this._util.getBundleString("mainframe.warinprogress.player"), "3", this._util.getBundleString("mainframe.warinprogress.date"), "2", this._util.getBundleString("mainframe.warinprogress.luck"), "1"];
+        var colsDefense = [this._util.getBundleString("mainframe.defenseinprogress.date"), "3", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "2", this._util.getBundleString("mainframe.defenseinprogress.newUnits"), "2", this._util.getBundleString("mainframe.defenseinprogress.issue"), "1"];
         var nbAttackFound = 0;
         this._generatedAttacks = [];
         this._generatedAttacksSummary = "";
         this._generatedAttacksSummary2OnTarget = "";
         this._generatedAttacksSummary2OnTransit = "";
+        
+        var slowDefense = new com.rigantestools_CurrentSlowDefenseCalculate(this._player);
         
         // Add attaks to player
         var habitats = this._player.getHabitatList();
@@ -1244,20 +1247,20 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
             // var listImpactTimes = [];
             if( (habitatTransits.length>0) || (habitat.getUnitAttackersCount()>0) ) {
                 nbAttackFound++;
-                // generate tab element
-                var tab = this._util.JSONToDOM([ "xul:tab", { label : this._util.maxStringLength(habitat.name,20), style : "color: #FF0055;" }], document, {});
-                tabs.appendChild(tab);
+                // generate tab attacks element
+                var tabAttack = this._util.JSONToDOM([ "xul:tab", { label : this._util.maxStringLength(habitat.name,20), style : "color: #FF0055;" }], document, {});
+                tabs.appendChild(tabAttack);
                 // generate treecols JSON
-                var treecols = [ "xul:treecols", {}];
-                for(var indexCol=0; indexCol<cols.length; indexCol = indexCol+2){
-                    treecols.push([ "xul:treecol", { label :  cols[indexCol], flex : cols[indexCol+1], ignoreincolumnpicker : true}]);
+                var treecolsAttack = [ "xul:treecols", {}];
+                for(var indexCol=0; indexCol<colsAttacks.length; indexCol = indexCol+2){
+                    treecolsAttack.push([ "xul:treecol", { label :  colsAttacks[indexCol], flex : colsAttacks[indexCol+1], ignoreincolumnpicker : true}]);
                 }
                 // generate treechildren JSON
                 var minDate = null;
                 var maxDate = null;
                 // var probableDate = null ;
                 var maxLuck = 0;
-                var treechildren = [ "xul:treechildren", {}];
+                var treechildrenAttack = [ "xul:treechildren", {}];
                 for(var indexHabTrans =0; indexHabTrans<habitatTransits.length; indexHabTrans++){
                     var found = false;
                     for(var indexlistAttackers=0;indexlistAttackers<listAttackers.length; indexlistAttackers++) {
@@ -1315,19 +1318,50 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                         properties = 'inGrey';
                     }
                     // add treeitem JSON
-                    treechildren.push(
+                    treechildrenAttack.push(
                         [ "xul:treeitem", {}, 
                            [ "xul:treerow", { properties : properties}, 
                              [ "xul:treecell", { label : habitatTransits[indexHabTrans].sourceHabitatName}],
                              [ "xul:treecell", { label : habitatTransits[indexHabTrans].sourceHabitatPlayerName}],
-                             [ "xul:treecell", { label : habitatTransits[indexHabTrans].sourceHabitatPoints}],
                              [ "xul:treecell", { label : this._util.formatDateTime(habitatTransits[indexHabTrans].date)}],
                              [ "xul:treecell", { label : Math.round(habitatTransits[indexHabTrans].luck)+" %"}]
                            ]
                         ]
                     );
                 }
-                
+
+                var defense = slowDefense.getSlowDefense(habitat);
+                // generate treecolsSlowDefense JSON
+                var treecolsSlowDefense = [ "xul:treecols", {}];
+                for(var indexCol=0; indexCol<colsDefense.length; indexCol = indexCol+2){
+                    treecolsSlowDefense.push([ "xul:treecol", { label :  colsDefense[indexCol], flex : colsDefense[indexCol+1], ignoreincolumnpicker : true}]);
+                }
+                // generate treechildren JSON
+                var treechildrenSlowDefense = [ "xul:treechildren", {}];
+                if(defense) {
+                    var bufferRound = defense.bufferRound;
+                    for(var indexBuffer =0; indexBuffer<bufferRound.length; indexBuffer++){
+                        var properties = '';
+                        if(indexBuffer%2) {
+                            properties = 'inGrey';
+                        }
+                        if(bufferRound[indexBuffer].issue) {
+                            properties = 'inRed';
+                        }
+                        // add treeitem JSON
+                        treechildrenSlowDefense.push(
+                            [ "xul:treeitem", {}, 
+                               [ "xul:treerow", { properties : properties}, 
+                                 [ "xul:treecell", { label : this._util.formatDateTime(bufferRound[indexBuffer].date)}],
+                                 [ "xul:treecell", { label : bufferRound[indexBuffer].unitCount}],
+                                 [ "xul:treecell", { label : bufferRound[indexBuffer].newUnitCount}],
+                                 [ "xul:treecell", { label : (bufferRound[indexBuffer].issue?this._util.getBundleString("yes"):this._util.getBundleString("no"))}]
+                               ]
+                            ]
+                        );
+                    }
+                }
+
                 // TODO test to determine the date of the impact "likely"
                 // if( minDate!==null && minDate !=maxDate ) {
                 // listImpactTimes.sort(function(a, b) {
@@ -1388,9 +1422,20 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                 var xx3 = Math.round(habitat.getUnitAttackersCount(com.rigantestools_Constant.UNITTYPE.LANCER) + habitat.getUnitAttackersCount(com.rigantestools_Constant.UNITTYPE.SCORPIONRIDER)/3) ;
                 var totalUO = xx1+xx2+xx3 ;
                 var totalUODet = " ("+xx1+"/"+xx2+"/"+xx3+")";
+
                 // generate tabpanel element
                 var tabpanel = this._util.JSONToDOM([ "xul:tabpanel", { orient : "vertical"} ,
-                  [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecols, treechildren],
+                  [ "xul:hbox", { flex : 1 },
+                    [ "xul:vbox", { flex : 1 }, 
+                      [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.attackInformation")}],
+                      [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsAttack, treechildrenAttack]
+                    ],
+                    [ "xul:spacer", { style : "width: 10px"}],
+                    [ "xul:vbox", { flex : 1 },
+                      [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.defenseInformation")}],
+                      [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsSlowDefense, treechildrenSlowDefense]
+                    ]
+                  ],
                   [ "xul:spacer", { style : "height: 10px"}],
                   [ "xul:groupbox", { orient : "horizontal"}, 
                     [ "xul:caption", { label : "Informations" }],
@@ -1413,13 +1458,15 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.nbPlayerAttackers")}],
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.nbCastlesAttackers")}],
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.firstDate")}],
-                      [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.lastDate")}]
+                      [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.lastDate")}],
+                      [ "xul:label", { value : this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime")}]
                     ],
                     [ "xul:vbox", {}, 
                       [ "xul:label", { value : listAttackers.length}],
                       [ "xul:label", { value : listCastlesAttackers.length}],
                       [ "xul:label", { value : this._util.formatDateTime(minDate)}],
-                      [ "xul:label", { value : this._util.formatDateTime(maxDate)}]
+                      [ "xul:label", { value : this._util.formatDateTime(maxDate)}],
+                      [ "xul:label", { value : this._util.secToTimeStr(defense.maxDefenseTime)}]
                     ],
                     [ "xul:spacer", { flex : 1 }]
                   ]
@@ -1442,6 +1489,9 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     if(maxDate!==null) {
                         message += "\n" + this._util.getBundleString("mainframe.warinprogress.lastUnit") + " " + this._util.formatDateTime(maxDate);
                     }
+                }
+                if(defense){
+                    message += "\n" + this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " " + this._util.secToTimeStr(defense.maxDefenseTime);
                 }
                 if(listAttackers.length>0) {
                     var playerAttackersMes = "\n👊" + this._util.getBundleString("mainframe.warinprogress.attackOf").replace("%NB%",listAttackers.length);
@@ -1516,9 +1566,11 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                 if(totalUO>0) {
                     this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryUO").replace("%NBUO%", totalUO) + " " + totalUODet + "\n";
                 }
+                if(defense){
+                    this._generatedAttacksSummary += this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " " + this._util.secToTimeStr(defense.maxDefenseTime) + "\n";
+                }
                 this._generatedAttacksSummary += "\n";
- 
- 
+
                  if( habitat.nextBattleDate !==null )
                 {
                     if( this._generatedAttacksSummary2OnTarget.length==0 ) {
@@ -1556,7 +1608,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                 habitatTransitsList[habitatTransits[index].destinationHabitatName].push(habitatTransits[index]);
             }
         }
-        cols = [this._util.getBundleString("mainframe.warinprogress.castle"),"2",this._util.getBundleString("mainframe.warinprogress.PA"),"1",this._util.getBundleString("mainframe.warinprogress.Swordman"),"1",this._util.getBundleString("mainframe.warinprogress.Archer"),"1",this._util.getBundleString("mainframe.warinprogress.Lancer"),"1",this._util.getBundleString("mainframe.warinprogress.date"),"2"];
+        var cols = [this._util.getBundleString("mainframe.warinprogress.castle"),"2",this._util.getBundleString("mainframe.warinprogress.PA"),"1",this._util.getBundleString("mainframe.warinprogress.Swordman"),"1",this._util.getBundleString("mainframe.warinprogress.Archer"),"1",this._util.getBundleString("mainframe.warinprogress.Lancer"),"1",this._util.getBundleString("mainframe.warinprogress.date"),"2"];
         for(var key in habitatTransitsList) {
             if (habitatTransitsList.hasOwnProperty(key)) {
                 nbAttackFound++;

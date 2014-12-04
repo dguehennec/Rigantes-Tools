@@ -158,6 +158,10 @@ treechildren::-moz-tree-row(inGrey) {
 	background-color: #F0F0F0;
 }
 
+treechildren::-moz-tree-row(inRed) {
+	background-color: #F78181;
+}
+
 treechildren::-moz-tree-row(selected) {
 	background-color: #0099FF;
 }
