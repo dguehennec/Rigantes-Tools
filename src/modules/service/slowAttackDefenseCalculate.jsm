@@ -42,6 +42,8 @@ Components.utils.import("resource://rigantestools/constant/constants.jsm");
 
 var EXPORTED_SYMBOLS = [ "rigantestools_SlowAttackDefenseCalculate" ];
 
+
+
 /**
  * Creates an instance of SlowAttackDefenseCalculate.
  * 
@@ -66,28 +68,102 @@ var EXPORTED_SYMBOLS = [ "rigantestools_SlowAttackDefenseCalculate" ];
  * @param {Boolean}
  *            allCastles use all Castles
  */
-var rigantestools_SlowAttackDefenseCalculate = function(habitats, targetLink, date, duration, withUD, withUO, unitCount, startTimeUnit, allCastles) {
+var rigantestools_SlowAttackDefenseCalculate = function(habitats, targetLink, date, duration, allow, unitCount, startTimeUnit, allCastles, errorMargin, onlyCastles, noCastles, ralentit, maxperminute) {
     var step;
+
 
     this.nbNewUnits = unitCount;
     this.nbCurrentUnits = 352;
-    if (unitCount < 400) {
-        this.nbCurrentUnits = 152;
-        if (unitCount < 200) {
-            this.nbNewUnits = 101;
-            this.nbCurrentUnits = 52;
-        }
-    }
+	this.allow = allow ;
+	this.ralentit = ralentit ;
+	this.maxperminute = maxperminute ;
+	
+	if( 0 ) //mode BATTLE
+	{
+	    if (unitCount == 100) 
+	    {
+			this.nbNewUnits = 250;
+			this.nbCurrentUnits = 128;
+	    }
+	    if (unitCount == 101) 
+	    {
+			this.nbNewUnits = 500;
+			this.nbCurrentUnits = 256;
+	    }
+	    if (unitCount == 150) 
+	    {
+			this.nbNewUnits = 500;
+			this.nbCurrentUnits = 380;
+	    }
+	    if (unitCount == 200) 
+	    {
+			this.nbNewUnits = 500;
+			this.nbCurrentUnits = 380;
+	    }
+	    if (unitCount == 201) 
+	    {
+			this.nbNewUnits = 1000;
+			this.nbCurrentUnits = 760;
+	    }
+	    if (unitCount == 400) 
+	    {
+			this.nbNewUnits = 1000;
+			this.nbCurrentUnits = 880;
+	    }
+	}
+	else
+	{
+	    if (unitCount == 100) 
+	    {
+			this.nbNewUnits = 100;
+			this.nbCurrentUnits = 52;
+	    }
+	    if (unitCount == 101) 
+	    {
+			this.nbNewUnits = 200;
+			this.nbCurrentUnits = 104;
+	    }
+	    if (unitCount == 150) 
+	    {
+			this.nbNewUnits = 200;
+			this.nbCurrentUnits = 152;
+	    }
+	    if (unitCount == 200) 
+	    {
+			this.nbNewUnits = 200;
+			this.nbCurrentUnits = 152;
+	    }
+	    if (unitCount == 201) 
+	    {
+			this.nbNewUnits = 400;
+			this.nbCurrentUnits = 304;
+	    }
+	    if (unitCount == 400) 
+	    {
+			this.nbNewUnits = 400;
+			this.nbCurrentUnits = 352;
+	    }
+	}
+	
     this.habitats = habitats;
     this.targetLink = targetLink;
     this.date = date;
     this.currentDate = new Date();
-    this.startTimeUnit = new Date(this.date.getTime() - startTimeUnit * 1000);
-    if (this.startTimeUnit < this.currentDate) {
-        this.startTimeUnit = this.currentDate;
+    //alert( "startTimeUnit (secs) " + startTimeUnit ) ;
+
+    this.startTimeUnit = new Date(this.currentDate.getTime() + startTimeUnit * 1000);
+
+    if (this.startTimeUnit > this.date) {
+        this.startTimeUnit = this.date;
     }
+
+	this.onlyCastles = onlyCastles ;
+	this.noCastles = noCastles ;
+
+    //alert( "this.startTimeUnit " + this.startTimeUnit ) ;
     this.allCastles = allCastles;
     this.duration = duration;
+    this.errorMargin = errorMargin ;
     this.bufferUnits = [];
     this.bufferTime = [];
     this.bufferHabitatsUnitsCalculate = [];
@@ -95,9 +171,10 @@ var rigantestools_SlowAttackDefenseCalculate = function(habitats, targetLink, da
     // initialize buffer times with date + 5 minutes
     var startAttackDefenseTime = date.getTime() - 300000;
     var stepDuration = 1800;
-    if (this.nbNewUnits < 200) {
-        stepDuration = 600;
-    } else if (this.nbNewUnits < 400) {
+    if (unitCount < 200) {
+        if( unitCount== 150 ) stepDuration=900 ;
+        else stepDuration = 600;
+    } else if (unitCount < 400) {
         stepDuration = 1200;
     }
 
@@ -106,6 +183,7 @@ var rigantestools_SlowAttackDefenseCalculate = function(habitats, targetLink, da
             'castle' : '',
             'unitType' : '',
             'unitCount' : '',
+            'ralentUnitType' : '',
             'startDate' : null,
             'arrivalDate' : new Date(startAttackDefenseTime + step * stepDuration * 1000)
         });
@@ -114,24 +192,23 @@ var rigantestools_SlowAttackDefenseCalculate = function(habitats, targetLink, da
     var totalDuration = this.duration + (this.date.getTime() - this.startTimeUnit) / 1000;
     var loop = 0;
     var durationStep = 60000;
-    if (withUD) {
-        this.bufferUnits = this.getNewUDList();
-        while ((this.bufferUnits.length > 0) && !this.solutionFound() && (loop <= totalDuration)) {
+    
+        
+   if (1) 
+    {
+       this.bufferUnits = this.getNewUDList( allow, this.ralentit );
+       while ((this.bufferUnits.length > 0) && !this.solutionFound() && (loop <= totalDuration)) 
+       {
             this.updateBufferUnitsWithDurationStep(durationStep);
-            this.searchSolution();
+            this.searchSolution2();
             loop += 60;
         }
     }
-    if (withUO) {
-        this.bufferUnits = this.getNewUOList();
-        while ((this.bufferUnits.length > 0) && !this.solutionFound() && (loop <= totalDuration)) {
-            this.updateBufferUnitsWithDurationStep(durationStep);
-            this.searchSolution();
-            loop += 60;
-        }
-    }
+     
+    
+    
     // fix init value to the first time
-    for (var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
+    for ( var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
         if ((this.bufferTime[indexTime].startDate !== null)) {
             this.bufferTime[indexTime].unitCount = this.nbNewUnits;
             break;
@@ -155,44 +232,165 @@ rigantestools_SlowAttackDefenseCalculate.prototype.getResultList = function() {
  * @param {Number}
  *            durationStep the duration step
  */
-rigantestools_SlowAttackDefenseCalculate.prototype.updateBufferUnitsWithDurationStep = function(durationStep) {
+rigantestools_SlowAttackDefenseCalculate.prototype.updateBufferUnitsWithDurationStep = function(durationStep) 
+{
     // update currentArrivalDate and delete unit that it is not possible to used
     // in the next search
     var maxDateTime = 600000 + this.duration * 1000 + this.date.getTime();
-    for (var index = this.bufferUnits.length - 1; index >= 0; index--) {
+    for ( var index = this.bufferUnits.length - 1; index >= 0; index--) 
+    {
         this.bufferUnits[index].currentArrivalDate = this.bufferUnits[index].currentArrivalDate + durationStep;
-        if ((this.bufferUnits[index].unitCount < this.nbNewUnits) || (this.bufferUnits[index].currentArrivalDate > maxDateTime)) {
+
+        if( ( (this.bufferUnits[index].unitCount < this.nbCurrentUnits) && (this.ralentit==0) )
+        ||  ( this.bufferUnits[index].unitCount==0 )
+        ||  ( this.bufferUnits[index].currentArrivalDate > maxDateTime) ) 
+        {
             this.bufferUnits.splice(index, 1);
         }
     }
 };
 
-/**
- * update buffer time.
- * 
- * @this {SlowAttackDefenseCalculate}
- */
-rigantestools_SlowAttackDefenseCalculate.prototype.searchSolution = function() {
-    var indexTime, index;
 
-    for (indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
-        for (index = 0; index < this.bufferUnits.length; index++) {
-            if ((this.bufferTime[indexTime].startDate === null)
-                    && (Math.floor(this.bufferUnits[index].currentArrivalDate / 60000) === Math.floor(this.bufferTime[indexTime].arrivalDate.getTime() / 60000))) {
-                this.bufferTime[indexTime].castle = this.bufferUnits[index].habitatName;
-                this.bufferTime[indexTime].unitType = this.bufferUnits[index].unitType;
-                if (indexTime === 0) {
-                    this.bufferTime[indexTime].unitCount = this.nbNewUnits;
-                    this.bufferUnits[index].unitCount = this.bufferUnits[index].unitCount - this.nbNewUnits;
-                } else {
-                    this.bufferTime[indexTime].unitCount = this.nbCurrentUnits;
-                    this.bufferUnits[index].unitCount = this.bufferUnits[index].unitCount - this.nbCurrentUnits;
-                }
-                this.bufferTime[indexTime].startDate = new Date(this.bufferUnits[index].currentArrivalDate - this.bufferUnits[index].duration);
-                this.bufferTime[indexTime].arrivalDate = new Date(this.bufferUnits[index].currentArrivalDate);
-                break;
+
+rigantestools_SlowAttackDefenseCalculate.prototype.ArrivalOK = function(arrival,target,marge) 
+{
+	var a = Math.floor(arrival/60000) ;
+	var t = Math.floor(target/60000) ;
+    if ( (a >= t-marge ) && ( a <= t+marge ) ) 
+    {
+    	return true ;
+    }
+    return false ;
+};
+
+rigantestools_SlowAttackDefenseCalculate.prototype.Allowed = function( unit, allow )
+{
+	if (unit === rigantestools_Constant.UNITTYPE.SCORPIONRIDER) {
+		return( allow==0 || allow==2 || allow==3 ) ;
+	} else if (unit === rigantestools_Constant.UNITTYPE.LANCER) {
+		return( allow==1 || allow==2 ) ;
+	} else if (unit === rigantestools_Constant.UNITTYPE.ARCHER) {
+		return( allow==1 || allow==2 || allow==3 ) ;
+	} else if (unit === rigantestools_Constant.UNITTYPE.CROSSBOWMAN) {
+		return( allow==0 || allow==2 || allow==3 )
+	} else if (unit === rigantestools_Constant.UNITTYPE.SPEARMAN) {
+		return( allow==0 || allow==2 || allow==3 )
+	} else if (unit === rigantestools_Constant.UNITTYPE.SWORDMAN ) {
+		return( allow==1 || allow==2 || allow==3 ) ;
+	} else if( unit === rigantestools_Constant.UNITTYPE.PUSHCART) {
+		return false ;
+	} else if (unit === rigantestools_Constant.UNITTYPE.OXCART) {
+		return false ;
+	}
+	else return false ;
+}
+
+
+rigantestools_SlowAttackDefenseCalculate.prototype.FindUnitIndex = function( index, needed, allow )
+{
+
+    // 0 = UD
+    // 1 = UO
+    // 2 = UD+UO
+    // 3 = UD+UO sauf lances
+
+	var i = index ;
+	var habitat = this.bufferUnits[i].habitatName ;
+	if( this.bufferUnits[i].unitCount <= 0 ) return -1 ;
+	do
+	{
+		if( this.bufferUnits[i].habitatName !== habitat ) return -1 ;
+		if( this.bufferUnits[i].unitCount >= needed && this.Allowed(this.bufferUnits[i].unitType, allow) ) return i ;
+		i++ ;
+		if( this.ralentit==0 ) return -1 ;
+		//alert( "this.bufferUnits[i].habitatName="+this.bufferUnits[i].habitatName+" habitat="+habitat ) ;
+	}
+	while( i < this.bufferUnits.length ) ;
+	
+	return -1 ;
+}
+
+
+rigantestools_SlowAttackDefenseCalculate.prototype.searchSolution2 = function() {
+    
+    var indexTime, index;
+    var maxperminute=this.maxperminute ;
+    var ndeparts = 0 ;
+	var marge = this.errorMargin ;
+
+	var allow = this.allow ;
+    
+    
+
+    for (indexTime = 0; indexTime < this.bufferTime.length; indexTime++) 
+    {
+    	if ((this.bufferTime[indexTime].startDate === null) )
+    	{
+			var candidates = [] ;
+			var neededUnits ;
+			
+			if (indexTime == 0) neededUnits = this.nbNewUnits ;
+			else neededUnits = this.nbCurrentUnits ;
+				
+			
+			for (index = 0; index < this.bufferUnits.length; index++) 
+			{
+				//alert( "TRY castle " + this.bufferUnits[index].habitatName + " unit type " + this.bufferUnits[index].unitType + " NB " + this.bufferUnits[index].unitCount ) ;
+			
+				if( this.ArrivalOK( this.bufferUnits[index].currentArrivalDate, this.bufferTime[indexTime].arrivalDate.getTime(), marge ) )
+        		{
+       				var index2 = this.FindUnitIndex( index, neededUnits, allow ) ;
+        			if( index2 != -1 )
+        			{
+        				var item = { 'ralent_unit' : this.bufferUnits[index] , 'main_unit' : this.bufferUnits[index2] } ;
+        				candidates.push( item ) ;
+        			}
+    	       	}
             }
+            
+           if( candidates.length > 0 )
+            {
+				candidates.sort(function(item1, item2) 
+				{
+					if( item1.main_unit.unitType == item1.ralent_unit.unitType && item2.main_unit.unitType != item2.ralent_unit.unitType )
+					{
+						return -1 ;
+					}
+					else if( item1.main_unit.unitType != item1.ralent_unit.unitType && item2.main_unit.unitType == item2.ralent_unit.unitType )
+					{
+						return 1 ;
+					}						
+					else
+					{
+						var a = item1.main_unit ;
+						var b = item2.main_unit ;
+						if( b.priority == a.priority )   return b.unitCount - a.unitCount;
+				       	else return b.priority - a.priority ;
+					}
+				});
+
+				
+ 				var ralent_unit = candidates[0].ralent_unit ;
+ 				var main_unit = candidates[0].main_unit ;
+
+              	this.bufferTime[indexTime].castle = ralent_unit.habitatName;
+                this.bufferTime[indexTime].unitType = main_unit.unitType;
+               	this.bufferTime[indexTime].unitCount = neededUnits;
+               	main_unit.unitCount = main_unit.unitCount - neededUnits;
+               	if( ralent_unit.unitType != main_unit.unitType )
+               	{
+               		this.bufferTime[indexTime].ralentUnitType = ralent_unit.unitType;
+               		ralent_unit.unitCount = ralent_unit.unitCount-1 ;
+               		//alert( "Ralentisseur " + ralent_unit.unitType ) ;
+               	}
+                this.bufferTime[indexTime].startDate = new Date(ralent_unit.currentArrivalDate - ralent_unit.duration);
+                this.bufferTime[indexTime].arrivalDate = new Date(ralent_unit.currentArrivalDate);
+        		
+        		ndeparts = ndeparts+1 ;
+        	}
         }
+        
+        if( ndeparts == maxperminute ) break ;
     }
 };
 
@@ -203,7 +401,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.searchSolution = function() {
  * @return {Boolean} true if found
  */
 rigantestools_SlowAttackDefenseCalculate.prototype.solutionFound = function() {
-    for (var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
+    for ( var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
         if (this.bufferTime[indexTime].startDate === null) {
             return false;
         }
@@ -218,7 +416,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.solutionFound = function() {
  * @return {Boolean} true if found
  */
 rigantestools_SlowAttackDefenseCalculate.prototype.firstSolutionFound = function() {
-    for (var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
+    for ( var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
         if (this.bufferTime[indexTime].startDate !== null) {
             return true;
         }
@@ -234,7 +432,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.firstSolutionFound = function
  */
 rigantestools_SlowAttackDefenseCalculate.prototype.getNbAttacks = function() {
     var nbAttacks = 0;
-    for (var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
+    for ( var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
         if (this.bufferTime[indexTime].startDate !== null) {
             nbAttacks++;
         }
@@ -251,7 +449,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.getNbAttacks = function() {
 rigantestools_SlowAttackDefenseCalculate.prototype.getStartTimeTargetMax = function() {
     var maxStartTime = null;
     var inArea = false;
-    for (var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
+    for ( var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
         if (this.bufferTime[indexTime].startDate !== null) {
             inArea = true;
         } else if (inArea) {
@@ -273,7 +471,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.getStartTimeTargetMax = funct
 rigantestools_SlowAttackDefenseCalculate.prototype.getStartTimeTargetMin = function() {
     var minStartTime = null;
     var inArea = false;
-    for (var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
+    for ( var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
         if (this.bufferTime[indexTime].startDate !== null) {
             inArea = true;
         } else if (inArea) {
@@ -295,7 +493,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.getStartTimeTargetMin = funct
 rigantestools_SlowAttackDefenseCalculate.prototype.getFirstArrivalDate = function() {
     var firstArrivalDate = null;
     var inArea = false;
-    for (var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
+    for ( var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
         if (this.bufferTime[indexTime].startDate !== null) {
             inArea = true;
         } else if (inArea) {
@@ -317,7 +515,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.getFirstArrivalDate = functio
 rigantestools_SlowAttackDefenseCalculate.prototype.getLastArrivalDate = function() {
     var lastArrivalDate = null;
     var inArea = false;
-    for (var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
+    for ( var indexTime = 0; indexTime < this.bufferTime.length; indexTime++) {
         if (this.bufferTime[indexTime].startDate !== null) {
             inArea = true;
         } else if (inArea) {
@@ -340,114 +538,123 @@ rigantestools_SlowAttackDefenseCalculate.prototype.getTargetLink = function() {
     return this.targetLink;
 };
 
+
+
+
+
+
+
+rigantestools_SlowAttackDefenseCalculate.prototype.CastleMatchList = function( castle, list ) {
+	var index ;
+    for (index = 0; index < list.length; index++) 
+	{
+		if( castle.search( list[index] ) >= 0 ) return true ;
+	}
+	return false ;
+}
+
+rigantestools_SlowAttackDefenseCalculate.prototype.GetListFromSpec = function( spec ) {
+
+	var list = [] ;
+	var str = spec ;
+	
+	while( 1 )
+	{
+		var pos = str.indexOf( "," ) ;
+		if( pos==-1 ) break ;
+		if( pos > 0 )
+		{
+			var item = str.slice(0,pos) ;
+			list.push( item ) ;
+		}
+		str = str.slice( pos+1 ) ;
+			
+	}
+	
+	if( str.length > 0 ) list.push( str ) ;
+	return list ;
+}
+
+
+
 /**
  * get new UD list
  * 
  * @this {SlowAttackDefenseCalculate}
  * @return {Array} the buffer units of UD
  */
-rigantestools_SlowAttackDefenseCalculate.prototype.getNewUDList = function() {
+rigantestools_SlowAttackDefenseCalculate.prototype.getNewUDList = function( allow, ralentit ) {
     var index, currentUnitCount, currentDuration;
     var bufferUnits = [];
-    for (index = 0; index < this.habitats.length; index++) {
+    var unitTypeList = [] ;
+    
+    // 0 = UD
+    // 1 = UO
+    // 2 = UD+UO
+    // 3 = UD+UO sauf lances
+    
+    
+    var listonly = this.GetListFromSpec( this.onlyCastles ) ;
+    var listno = this.GetListFromSpec( this.noCastles ) ;
+   
+    
+    
+    if( allow == 1 || allow == 2 || allow == 3 || ralentit ) unitTypeList.push( { 'type':rigantestools_Constant.UNITTYPE.SWORDMAN, priority:2 } ) ;
+    if( allow == 0 || allow == 2 || allow == 3 || ralentit ) unitTypeList.push( { 'type':rigantestools_Constant.UNITTYPE.SPEARMAN, priority:5 } ) ;
+    if( allow == 0 || allow == 2 || allow == 3 || ralentit ) unitTypeList.push( { 'type':rigantestools_Constant.UNITTYPE.CROSSBOWMAN, priority:4 } ) ;
+    if( allow == 1 || allow == 2 || allow == 3 || ralentit ) unitTypeList.push( { 'type':rigantestools_Constant.UNITTYPE.ARCHER, priority:1 } ) ;
+    if( allow == 1 || allow == 2               || ralentit ) unitTypeList.push( { 'type':rigantestools_Constant.UNITTYPE.LANCER, priority:0 } ) ;
+    if( allow == 0 || allow == 2 || allow == 3 || ralentit ) unitTypeList.push( { 'type':rigantestools_Constant.UNITTYPE.SCORPIONRIDER, priority:3 } ) ;
+    
+  	
+   
+    for (index = 0; index < this.habitats.length; index++) 
+    {
         var habitat = this.habitats[index];
 
-        if (habitat.link !== this.targetLink && (this.allCastles || (!this.allCastles && !habitat.isAttacked))) {
-            currentUnitCount = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.SPEARMAN);
-            if (currentUnitCount > this.nbNewUnits) {
-                currentDuration = habitat.getUnitDurationTo(rigantestools_Constant.UNITTYPE.SPEARMAN, this.targetLink) * 1000;
-                bufferUnits.push({
-                    'habitatName' : habitat.name,
-                    'unitType' : rigantestools_Constant.UNITTYPE.SPEARMAN,
-                    'unitCount' : currentUnitCount,
-                    'duration' : currentDuration,
-                    'currentArrivalDate' : (this.startTimeUnit.getTime() + currentDuration)
-                });
-            }
-            currentUnitCount = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.CROSSBOWMAN);
-            if (currentUnitCount > this.nbNewUnits) {
-                currentDuration = habitat.getUnitDurationTo(rigantestools_Constant.UNITTYPE.CROSSBOWMAN, this.targetLink) * 1000;
-                bufferUnits.push({
-                    'habitatName' : habitat.name,
-                    'unitType' : rigantestools_Constant.UNITTYPE.CROSSBOWMAN,
-                    'unitCount' : currentUnitCount,
-                    'duration' : currentDuration,
-                    'currentArrivalDate' : (this.startTimeUnit.getTime() + currentDuration)
-                });
-            }
-            currentUnitCount = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.SCORPIONRIDER);
-            if (currentUnitCount > this.nbNewUnits) {
-                currentDuration = habitat.getUnitDurationTo(rigantestools_Constant.UNITTYPE.SCORPIONRIDER, this.targetLink) * 1000;
-                bufferUnits.push({
-                    'habitatName' : habitat.name,
-                    'unitType' : rigantestools_Constant.UNITTYPE.SCORPIONRIDER,
-                    'unitCount' : currentUnitCount,
-                    'duration' : currentDuration,
-                    'currentArrivalDate' : (this.startTimeUnit.getTime() + currentDuration)
-                });
-            }
-        }
+		if( this.onlyCastles.length > 0 )
+		{
+			if( !this.CastleMatchList( habitat.name, listonly ) ) continue ;
+		}
+
+		if( this.noCastles.length > 0 )
+		{
+			if( this.CastleMatchList( habitat.name, listno ) ) continue ;
+		}
+		
+		
+		if( habitat.link === this.targetLink ) continue ;
+		
+		// This is currently without effect. isAttacked5 should mean attacked by less than 5 castles, but it's not set at initalization time of habitats yet
+		if( !this.allCastles && habitat.isAttacked5 ) continue ;
+
+        if( 1 ) 
+        {
+        	var xxx ;
+ 
+   			for (xxx = 0; xxx < unitTypeList.length; xxx++) 
+    		{
+       	
+	            currentUnitCount = habitat.getUnitCount(unitTypeList[xxx].type);
+	            if (currentUnitCount > this.nbCurrentUnits || ralentit == 1 ) 
+	            {
+	                currentDuration = habitat.getUnitDurationTo(unitTypeList[xxx].type, this.targetLink) * 1000;
+	                bufferUnits.push({
+	                    'habitatName' : habitat.name,
+	                    'unitType' : unitTypeList[xxx].type,
+	                    'unitCount' : currentUnitCount,
+	                    'duration' : currentDuration,
+	                    'currentArrivalDate' : (this.startTimeUnit.getTime() + currentDuration),
+	                    'priority' : unitTypeList[xxx].priority
+	                });
+	            }
+ 			}
+         }
     }
-    bufferUnits.sort(function(a, b) {
-        return b.duration - a.duration;
-    });
 
     return bufferUnits;
 };
 
-/**
- * get new UO list
- * 
- * @this {SlowAttackDefenseCalculate}
- * @return {Array} the buffer units of UO
- */
-rigantestools_SlowAttackDefenseCalculate.prototype.getNewUOList = function() {
-    var index, currentUnitCount, currentDuration;
-    var bufferUnits = [];
-    for (index = 0; index < this.habitats.length; index++) {
-        var habitat = this.habitats[index];
-        if (habitat.link !== this.targetLink && (this.allCastles || (!this.allCastles && !habitat.isAttacked))) {
-            currentUnitCount = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.SWORDMAN);
-            if (currentUnitCount > this.nbNewUnits) {
-                currentDuration = habitat.getUnitDurationTo(rigantestools_Constant.UNITTYPE.SWORDMAN, this.targetLink) * 1000;
-                bufferUnits.push({
-                    'habitatName' : habitat.name,
-                    'unitType' : rigantestools_Constant.UNITTYPE.SWORDMAN,
-                    'unitCount' : currentUnitCount,
-                    'duration' : currentDuration,
-                    'currentArrivalDate' : (this.startTimeUnit.getTime() + currentDuration)
-                });
-            }
-            currentUnitCount = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.ARCHER);
-            if (currentUnitCount > this.nbNewUnits) {
-                currentDuration = habitat.getUnitDurationTo(rigantestools_Constant.UNITTYPE.ARCHER, this.targetLink) * 1000;
-                bufferUnits.push({
-                    'habitatName' : habitat.name,
-                    'unitType' : rigantestools_Constant.UNITTYPE.ARCHER,
-                    'unitCount' : currentUnitCount,
-                    'duration' : currentDuration,
-                    'currentArrivalDate' : (this.startTimeUnit.getTime() + currentDuration)
-                });
-            }
-            currentUnitCount = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.LANCER);
-            if (currentUnitCount > this.nbNewUnits) {
-                currentDuration = habitat.getUnitDurationTo(rigantestools_Constant.UNITTYPE.LANCER, this.targetLink) * 1000;
-                bufferUnits.push({
-                    'habitatName' : habitat.name,
-                    'unitType' : rigantestools_Constant.UNITTYPE.LANCER,
-                    'unitCount' : currentUnitCount,
-                    'duration' : currentDuration,
-                    'currentArrivalDate' : (this.startTimeUnit.getTime() + currentDuration)
-                });
-            }
-        }
-    }
-    bufferUnits.sort(function(a, b) {
-        return b.duration - a.duration;
-    });
-
-    return bufferUnits;
-};
 
 /**
  * Freeze the interface

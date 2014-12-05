@@ -186,16 +186,31 @@
 <!ENTITY mainframe.tabAttackDefenseSlow.description "Screen to prepare a slow attack or defense in order to hold the longer face the enemy">
 <!ENTITY mainframe.tabAttackDefenseSlow.criterion.label "Criterion">
 <!ENTITY mainframe.tabAttackDefenseSlow.castleLinkPrompt.label "Link target castle :">
-<!ENTITY mainframe.tabAttackDefenseSlow.datetimePrompt.label "Date and time of attack (Start of round) :">
+<!ENTITY mainframe.tabAttackDefenseSlow.datetimePrompt.label "Date and time (of round) :">
+<!ENTITY mainframe.tabAttackDefenseSlow.datetimePromptAt.label "at">
 <!ENTITY mainframe.tabAttackDefenseSlow.durationPrompt.label "Duration :">
-<!ENTITY mainframe.tabAttackDefenseSlow.datetimeStartUnitPrompt.label "Max time to launch units before the attack :">
+<!ENTITY mainframe.tabAttackDefenseSlow.datetimeStartUnitPrompt.label "Send in">
+<!ENTITY mainframe.tabAttackDefenseSlow.useSlowers.label "Allow speed reducers">
 <!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.label "Unit type :">
-<!ENTITY mainframe.tabAttackDefenseSlow.typeUnitUO.label "UO">
-<!ENTITY mainframe.tabAttackDefenseSlow.typeUnitUD.label "UD">
-<!ENTITY mainframe.tabAttackDefenseSlow.UnitCount.label "Send by many :">
-<!ENTITY mainframe.tabAttackDefenseSlow.UsedAllCastles.label "Use also the castles attacked :">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitOnlyUD.label "UD only">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitOnlyUO.label "UO only">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitBoth.label "UD+UO">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitBothButLancers.label "UD+UO except lancers">
+<!ENTITY mainframe.tabAttackDefenseSlow.UnitCount.label "by packs of">
+<!ENTITY mainframe.tabAttackDefenseSlow.UseOnlyCastles.label "Use only these castles">
+<!ENTITY mainframe.tabAttackDefenseSlow.DoNotUseCastles.label "Do not use">
+<!ENTITY mainframe.tabAttackDefenseSlow.UseAllCastles.label "use attacked castles">
+<!ENTITY mainframe.tabAttackDefenseSlow.ErrorMargin.label "Error margin">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.label "Maximum of">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min1.label "1 per min">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min2.label "2 per min">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min3.label "3 per min">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min4.label "4 per min">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min5.label "5 per min">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min6.label "6 per min">
 <!ENTITY mainframe.tabAttackDefenseSlow.calculate.button "Calculate">
 <!ENTITY mainframe.tabAttackDefenseSlow.castle.label "Castle">
+<!ENTITY mainframe.tabAttackDefenseSlow.slower.label "Reducer">
 <!ENTITY mainframe.tabAttackDefenseSlow.unitType.label "Unit">
 <!ENTITY mainframe.tabAttackDefenseSlow.unitCount.label "Number">
 <!ENTITY mainframe.tabAttackDefenseSlow.startDateTime.label "Start date and time">
