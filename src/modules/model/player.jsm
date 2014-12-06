@@ -150,7 +150,7 @@ rigantestools_Player.prototype.init = function(mplayer) {
 
         return true;
     } catch (e) {
-        this._logger.error("init error:" + e);
+        this._logger.error("init error", e);
         return false;
     }
 };

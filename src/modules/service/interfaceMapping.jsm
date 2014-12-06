@@ -281,7 +281,7 @@ rigantestools_InterfaceMapping.prototype.copyProfile = function() {
         this._util.copieToClipboard(message);
         return true;
     } catch (e) {
-        this._logger.error("onCopyProfileTargetClick = " + e);
+        this._logger.error("onCopyProfileTargetClick", e);
     }
     return false;
 };

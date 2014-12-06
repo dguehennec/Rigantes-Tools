@@ -185,7 +185,7 @@ rigantestools_DebuggerV2.prototype.hit = function(frame) {
             }
         }
     } catch (e) {
-        this._logger.error("onExecute error:" + e);
+        this._logger.error("onExecute", e);
     }
 }
 

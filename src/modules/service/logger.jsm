@@ -42,10 +42,11 @@ var EXPORTED_SYMBOLS = [ "rigantestools_Logger" ];
 
 /**
  * Creates an instance of logger.
- *
+ * 
  * @constructor
  * @this {Logger}
- *
+ * @param {String}
+ *            the name of the class used the logger
  */
 var rigantestools_Logger = function(name) {
     this._name = name;
@@ -53,80 +54,90 @@ var rigantestools_Logger = function(name) {
 
 /**
  * generate error trace.
- *
+ * 
  * @this {Logger}
  * @param {String}
  *            message message of the trace
+ * @param {Error}
+ *            error error of the trace
  */
-rigantestools_Logger.prototype.error = function(message) {
+rigantestools_Logger.prototype.error = function(message, error) {
     if (rigantestools_Constant.LOGGER.LEVEL > 0) {
-        this._printStack();
         dump(this._getStrDate() + "ERROR in " + this._name + " : " + message + "\n");
+        this._printStack(error);
     }
 };
 
 /**
  * generate warning trace.
- *
+ * 
  * @this {Logger}
  * @param {String}
  *            message message of the trace
  */
-rigantestools_Logger.prototype.warning = function(message) {
+rigantestools_Logger.prototype.warning = function(message, error) {
     if (rigantestools_Constant.LOGGER.LEVEL > 1) {
-        this._printStack();
         dump(this._getStrDate() + "WARNING in " + this._name + " : " + message + "\n");
+        this._printStack(error);
     }
 };
 
 /**
  * generate info trace.
- *
+ * 
  * @this {Logger}
  * @param {String}
  *            message message of the trace
  */
-rigantestools_Logger.prototype.info = function(message) {
+rigantestools_Logger.prototype.info = function(message, error) {
     if (rigantestools_Constant.LOGGER.LEVEL > 2) {
-        this._printStack();
         dump(this._getStrDate() + "INFO in " + this._name + " : " + message + "\n");
+        this._printStack(error);
     }
 };
 
 /**
  * generate trace trace.
- *
+ * 
  * @this {Logger}
  * @param {String}
  *            message message of the trace
  */
-rigantestools_Logger.prototype.trace = function(message) {
+rigantestools_Logger.prototype.trace = function(message, error) {
     if (rigantestools_Constant.LOGGER.LEVEL > 3) {
-        this._printStack();
         dump(this._getStrDate() + "TRACE in " + this._name + " : " + message + "\n");
+        this._printStack(error);
     }
 };
 
 /**
  * Print the stack trace
- *
+ * 
  * @private
  * @this {Logger}
+ * @param {Error}
+ *            error error of the trace
  */
-rigantestools_Logger.prototype._printStack = function() {
+rigantestools_Logger.prototype._printStack = function(error) {
     if (rigantestools_Constant.LOGGER.PRINT_STACK === true) {
-        try {
-            throw Error('');
-        } catch (err) {
-            var stack = err.stack.split("\n").slice(2).join("\n");
-            dump("--------\n" + stack + "--------\n");
+        if (!error) {
+            try {
+                throw Error('');
+            } catch (e) {
+                dump("stack:\n" + e.stack.split("\n").slice(2).join("\n"));
+                dump("--------\n");
+            }
+        } else {
+            dump("message: " + error.message + "\n");
+            dump("stack:\n" + error.stack);
+            dump("--------\n");
         }
     }
 };
 
 /**
  * Get date to print
- *
+ * 
  * @private
  * @this {Logger}
  */

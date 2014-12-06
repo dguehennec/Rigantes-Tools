@@ -577,7 +577,7 @@ com.rigantestools.MainFrame.calculateWarTimeAndShow = function() {
         this._util.setVisibility('rigantestools-warActionBar', 'visible');
     }
     catch(e) {
-        this._logger.error("calculateWarTimeAndShow = "+e);
+        this._logger.error("calculateWarTimeAndShow", e);
         this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
     }
     return true;
@@ -731,7 +731,7 @@ com.rigantestools.MainFrame.calculateDefenseTimeAndShow = function() {
         }
     }
     catch(e) {
-        this._logger.error("calculateDefenseTimeAndShow = "+e);
+        this._logger.error("calculateDefenseTimeAndShow", e);
         this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
     }
     return true;
@@ -1042,7 +1042,7 @@ com.rigantestools.MainFrame.calculateSimulationAndShow = function() {
         }
     }
     catch(e) {
-        this._logger.error("calculateSimulationAndShow = "+e);
+        this._logger.error("calculateSimulationAndShow", e);
         this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
     }
     return true;
@@ -1055,7 +1055,7 @@ com.rigantestools.MainFrame.calculateSimulationAndShow = function() {
  * @return {Boolean} true if successful
  */
 com.rigantestools.MainFrame.calculateAttackDefenseSlowTimeAndShow = function() {
-    //try {
+    try {
         if (this._player === null) {
             return false;
         }
@@ -1103,11 +1103,11 @@ com.rigantestools.MainFrame.calculateAttackDefenseSlowTimeAndShow = function() {
         this._util.setAttribute('rigantestools-attackDefenseSlowInfoStartTimeTargetMax', 'value', this._util.formatDateTime(slowAttackDefenseCalculate.getStartTimeTargetMax()));
         this._util.setAttribute('rigantestools-attackDefenseSlowInfoStartTimeTargetMin', 'value', this._util.formatDateTime(slowAttackDefenseCalculate.getStartTimeTargetMin()));
         this._util.setVisibility('rigantestools-attackDefenseSlowActionBar', 'visible');
-    //}
-    //catch(e) {
-    //    this._logger.error("calculateAttackDefenseSlowTimeAndShow = "+e);
-    //    this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
-    //}
+    }
+    catch(e) {
+        this._logger.error("calculateAttackDefenseSlowTimeAndShow", e);
+        this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
+    }
 };
 
 /**
@@ -1241,7 +1241,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
         this._generatedAttacksSummary2OnTransit = "";
         
         var slowDefense = new com.rigantestools_CurrentSlowDefenseCalculate(this._player);
-        
+
         // Add attaks to player
         var habitats = this._player.getHabitatList();
         for (var indexHab = 0; indexHab < habitats.length; indexHab++) {
@@ -1741,7 +1741,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
             this._util.setVisibility('rigantestools-warinprogressActionBar',"collapse");
         }
     }catch(e) {
-        this._logger.error("initializeWarInProgressInformation = "+e);
+        this._logger.error("initializeWarInProgressInformation", e);
         this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));  
     }
 };
@@ -1876,7 +1876,7 @@ com.rigantestools.MainFrame.initializePlayerInformation = function() {
         }
     }
     catch(e) {
-        this._logger.error("initializePlayerInformation = "+e);
+        this._logger.error("initializePlayerInformation", e);
         this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
     }
     return true;
@@ -2938,7 +2938,6 @@ com.rigantestools.MainFrame.activateWarTreeContext = function(evt) {
         tree.view.selection.getRangeAt(rangIndex,start,end);
         for (var index = start.value; index <= end.value; index++){
             nbSelectedItem++;
-            this._logger.error(index+" "+nbSelectedItem);
             if(index >=0 && index < this.currentHabitatsWar.length) {
                 var item = this.currentHabitatsWar[index];
                 for(var key in contextmenu) {
@@ -2957,7 +2956,7 @@ com.rigantestools.MainFrame.activateWarTreeContext = function(evt) {
     // update contextmenu
     for(var key in contextmenu) {
         var itemMenu = contextmenu[key];
-        this._logger.error("update contextmenu:"+itemMenu.name+", "+itemMenu.label+", "+itemMenu.nbEnabled);
+        this._logger.trace("update contextmenu:"+itemMenu.name+", "+itemMenu.label+", "+itemMenu.nbEnabled);
         if (itemMenu.nbEnabled===nbSelectedItem) {
              document.getElementById("rigantestools-war-treechildren-contextmenu-"+itemMenu.name).removeAttribute("disabled");
              if(itemMenu.nbEnabled===1) {

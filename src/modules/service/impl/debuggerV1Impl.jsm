@@ -229,7 +229,7 @@ rigantestools_DebuggerV1.prototype.onExecute = function(frame, type, val) {
             }
         }
     } catch (e) {
-        this._logger.error("onExecute: " + frame.script.fileName + ", type: " + type + " error:" + e);
+        this._logger.error("onExecute: " + frame.script.fileName + ", type: " + type, e);
     }
     return Components.interfaces.jsdIExecutionHook.RETURN_CONTINUE;
 };

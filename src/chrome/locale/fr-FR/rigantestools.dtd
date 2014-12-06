@@ -187,7 +187,7 @@
 <!ENTITY mainframe.tabAttackDefenseSlow.criterion.label "Critères">
 <!ENTITY mainframe.tabAttackDefenseSlow.castleLinkPrompt.label "Lien du château attaqué">
 <!ENTITY mainframe.tabAttackDefenseSlow.datetimePrompt.label "Date et heure (du round)">
-<!ENTITY mainframe.tabAttackDefenseSlow.datetimePromptAt.label "�">
+<!ENTITY mainframe.tabAttackDefenseSlow.datetimePromptAt.label "à">
 <!ENTITY mainframe.tabAttackDefenseSlow.durationPrompt.label "Durée :">
 <!ENTITY mainframe.tabAttackDefenseSlow.datetimeStartUnitPrompt.label "Envoyer dans">
 <!ENTITY mainframe.tabAttackDefenseSlow.useSlowers.label "Utiliser des ralentisseurs">

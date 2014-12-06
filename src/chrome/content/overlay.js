@@ -232,7 +232,7 @@ com.rigantestools.Main.showMainFrame = function(selectedTab, parameters) {
         try {
             topWindow.focus();
         } catch (e) {
-            this._logger.error("showMainFrame = " + e);
+            this._logger.error("showMainFrame", e);
             return false;
         }
     } else {
@@ -362,7 +362,7 @@ com.rigantestools.Main.contentUnload = function(evt) {
         try {
             topWindow.close();
         } catch (e) {
-            this._logger.error("closeMainFrame = " + e);
+            this._logger.error("closeMainFrame", e);
             return false;
         }
     }

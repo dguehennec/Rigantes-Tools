@@ -186,7 +186,7 @@ var rigantestools_Habitat = function(mhabitat, world) {
                 }
             }
         } catch (e) {
-            this._logger.error("init error in get Unites available:" + e);
+            this._logger.error("init error in get Unites available", e);
         }
 
         try {
@@ -201,7 +201,7 @@ var rigantestools_Habitat = function(mhabitat, world) {
             }
             this.isAttacked = ((this.getHabitatTransits(rigantestools_Constant.TRANSITTYPE.ATTACKER, true).length > 0) || (this.getUnitAttackersCount() > 0));
         } catch (e) {
-            this._logger.error("init error in get Unites in transits:" + e);
+            this._logger.error("init error in get Unites in transits", e);
         }
 
         try {
@@ -257,14 +257,14 @@ var rigantestools_Habitat = function(mhabitat, world) {
                 }
             }
         } catch (e) {
-            this._logger.error("init error in get Units in mission:" + e);
+            this._logger.error("init error in get Units in mission", e);
         }
         // get Modifier
         if (mhabitat.habitatModifier) {
             this._modifiers = mhabitat.habitatModifier;
         }
     } catch (e) {
-        this._logger.error("init error:" + e);
+        this._logger.error("init error", e);
     }
 };
 

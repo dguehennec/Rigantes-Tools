@@ -294,7 +294,7 @@ rigantestools_InterfaceMappingV1.prototype.copyAttackReport = function() {
             }
         }
     } catch (e) {
-        this._logger.error("onCopyAttackReportTargetClick = " + e);
+        this._logger.error("onCopyAttackReportTargetClick", e);
     }
     return simulationParameters;
 };
