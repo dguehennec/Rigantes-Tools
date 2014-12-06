@@ -290,47 +290,80 @@
 					<caption label="&mainframe.tabAttackDefenseSlow.criterion.label;"/>
 					<vbox flex="1">
 						<hbox align="center">
-							<label value="&mainframe.tabAttackDefenseSlow.castleLinkPrompt.label;" width="230"/>
+							<label value="&mainframe.tabAttackDefenseSlow.castleLinkPrompt.label;" width="170"/>
 							<textbox id="rigantestools-attackDefenseSlowTargetLink" value="" width="220" maxlength="40"/>
 							<spacer flex="1"/>
 						</hbox>
 						<hbox align="center">
-							<label value="&mainframe.tabAttackDefenseSlow.datetimePrompt.label;" width="230"/>
+							<label value="&mainframe.tabAttackDefenseSlow.datetimePrompt.label;" width="170"/>
 							<datepicker id="rigantestools-attackDefenseSlowDate" firstdayofweek="NaN" width="145" type="popup"/>
-							<label value="à"/>
+							<label value="&mainframe.tabAttackDefenseSlow.datetimePromptAt.label;"/>
 							<textbox id="rigantestools-attackDefenseSlowTime" width="50" value="20:00" maxlength="5"/>
 							<spacer width="20"/>
 							<label value="&mainframe.tabAttackDefenseSlow.durationPrompt.label;"/>
 							<textbox id="rigantestools-attackDefenseSlowDuration" value="03:00" width="50" maxlength="5"/>
+							<spacer width="20"/>
+							<checkbox id="rigantestools-defenseAttackDefenseSlowRalentit" checked="true" label="&mainframe.tabAttackDefenseSlow.useSlowers.label;" /> 						
 							<spacer flex="1"/>
 						</hbox>
 						<hbox align="center">
-							<label value="&mainframe.tabAttackDefenseSlow.datetimeStartUnitPrompt.label;" width="230"/>
-							<textbox id="rigantestools-attackDefenseSlowStartUnitTime" value="10:00" width="50" maxlength="5"/>
+							<label value="&mainframe.tabAttackDefenseSlow.datetimeStartUnitPrompt.label;" width="170"/>
+							<textbox id="rigantestools-attackDefenseSlowStartUnitTime" value="00:00" width="50" maxlength="5"/>
+							<spacer width="20"/>
+							<label value="&mainframe.tabAttackDefenseSlow.ErrorMargin.label;"/>
+							<menulist id="rigantestools-attackDefenseSlowErrorMargin">
+								<menupopup>
+							    	<menuitem label="0 min" value="0"/>
+							    	<menuitem label="1 min" value="1"/>
+							    	<menuitem label="2 min" value="2"/>
+							    	<menuitem label="3 min" value="3"/>
+							  	</menupopup>
+							</menulist>
 							<spacer flex="1"/>
+							
 						</hbox>
 						<hbox align="center">
-							<label value="&mainframe.tabAttackDefenseSlow.typeUnit.label;" width="230"/>
+							<label value="&mainframe.tabAttackDefenseSlow.typeUnit.label;" width="170"/>
 							<menulist id="rigantestools-attackDefenseSlowUnitType">
 								<menupopup>
-							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnitUD.label;" value="UD"/>
-							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnitUO.label;" value="UO"/>
-							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnitUD.label; + &mainframe.tabAttackDefenseSlow.typeUnitUO.label;" value="ALL"/>
+							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnit.UnitOnlyUD.label;" value="0"/>
+							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnit.UnitOnlyUO.label;" value="1"/>
+							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnit.UnitBoth.label;" value="2"/>
+							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnit.UnitBothButLancers.label;" value="3"/>
 							  	</menupopup>
 							</menulist>
-							<label value="&mainframe.tabAttackDefenseSlow.UnitCount.label;" width="74"/>
-							<menulist id="rigantestools-attackDefenseSlowUnitCount">
+							<label value="&mainframe.tabAttackDefenseSlow.UnitCount.label;"/>
+							<menulist id="rigantestools-attackDefenseSlowUnitCount" selectedIndex="3" value="200">
 								<menupopup>
-									<menuitem label="100" value="100"/>
-									<menuitem label="200" value="200"/>
-									<menuitem label="400" value="400"/>
+							    	<menuitem label="100+52  (10')" value="100"/>
+							    	<menuitem label="200+104 (10') SAFE" value="101"/>
+							    	<menuitem label="200+152 (15') SAFE" value="150"/>
+							    	<menuitem label="200+152 (20')" value="200"/>
+							    	<menuitem label="400+304 (20') SAFE" value="201"/>
+							    	<menuitem label="400+352 (30')" value="400"/>
+							  	</menupopup>
+							</menulist>
+							<label value="&mainframe.tabAttackDefenseSlow.MaxPerMinute.label;"/>
+							<menulist id="rigantestools-attackDefenseSlowMaxPerMinute" selectedIndex="3" value="3">
+								<menupopup>
+							    	<menuitem value="1" label="&mainframe.tabAttackDefenseSlow.MaxPerMinute.Min1.label;"/>
+							    	<menuitem value="2" label="&mainframe.tabAttackDefenseSlow.MaxPerMinute.Min2.label;"/>
+							    	<menuitem value="3" label="&mainframe.tabAttackDefenseSlow.MaxPerMinute.Min3.label;"/>
+							    	<menuitem value="4" label="&mainframe.tabAttackDefenseSlow.MaxPerMinute.Min4.label;"/>
+							    	<menuitem value="5" label="&mainframe.tabAttackDefenseSlow.MaxPerMinute.Min5.label;"/>
+							    	<menuitem value="6" label="&mainframe.tabAttackDefenseSlow.MaxPerMinute.Min6.label;"/>
 							  	</menupopup>
 							</menulist>
 							<spacer flex="1"/>
 						</hbox>
 						<hbox align="center">
-							<label value="&mainframe.tabAttackDefenseSlow.UsedAllCastles.label;" width="230"/>
-							<checkbox id="rigantestools-defenseAttackDefenseSlowUsedAllCastles" checked="false" /> 						
+							<label value="&mainframe.tabAttackDefenseSlow.UseOnlyCastles.label;" width="170"/>
+							<textbox id="rigantestools-attackDefenseSlowOnlyCastles" value="" width="180"/>
+							<spacer width="20"/>
+							<label value="&mainframe.tabAttackDefenseSlow.DoNotUseCastles.label;"/>
+							<textbox id="rigantestools-attackDefenseSlowNoCastles" value="" width="180"/>
+							<spacer width="20"/>
+							<checkbox id="rigantestools-defenseAttackDefenseSlowUsedAllCastles" checked="false" label="&mainframe.tabAttackDefenseSlow.UseAllCastles.label;" /> 						
 							<spacer flex="1"/>
 							<button id="rigantestools-attackDefenseSlowCalculateButton" label="&mainframe.tabAttackDefenseSlow.calculate.button;" oncommand="com.rigantestools.MainFrame.onCalculateAttackDefenseSlowButtonClick();"/>
 							<spacer width="10"/>
@@ -343,6 +376,7 @@
 					<treecol name="castle" label="&mainframe.tabAttackDefenseSlow.castle.label;" flex="4" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
 					<treecol name="unitType" label="&mainframe.tabAttackDefenseSlow.unitType.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
 					<treecol name="unitCount" label="&mainframe.tabAttackDefenseSlow.unitCount.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
+					<treecol name="ralentType" label="&mainframe.tabAttackDefenseSlow.slower.label;" flex="1" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
 					<treecol name="startDate" label="&mainframe.tabAttackDefenseSlow.startDateTime.label;" flex="2" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
 					<treecol name="ArrivalDatetime" label="&mainframe.tabAttackDefenseSlow.ArrivalDatetime.label;" flex="2" ignoreincolumnpicker="true" persist="width ordinal" onclick="com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree(this);" class="sortDirectionIndicator" sortDirection="natural"/>
 				  </treecols>

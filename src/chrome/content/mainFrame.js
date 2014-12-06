@@ -443,19 +443,11 @@ com.rigantestools.MainFrame.showDefenseAllCastles = function() {
  * @this {MainFrame}
  * @return {Boolean} true if checked
  */
-com.rigantestools.MainFrame.getAttackDefenseSlowUnitTypeUO = function() {
-    return (this._util.getAttribute('rigantestools-attackDefenseSlowUnitType', 'value')!=='UD');
+com.rigantestools.MainFrame.getAttackDefenseSlowUnitType = function() {
+	return (this._util.getAttribute('rigantestools-attackDefenseSlowUnitType', 'value') );
 };
 
-/**
- * indicate if we use unit type UD
- * 
- * @this {MainFrame}
- * @return {Boolean} true if checked
- */
-com.rigantestools.MainFrame.getAttackDefenseSlowUnitTypeUD = function() {
-    return (this._util.getAttribute('rigantestools-attackDefenseSlowUnitType', 'value')!=='UO');
-};
+
 
 /**
  * indicate if we use all castles
@@ -467,6 +459,10 @@ com.rigantestools.MainFrame.getAttackDefenseSlowUsedAllCastles = function() {
     return this._util.getAttribute('rigantestools-defenseAttackDefenseSlowUsedAllCastles', 'checked');
 };
 
+com.rigantestools.MainFrame.getAttackDefenseSlowRalentit = function() {
+    return this._util.getAttribute('rigantestools-defenseAttackDefenseSlowRalentit', 'checked');
+};
+
 /**
  * get the unit count
  * 
@@ -474,8 +470,13 @@ com.rigantestools.MainFrame.getAttackDefenseSlowUsedAllCastles = function() {
  * @return {Number} the unit count
  */
 com.rigantestools.MainFrame.getAttackDefenseSlowUnitCount = function() {
-    return Number(this._util.getAttribute('rigantestools-attackDefenseSlowUnitCount', 'value'));
+	return Number(this._util.getAttribute('rigantestools-attackDefenseSlowUnitCount', 'value'));
 };
+
+com.rigantestools.MainFrame.getAttackDefenseSlowErrorMargin = function() {
+	return Number(this._util.getAttribute('rigantestools-attackDefenseSlowErrorMargin', 'value'));
+};
+
 
 
 
@@ -1054,7 +1055,7 @@ com.rigantestools.MainFrame.calculateSimulationAndShow = function() {
  * @return {Boolean} true if successful
  */
 com.rigantestools.MainFrame.calculateAttackDefenseSlowTimeAndShow = function() {
-    try {
+    //try {
         if (this._player === null) {
             return false;
         }
@@ -1075,13 +1076,18 @@ com.rigantestools.MainFrame.calculateAttackDefenseSlowTimeAndShow = function() {
             return false;
         }
         
-        var unitTypeUO = this.getAttackDefenseSlowUnitTypeUO();
-        var unitTypeUD = this.getAttackDefenseSlowUnitTypeUD();
-        var unitCount = this.getAttackDefenseSlowUnitCount();
-        var allCastles = this.getAttackDefenseSlowUsedAllCastles();
+ 		var unitType = this.getAttackDefenseSlowUnitType();
+		var unitCount = this.getAttackDefenseSlowUnitCount();
+		var allCastles = this.getAttackDefenseSlowUsedAllCastles();
+		var ralentit = this.getAttackDefenseSlowRalentit();
+		var errorMargin = this.getAttackDefenseSlowErrorMargin();
+		var onlyCastles = this._util.getAttribute('rigantestools-attackDefenseSlowOnlyCastles', 'value') ;
+		var noCastles = this._util.getAttribute('rigantestools-attackDefenseSlowNoCastles', 'value') ;
+        var maxperminute  = this._util.getAttribute('rigantestools-attackDefenseSlowMaxPerMinute', 'value') ;
+
         
         this.clearAttackDefenseSlowTab();
-        var slowAttackDefenseCalculate = new com.rigantestools_SlowAttackDefenseCalculate(this._player.getHabitatList(), targetLink, date, duration, unitTypeUD, unitTypeUO, unitCount, startTimeUnit, allCastles);
+        var slowAttackDefenseCalculate = new com.rigantestools_SlowAttackDefenseCalculate(this._player.getHabitatList(), targetLink, date, duration, unitType, unitCount, startTimeUnit, allCastles, errorMargin, onlyCastles, noCastles, ralentit, maxperminute);
         this.currentHabitatsAttackDefenseSlow = slowAttackDefenseCalculate.getResultList();
         this.sortcolumnAttackDefenseSlowTree(null);
         
@@ -1097,11 +1103,11 @@ com.rigantestools.MainFrame.calculateAttackDefenseSlowTimeAndShow = function() {
         this._util.setAttribute('rigantestools-attackDefenseSlowInfoStartTimeTargetMax', 'value', this._util.formatDateTime(slowAttackDefenseCalculate.getStartTimeTargetMax()));
         this._util.setAttribute('rigantestools-attackDefenseSlowInfoStartTimeTargetMin', 'value', this._util.formatDateTime(slowAttackDefenseCalculate.getStartTimeTargetMin()));
         this._util.setVisibility('rigantestools-attackDefenseSlowActionBar', 'visible');
-    }
-    catch(e) {
-        this._logger.error("calculateAttackDefenseSlowTimeAndShow = "+e);
-        this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
-    }
+    //}
+    //catch(e) {
+    //    this._logger.error("calculateAttackDefenseSlowTimeAndShow = "+e);
+    //    this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
+    //}
 };
 
 /**
@@ -2432,54 +2438,54 @@ com.rigantestools.MainFrame.refreshDefenseTree = function() {
  * @this {MainFrame}
  */
 com.rigantestools.MainFrame.refreshAttackDefenseSlowTree = function() {
-    this.clearAttackDefenseSlowTree();
-    var treeChildren = document.getElementById("rigantestools-attackDefenseSlow-treechildren");
-    for (var index = 0; index < this.currentHabitatsAttackDefenseSlow.length; index++) {
-        var item = this.currentHabitatsAttackDefenseSlow[index];
-        var properties = '';
+	this.clearAttackDefenseSlowTree();
+	var treeChildren = document.getElementById("rigantestools-attackDefenseSlow-treechildren");
+	for ( var index = 0; index < this.currentHabitatsAttackDefenseSlow.length; index++) {
+		var item = this.currentHabitatsAttackDefenseSlow[index];
+		var properties = '';
         if(index%2) {
             properties = 'inGrey';
         }
         var treerow = [ "xul:treerow", { properties : properties }];
-        for (var row in item) {
-            if(row.indexOf("Date")>=0) { 
-                treerow.push([ "xul:treecell", {label : this._util.formatDateTime(item[row])} ]);
-            } 
-            else if(row==="unitType"){
-                var unit = "";
-                switch(item[row]) {
-                    case com.rigantestools_Constant.UNITTYPE.SPEARMAN: 
-                        unit = this._util.getBundleString("mainframe.attackDefenseSlow.Spearman");
-                        break;
-                    case com.rigantestools_Constant.UNITTYPE.SWORDMAN:
-                        unit = this._util.getBundleString("mainframe.attackDefenseSlow.Swordman");
-                        break;
-                    case com.rigantestools_Constant.UNITTYPE.ARCHER:
-                        unit = this._util.getBundleString("mainframe.attackDefenseSlow.Archer");
-                        break;
-                    case com.rigantestools_Constant.UNITTYPE.CROSSBOWMAN:
-                        unit = this._util.getBundleString("mainframe.attackDefenseSlow.Crossbowman");
-                        break;
-                    case com.rigantestools_Constant.UNITTYPE.SCORPIONRIDER:
-                        unit = this._util.getBundleString("mainframe.attackDefenseSlow.ScorpionRider");
-                        break;
-                    case com.rigantestools_Constant.UNITTYPE.LANCER:
-                        unit = this._util.getBundleString("mainframe.attackDefenseSlow.Lancer");
-                        break;
-                    default:
-                        
-                }
-                treerow.push([ "xul:treecell", {label : unit} ]);
-            }
-            else {
-                treerow.push([ "xul:treecell", {label : item[row]} ]);
-            }
-            
-        }
-        // generate treeitem element
+		for (var row in item) {
+			if(row.indexOf("Date")>=0) { 
+				treerow.push([ "xul:treecell", {label : this._util.formatDateTime(item[row])} ]);
+			} 
+			else if(row==="unitType" || row==="ralentUnitType"){
+				var unit = "";
+				switch(item[row]) {
+					case com.rigantestools_Constant.UNITTYPE.SPEARMAN: 
+						unit = this._util.getBundleString("mainframe.attackDefenseSlow.Spearman");
+						break;
+					case com.rigantestools_Constant.UNITTYPE.SWORDMAN:
+						unit = this._util.getBundleString("mainframe.attackDefenseSlow.Swordman");
+						break;
+					case com.rigantestools_Constant.UNITTYPE.ARCHER:
+						unit = this._util.getBundleString("mainframe.attackDefenseSlow.Archer");
+						break;
+					case com.rigantestools_Constant.UNITTYPE.CROSSBOWMAN:
+						unit = this._util.getBundleString("mainframe.attackDefenseSlow.Crossbowman");
+						break;
+					case com.rigantestools_Constant.UNITTYPE.SCORPIONRIDER:
+						unit = this._util.getBundleString("mainframe.attackDefenseSlow.ScorpionRider");
+						break;
+					case com.rigantestools_Constant.UNITTYPE.LANCER:
+						unit = this._util.getBundleString("mainframe.attackDefenseSlow.Lancer");
+						break;
+					default:
+						
+				}
+				treerow.push([ "xul:treecell", {label : unit} ]);
+			}
+			else {
+			    treerow.push([ "xul:treecell", {label : item[row]} ]);
+			}
+			
+		}
+		// generate treeitem element
         var treeitem = this._util.JSONToDOM([ "xul:treeitem", {}, treerow ], document, {});
         treeChildren.appendChild(treeitem);
-    }
+	}
 };
 
 /**

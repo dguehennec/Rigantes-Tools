@@ -185,19 +185,34 @@
 <!ENTITY mainframe.tabAttackDefenseSlow.label "Attaque/défense lente">
 <!ENTITY mainframe.tabAttackDefenseSlow.description "Ecran permettant de préparer une attaque ou une défense lente afin de tenir le plus longtemps face à l'ennemi">
 <!ENTITY mainframe.tabAttackDefenseSlow.criterion.label "Critères">
-<!ENTITY mainframe.tabAttackDefenseSlow.castleLinkPrompt.label "Lien du château attaqué :">
-<!ENTITY mainframe.tabAttackDefenseSlow.datetimePrompt.label "Date et heure de l'attaque (Début de tour) :">
+<!ENTITY mainframe.tabAttackDefenseSlow.castleLinkPrompt.label "Lien du château attaqué">
+<!ENTITY mainframe.tabAttackDefenseSlow.datetimePrompt.label "Date et heure (du round)">
+<!ENTITY mainframe.tabAttackDefenseSlow.datetimePromptAt.label "�">
 <!ENTITY mainframe.tabAttackDefenseSlow.durationPrompt.label "Durée :">
-<!ENTITY mainframe.tabAttackDefenseSlow.datetimeStartUnitPrompt.label "Temps max de lancement des unités avant l'attaque :">
-<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.label "Type d'unité :">
-<!ENTITY mainframe.tabAttackDefenseSlow.typeUnitUO.label "UO">
-<!ENTITY mainframe.tabAttackDefenseSlow.typeUnitUD.label "UD">
-<!ENTITY mainframe.tabAttackDefenseSlow.UnitCount.label "Envoi par nombre de :">
-<!ENTITY mainframe.tabAttackDefenseSlow.UsedAllCastles.label "Utiliser aussi les châteaux attaqués :">
+<!ENTITY mainframe.tabAttackDefenseSlow.datetimeStartUnitPrompt.label "Envoyer dans">
+<!ENTITY mainframe.tabAttackDefenseSlow.useSlowers.label "Utiliser des ralentisseurs">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.label "Type d'unité">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitOnlyUD.label "UD uniquement">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitOnlyUO.label "UO uniquement">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitBoth.label "UD+UO">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitBothButLancers.label "UD+UO sauf Lances">
+<!ENTITY mainframe.tabAttackDefenseSlow.UnitCount.label "par paquets de">
+<!ENTITY mainframe.tabAttackDefenseSlow.UseOnlyCastles.label "N'utiliser que les chateaux">
+<!ENTITY mainframe.tabAttackDefenseSlow.DoNotUseCastles.label "Ne pas utiliser">
+<!ENTITY mainframe.tabAttackDefenseSlow.UseAllCastles.label "Utiliser les châteaux attaqués">
+<!ENTITY mainframe.tabAttackDefenseSlow.ErrorMargin.label "Marge d'erreur">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.label "Maximum">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min1.label "1 par min">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min2.label "2 par min">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min3.label "3 par min">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min4.label "4 par min">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min5.label "5 par min">
+<!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min6.label "6 par min">
 <!ENTITY mainframe.tabAttackDefenseSlow.calculate.button "Calculer">
 <!ENTITY mainframe.tabAttackDefenseSlow.castle.label "Château">
 <!ENTITY mainframe.tabAttackDefenseSlow.unitType.label "Unité">
 <!ENTITY mainframe.tabAttackDefenseSlow.unitCount.label "Nombre">
+<!ENTITY mainframe.tabAttackDefenseSlow.slower.label "Ralentisseur">
 <!ENTITY mainframe.tabAttackDefenseSlow.startDateTime.label "Date et heure de départ">
 <!ENTITY mainframe.tabAttackDefenseSlow.ArrivalDatetime.label "Date et heure d'arrivée">
 <!ENTITY mainframe.tabAttackDefenseSlow.castleLink.label "Château attaqué :">
