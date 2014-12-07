@@ -70,6 +70,9 @@ var rigantestools_DebuggerV2 = function(parent) {
     /** @private */
     /** if found Player Breakpoint */
     this.foundPlayerBreakpoint = false;
+    /** @private */
+    /** if found Player profil Breakpoint */
+    this.foundPlayerProfilBreakpoint = false;
 };
 
 /**
@@ -107,11 +110,15 @@ rigantestools_DebuggerV2.prototype.initialize = function(contentWinWrapper) {
                         script.setBreakpoint(0, this);
                         this._logger.trace("foundPlayerBreakpoint");
                         this.foundPlayerBreakpoint = true;
+                    } else if (!this.foundPlayerProfilBreakpoint && functionSource.indexOf("(t){this.dataUpdate(null,{Player") === 0) {
+                        script.setBreakpoint(0, this);
+                        this._logger.trace("foundPlayerProfilBreakpoint");
+                        this.foundPlayerProfilBreakpoint = true;
                     }
 
                 }
             }
-            if (this.foundCastleLinkBreakpoint && this.foundPlayerBreakpoint) {
+            if (this.foundCastleLinkBreakpoint && this.foundPlayerBreakpoint && this.foundPlayerProfilBreakpoint) {
                 break;
             }
         }
@@ -132,6 +139,7 @@ rigantestools_DebuggerV2.prototype.reset = function() {
 
     this.foundCastleLinkBreakpoint = false;
     this.foundPlayerBreakpoint = false;
+    this.foundPlayerProfilBreakpoint = false;
 
     if (this._dbg) {
         this._dbg.clearAllBreakpoints();
@@ -167,21 +175,29 @@ rigantestools_DebuggerV2.prototype.release = function() {
  */
 rigantestools_DebuggerV2.prototype.hit = function(frame) {
     try {
-        var object = frame.eval("this")["return"];
-        if (typeof (object) == "object") {
-            object = XPCNativeWrapper.unwrap(object.unsafeDereference());
-        }
-        if ((this._parent._mplayer === null) && (object.lastReadForumDate || object.lastReadReportDate)) {
-            this._logger.trace("Found player");
-            this._parent._mplayer = object;
-            frame.script.clearBreakpoint(this);
-        } else {
-            var args = frame["arguments"];
-            if (args.length > 1) {
-                var e = args[1];
-                if (e && (e === "copyCastleLink")) {
-                    this._parent.refreshLinks(frame.eval("t.mapX")["return"], frame.eval("t.mapY")["return"]);
-                }
+        var args = frame["arguments"];
+        if (args.length > 1) {
+            var e = args[1];
+            if (e && (e === "copyCastleLink")) {
+                this._parent.refreshLinks(frame.eval("t.mapX")["return"], frame.eval("t.mapY")["return"]);
+            }
+        } else if (args.length === 1) {
+            var object = args[0];
+            if (typeof (object) == "object") {
+                object = XPCNativeWrapper.unwrap(object.unsafeDereference());
+            }
+            if (object && object.nick) {
+                this._parent.refreshPlayerProfile(object);
+            }
+        } else if (this._parent._mplayer === null) {
+            var object = frame.eval("this")["return"];
+            if (typeof (object) == "object") {
+                object = XPCNativeWrapper.unwrap(object.unsafeDereference());
+            }
+            if (object.lastReadForumDate || object.lastReadReportDate) {
+                this._logger.trace("Found player");
+                this._parent._mplayer = object;
+                frame.script.clearBreakpoint(this);
             }
         }
     } catch (e) {

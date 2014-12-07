@@ -164,8 +164,8 @@ rigantestools_InterfaceMappingV1.prototype.refreshLinks = function() {
  * @this {InterfaceMappingV1}
  * @return {Boolean} true if selected
  */
-rigantestools_InterfaceMappingV1.prototype.isPlayerProfileSelected = function() {
-    if (gContextMenu.target.ownerDocument.getElementsByClassName("playerProfile").length > 0) {
+rigantestools_InterfaceMappingV1.prototype.isPlayerProfileSelected = function(target) {
+    if (target.ownerDocument.getElementsByClassName("playerProfile").length > 0) {
         return true;
     }
     return false;
@@ -177,8 +177,8 @@ rigantestools_InterfaceMappingV1.prototype.isPlayerProfileSelected = function() 
  * @this {InterfaceMapping}
  * @return {Boolean} true if selected
  */
-rigantestools_InterfaceMappingV1.prototype.isOwnInformationsSelected = function() {
-    if (gContextMenu.target.ownerDocument.getElementsByClassName("owninformations").length > 0) {
+rigantestools_InterfaceMappingV1.prototype.isOwnInformationsSelected = function(target) {
+    if (target.ownerDocument.getElementsByClassName("owninformations").length > 0) {
         return true;
     }
     return false;
@@ -190,8 +190,8 @@ rigantestools_InterfaceMappingV1.prototype.isOwnInformationsSelected = function(
  * @this {InterfaceMappingV1}
  * @return {Boolean} true if selected
  */
-rigantestools_InterfaceMappingV1.prototype.isReportDescriptionSelected = function() {
-    var nodes = gContextMenu.target.ownerDocument.getElementsByClassName("reportdescription");
+rigantestools_InterfaceMappingV1.prototype.isReportDescriptionSelected = function(target) {
+    var nodes = target.ownerDocument.getElementsByClassName("reportdescription");
     if (nodes.length > 0 && ((nodes[0].innerHTML.indexOf("Une bataille a eu lieu à") >= 0) || (nodes[0].innerHTML.indexOf("A battle was fought at") >= 0))) {
         return true;
     }
@@ -204,7 +204,7 @@ rigantestools_InterfaceMappingV1.prototype.isReportDescriptionSelected = functio
  * @this {InterfaceMapping}
  * @return {Object} parameters
  */
-rigantestools_InterfaceMappingV1.prototype.copyAttackReport = function() {
+rigantestools_InterfaceMappingV1.prototype.copyAttackReport = function(target) {
     var simulationParameters = {
         'attackers' : {
             'spearman' : 0,
@@ -225,13 +225,13 @@ rigantestools_InterfaceMappingV1.prototype.copyAttackReport = function() {
     };
 
     try {
-        var nodesTitles = gContextMenu.target.ownerDocument.getElementsByClassName("reportdescription");
+        var nodesTitles = target.ownerDocument.getElementsByClassName("reportdescription");
         if (nodesTitles.length === 0) {
             return simulationParameters;
         }
 
         var castlesAttacked = nodesTitles[0].innerHTML;
-        var nodesUnitsTitle = gContextMenu.target.ownerDocument.getElementsByClassName("unitstitle");
+        var nodesUnitsTitle = target.ownerDocument.getElementsByClassName("unitstitle");
         for (var index = 0; index < nodesUnitsTitle.length; index++) {
             var castleTitle = nodesUnitsTitle[index].innerHTML.split(" - ");
             var castle = castleTitle[0];

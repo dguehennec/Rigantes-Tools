@@ -174,9 +174,9 @@ rigantestools_InterfaceMapping.prototype.getPlayer = function(type) {
  * @this {InterfaceMapping}
  * @return {Boolean} true if selected
  */
-rigantestools_InterfaceMapping.prototype.isPlayerProfileSelected = function() {
+rigantestools_InterfaceMapping.prototype.isPlayerProfileSelected = function(target) {
     if (this.isInitialized()) {
-        return this._currentInterface.isPlayerProfileSelected();
+        return this._currentInterface.isPlayerProfileSelected(target);
     }
     return false;
 };
@@ -187,9 +187,9 @@ rigantestools_InterfaceMapping.prototype.isPlayerProfileSelected = function() {
  * @this {InterfaceMapping}
  * @return {Boolean} true if selected
  */
-rigantestools_InterfaceMapping.prototype.isReportDescriptionSelected = function() {
+rigantestools_InterfaceMapping.prototype.isReportDescriptionSelected = function(target) {
     if (this.isInitialized()) {
-        return this._currentInterface.isReportDescriptionSelected();
+        return this._currentInterface.isReportDescriptionSelected(target);
     }
     return false;
 };
@@ -200,9 +200,9 @@ rigantestools_InterfaceMapping.prototype.isReportDescriptionSelected = function(
  * @this {InterfaceMapping}
  * @return {Boolean} true if selected
  */
-rigantestools_InterfaceMapping.prototype.isOwnInformationsSelected = function() {
+rigantestools_InterfaceMapping.prototype.isOwnInformationsSelected = function(target) {
     if (this.isInitialized()) {
-        return this._currentInterface.isOwnInformationsSelected();
+        return this._currentInterface.isOwnInformationsSelected(target);
     }
     return false;
 };
@@ -213,9 +213,9 @@ rigantestools_InterfaceMapping.prototype.isOwnInformationsSelected = function() 
  * @this {InterfaceMapping}
  * @return {Boolean} true if selected
  */
-rigantestools_InterfaceMapping.prototype.copyAttackReport = function() {
+rigantestools_InterfaceMapping.prototype.copyAttackReport = function(target) {
     if (this.isInitialized()) {
-        return this._currentInterface.copyAttackReport();
+        return this._currentInterface.copyAttackReport(target);
     }
     return false;
 };
@@ -226,18 +226,18 @@ rigantestools_InterfaceMapping.prototype.copyAttackReport = function() {
  * @this {InterfaceMapping}
  * @return {Boolean} true if selected
  */
-rigantestools_InterfaceMapping.prototype.copyProfile = function() {
+rigantestools_InterfaceMapping.prototype.copyProfile = function(target) {
     try {
         var index;
         var province;
 
         var player = null;
-        if (this.isPlayerProfileSelected() && !this.isOwnInformationsSelected()) {
+        if (this.isPlayerProfileSelected(target) && !this.isOwnInformationsSelected(target)) {
             player = this.getPlayer('profile');
         } else {
             player = this.getPlayer();
         }
-        if (player === null) {
+        if (!player) {
             return;
         }
 

@@ -146,29 +146,36 @@ rigantestools_Controller.isInitialized = function() {
 /**
  * @this {Controller}
  */
-rigantestools_Controller.isPlayerProfileSelected = function() {
-    return this._interfaceMapping.isPlayerProfileSelected();
+rigantestools_Controller.isPlayerProfileSelected = function(target) {
+    return this._interfaceMapping.isPlayerProfileSelected(target);
 };
 
 /**
  * @this {Controller}
  */
-rigantestools_Controller.isReportDescriptionSelected = function() {
-    return this._interfaceMapping.isReportDescriptionSelected();
+rigantestools_Controller.isOwnInformationsSelected = function(target) {
+    return this._interfaceMapping.isOwnInformationsSelected(target);
 };
 
 /**
  * @this {Controller}
  */
-rigantestools_Controller.copyProfile = function() {
-    return this._interfaceMapping.copyProfile();
+rigantestools_Controller.isReportDescriptionSelected = function(target) {
+    return this._interfaceMapping.isReportDescriptionSelected(target);
 };
 
 /**
  * @this {Controller}
  */
-rigantestools_Controller.copyAttackReport = function() {
-    return this._interfaceMapping.copyAttackReport();
+rigantestools_Controller.copyProfile = function(target) {
+    return this._interfaceMapping.copyProfile(target);
+};
+
+/**
+ * @this {Controller}
+ */
+rigantestools_Controller.copyAttackReport = function(target) {
+    return this._interfaceMapping.copyAttackReport(target);
 };
 
 /**

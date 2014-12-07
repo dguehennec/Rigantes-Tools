@@ -297,12 +297,12 @@ com.rigantestools.Main.updateContextMenu = function() {
     this._util.setAttribute("rigantestools-contextMenuItemCopyProfile", "hidden", "true");
     this._util.setAttribute("rigantestools-contextMenuItemCopyAttackReport", "hidden", "true");
     if (this.isLordsAndKnightsWebSite(gContextMenu.target.ownerDocument.location.href)) {
-        if (com.rigantestools_Controller.isPlayerProfileSelected()) {
+        if (com.rigantestools_Controller.isPlayerProfileSelected(gContextMenu.target) || com.rigantestools_Controller.isOwnInformationsSelected(gContextMenu.target)) {
             this._util.removeAttribute("rigantestools-contextMenuItemSeparator", "hidden");
             this._util.removeAttribute("rigantestools-contextMenuItemCopyProfile", "hidden");
         }
 
-        if (com.rigantestools_Controller.isReportDescriptionSelected()) {
+        if (com.rigantestools_Controller.isReportDescriptionSelected(gContextMenu.target)) {
             this._util.removeAttribute("rigantestools-contextMenuItemSeparator", "hidden");
             this._util.removeAttribute("rigantestools-contextMenuItemCopyAttackReport", "hidden");
         }
@@ -430,7 +430,7 @@ com.rigantestools.Main.onDefenseTargetClick = function(evt) {
  */
 com.rigantestools.Main.onCopyAttackReportTargetClick = function(evt) {
     this._logger.trace("onCopyAttackReportTargetClick");
-    this.showMainFrame(5, com.rigantestools_Controller.copyAttackReport());
+    this.showMainFrame(5, com.rigantestools_Controller.copyAttackReport(gContextMenu.target));
 };
 
 /**
@@ -442,7 +442,7 @@ com.rigantestools.Main.onCopyAttackReportTargetClick = function(evt) {
  */
 com.rigantestools.Main.onCopyProfileTargetClick = function(evt) {
     this._logger.trace("onCopyProfileTargetClick");
-    com.rigantestools_Controller.copyProfile();
+    com.rigantestools_Controller.copyProfile(gContextMenu.target);
 };
 
 /**

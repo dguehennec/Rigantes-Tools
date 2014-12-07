@@ -65,6 +65,15 @@ var rigantestools_InterfaceMappingV2 = function(parent) {
     /** the current mplayer of lords and knights information */
     this._mplayer = null;
     /** @private */
+    /** the last players profile opened */
+    this._playerProfile = [];
+    /** @private */
+    /** the current players profile selected */
+    this._playerProfileSelected = null;
+    /** @private */
+    /** the max players profile saved */
+    this._maxPlayerProfiles = 5;
+    /** @private */
     /** the worldID */
     this._worldID = "";
 };
@@ -119,11 +128,19 @@ rigantestools_InterfaceMappingV2.prototype.release = function() {
  * get player.
  * 
  * @this {InterfaceMappingV2}
- * @return {Player} the current player
+ * @param {String}
+ *            type the player type
+ * @return {Player} the player
  */
 rigantestools_InterfaceMappingV2.prototype.getPlayer = function(type) {
-    this._logger.trace("getPlayer " + this._mplayer);
-    return new rigantestools_Player(this._mplayer, this._worldID);
+    if (type === 'profile') {
+        if (this._playerProfileSelected) {
+            return new rigantestools_Player(this._playerProfileSelected, this._worldID);
+        }
+        return null;
+    } else {
+        return new rigantestools_Player(this._mplayer, this._worldID);
+    }
 };
 
 /**
@@ -141,12 +158,48 @@ rigantestools_InterfaceMappingV2.prototype.refreshLinks = function(mapX, mapY) {
 };
 
 /**
+ * refresh Player Profile.
+ * 
+ * @this {InterfaceMappingV2}
+ * @param {Object}
+ *            player the player
+ */
+rigantestools_InterfaceMappingV2.prototype.refreshPlayerProfile = function(player) {
+    this._logger.trace("refreshPlayerInformations");
+    this._playerProfile.push(player);
+    if (this._playerProfile.length > this._maxPlayerProfiles) {
+        this._playerProfile.shift();
+    }
+};
+
+/**
  * is Player Profile Selected.
  * 
  * @this {InterfaceMappingV2}
  * @return {Boolean} true if selected
  */
-rigantestools_InterfaceMappingV2.prototype.isPlayerProfileSelected = function() {
+rigantestools_InterfaceMappingV2.prototype.isPlayerProfileSelected = function(target) {
+    if (this._playerProfile.length === 0) {
+        return false;
+    }
+    var currentTarget = target;
+    var i = 0;
+    while (currentTarget && currentTarget.parentNode && i < 15) {
+        if (currentTarget.className && currentTarget.className.indexOf("frame-container") !== -1 && currentTarget.className.indexOf("foreignPlayer") !== -1) {
+            var currentPlayerNickNameSelected = currentTarget.childNodes[8].firstChild.childNodes[1].textContent;
+            for (var index = 0; index < this._playerProfile.length; index++) {
+                if (currentPlayerNickNameSelected === this._playerProfile[index].nick) {
+                    this._playerProfileSelected = this._playerProfile[index];
+                    return true;
+                }
+            }
+            break;
+        } else {
+            currentTarget = currentTarget.parentNode;
+            i++;
+        }
+    }
+    this._playerProfileSelected = null;
     return false;
 };
 
@@ -156,7 +209,17 @@ rigantestools_InterfaceMappingV2.prototype.isPlayerProfileSelected = function() 
  * @this {InterfaceMapping}
  * @return {Boolean} true if selected
  */
-rigantestools_InterfaceMappingV2.prototype.isOwnInformationsSelected = function() {
+rigantestools_InterfaceMappingV2.prototype.isOwnInformationsSelected = function(target) {
+    var currentTarget = target;
+    var i = 0;
+    while (currentTarget && currentTarget.parentNode && i < 15) {
+        if (currentTarget.className && currentTarget.className.indexOf("frame-container") !== -1 && currentTarget.className.indexOf("profile") !== -1) {
+            return true;
+        } else {
+            currentTarget = currentTarget.parentNode;
+            i++;
+        }
+    }
     return false;
 };
 
@@ -164,10 +227,20 @@ rigantestools_InterfaceMappingV2.prototype.isOwnInformationsSelected = function(
  * is Report Description Selected.
  * 
  * @this {InterfaceMappingV2}
- * @return {Boolean} true if selected
+ * @return {Node} the current target idf exist
  */
-rigantestools_InterfaceMappingV2.prototype.isReportDescriptionSelected = function() {
-    return (this.getReportNode() !== null);
+rigantestools_InterfaceMappingV2.prototype.isReportDescriptionSelected = function(target) {
+    var currentTarget = target;
+    var i = 0;
+    while (currentTarget && currentTarget.parentNode && i < 15) {
+        if (currentTarget.className && currentTarget.className.indexOf("frame-container") !== -1 && currentTarget.className.indexOf("report") !== -1) {
+            return currentTarget;
+        } else {
+            currentTarget = currentTarget.parentNode;
+            i++;
+        }
+    }
+    return undefined;
 };
 
 /**
@@ -176,7 +249,7 @@ rigantestools_InterfaceMappingV2.prototype.isReportDescriptionSelected = functio
  * @this {InterfaceMapping}
  * @return {Object} parameters
  */
-rigantestools_InterfaceMappingV2.prototype.copyAttackReport = function() {
+rigantestools_InterfaceMappingV2.prototype.copyAttackReport = function(target) {
     var simulationParameters = {
         'attackers' : {
             'spearman' : 0,
@@ -204,16 +277,21 @@ rigantestools_InterfaceMappingV2.prototype.copyAttackReport = function() {
         '202' : 'lancer'
     };
     try {
-        var nodeReport = this.getReportNode();
+        var nodeReport = this.isReportDescriptionSelected(target);
         if (nodeReport === null) {
             return simulationParameters;
         }
-        var classname = [ "unittable", "resourcetable" ];
+        var classname = [ "wood-hl" ];
         for ( var key in classname) {
             var nodeTable = nodeReport.getElementsByClassName(classname[key]);
+            dump("nodeTable length" + nodeTable.length + "\n");
             for (var index = 0; index < nodeTable.length; index++) {
-                var isDefense = (nodeTable[index].parentNode.parentNode.className.indexOf("defenderPartyContainer") !== -1);
-                var nodesUnitElementTable = nodeTable[index].getElementsByClassName("unitElement");
+                var isDefense = false;
+                // TODO find another way to check if it's a defense or attack
+                if (nodeTable[index].textContent.indexOf("fense") > 0) {
+                    isDefense = true;
+                }
+                var nodesUnitElementTable = nodeTable[index].nextElementSibling.getElementsByClassName("unitElement");
                 for (var indexUnit = 0; indexUnit < nodesUnitElementTable.length; indexUnit++) {
                     var unitType = nodesUnitElementTable[indexUnit].getAttribute("data-primary-key");
                     var unitCount = Number(nodesUnitElementTable[indexUnit].getElementsByClassName("affordable")[0].innerHTML);
@@ -229,26 +307,6 @@ rigantestools_InterfaceMappingV2.prototype.copyAttackReport = function() {
         this._logger.error("onCopyAttackReportTargetClick", e);
     }
     return simulationParameters;
-};
-
-/**
- * get report node.
- * 
- * @this {InterfaceMappingV2}
- * @return {Node} node of the report
- */
-rigantestools_InterfaceMappingV2.prototype.getReportNode = function() {
-    var target = gContextMenu.target;
-    var i = 0;
-    while (typeof target !== "undefined" && target !== null && i < 15) {
-        if (typeof target.className !== "undefined" && target.className !== null && target.className.indexOf("contentCurrentView") !== -1 && target.className.indexOf("report") !== -1) {
-            return target;
-        } else {
-            target = target.parentNode;
-            i++;
-        }
-    }
-    return null;
 };
 
 /**
