@@ -90,8 +90,7 @@ rigantestools_Util.prototype.getBundleString = function(param) {
     try {
         if (this._bundle === null) {
             var appLocale = Services.locale.getApplicationLocale();
-            this._bundle = Services.strings.createBundle(
-                rigantestools_Constant.STRING_BUNDLE.DEFAULT_URL, appLocale);
+            this._bundle = Services.strings.createBundle(rigantestools_Constant.STRING_BUNDLE.DEFAULT_URL, appLocale);
         }
         return this._bundle.GetStringFromName(param);
     } catch (e) {
@@ -287,6 +286,8 @@ rigantestools_Util.prototype.valideTimeHHMM = function(time, twentyHoursMax) {
  * @this {Util}
  * @param {number}
  *            time time in seconds.
+ * @param {boolean}
+ *            withoutSec true if not show the seconds.
  * @return {string} time in format hh:mm:ss.
  */
 rigantestools_Util.prototype.secToTimeStr = function(time, withoutSec) {
@@ -296,7 +297,7 @@ rigantestools_Util.prototype.secToTimeStr = function(time, withoutSec) {
 
     var a = parseInt(time / 3600);
     var b = parseInt((time - (a * 3600)) / 60);
-    if(withoutSec) {
+    if (withoutSec) {
         return ((a < 10) ? "0" + a : a) + ":" + ((b < 10) ? "0" + b : b);
     }
     var d = time - (a * 3600) - (b * 60);
@@ -309,9 +310,11 @@ rigantestools_Util.prototype.secToTimeStr = function(time, withoutSec) {
  * @this {Util}
  * @param {date}
  *            date date to convert in seconds.
- * @return {string} date in format jj.mm.aaaa hh:mm.
+ * @param {boolean}
+ *            withYear true if show the date with year.
+ * @return {string} date in format jj.mm hh:mm.
  */
-rigantestools_Util.prototype.formatDateTime = function(date) {
+rigantestools_Util.prototype.formatDateTime = function(date, withYear) {
     if (date === null) {
         return "";
     }
@@ -320,13 +323,16 @@ rigantestools_Util.prototype.formatDateTime = function(date) {
     if (day < 0) {
         day = 6;
     }
-    var a = rigantestools_Util.prototype.getBundleString("smallDay." + day);
+    var a = this.getBundleString("smallDay." + day);
     var b = (date.getDate() < 10) ? "0" + date.getDate() : date.getDate();
     var c = ((date.getMonth() + 1) < 10) ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
     var d = date.getFullYear();
     var e = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours();
     var f = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
-    return a + " " + b + "." + c + "." + d + " " + e + ":" + f;
+    if (withYear) {
+        return a + " " + b + "." + c + "." + d + " " + e + ":" + f;
+    }
+    return a + " " + b + "." + c + " " + e + ":" + f;
 };
 
 /**
@@ -335,20 +341,26 @@ rigantestools_Util.prototype.formatDateTime = function(date) {
  * @this {Util}
  * @param {date}
  *            date date to convert in seconds.
+ * @param {boolean}
+ *            withoutDayIfPossible true if remove day if not necessary.
  * @return {string} date in format day hh:mm.
  */
-rigantestools_Util.prototype.formatDayTime = function(date) {
+rigantestools_Util.prototype.formatDayTime = function(date, withoutDayIfPossible) {
     if (date === null) {
         return "";
     }
 
+    var now = new Date();
     var day = date.getDay() - 1;
     if (day < 0) {
         day = 6;
     }
-    var a = rigantestools_Util.prototype.getBundleString("smallDay." + day);
+    var a = this.getBundleString("smallDay." + day);
     var e = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours();
     var f = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
+    if (withoutDayIfPossible && (date.toDateString() === now.toDateString())) {
+        return e + ":" + f;
+    }
     return a + " " + e + ":" + f;
 };
 
@@ -408,8 +420,7 @@ rigantestools_Util.prototype.openURL = function(UrlToGoTo) {
                         browserInstance.contentWindow.focus();
                         browserInstance.focus();
                         return true;
-                    }
-                    catch (e) {
+                    } catch (e) {
                         //Nothing
                     }
                 }
@@ -491,7 +502,7 @@ rigantestools_Util.prototype.saveContentToFile = function(title, filename, data)
         var nsIFilePicker = Components.interfaces.nsIFilePicker;
         var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
         fp.init(this._window, title, nsIFilePicker.modeSave);
-        fp.appendFilter(rigantestools_Util.prototype.getBundleString("export.type.file") + " CSV", "*.csv");
+        fp.appendFilter(this.getBundleString("export.type.file") + " CSV", "*.csv");
         fp.defaultString = filename + ".csv";
         fp.defaultExtension = "csv";
         var rv = fp.show();

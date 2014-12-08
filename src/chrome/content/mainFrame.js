@@ -116,7 +116,7 @@ com.rigantestools.MainFrame.init = function() {
     
     this._util.setAttribute("rigantestools-playerName", "value", this._player.name);
     if(this._player.creationDate) {
-        this._util.setAttribute("rigantestools-playerCreationDate", "value", this._util.formatDateTime(new Date(this._player.creationDate)));
+        this._util.setAttribute("rigantestools-playerCreationDate", "value", this._util.formatDateTime(new Date(this._player.creationDate), true));
     }
     this._util.setAttribute("rigantestools-playerLink", "value", this._player.link);
     this._util.setAttribute("rigantestools-playerNbCastles", "value", this._player.getHabitatList().length);
@@ -2440,7 +2440,7 @@ com.rigantestools.MainFrame.refreshAttackDefenseSlowTree = function() {
         var treerow = [ "xul:treerow", { properties : properties }];
 		for (var row in item) {
 			if(row.indexOf("Date")>=0) { 
-				treerow.push([ "xul:treecell", {label : this._util.formatDateTime(item[row])} ]);
+				treerow.push([ "xul:treecell", {label : this._util.formatDayTime(item[row], true)} ]);
 			} 
 			else if(row==="unitType" || row==="ralentUnitType"){
 				var unit = "";
