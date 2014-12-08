@@ -37,9 +37,21 @@
 "use strict";
 
 if (!com) {
+    /**
+     * The instance com in needed.
+     * 
+     * @constructor
+     * @this {com}
+     */
     var com = {};
 }
 if (!com.rigantestools) {
+    /**
+     * The instance rigantestools if needed.
+     * 
+     * @constructor
+     * @this {rigantestools}
+     */
     com.rigantestools = {};
 }
 

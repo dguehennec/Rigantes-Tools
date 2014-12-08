@@ -96,7 +96,7 @@ var rigantestools_Player = function(mplayer, worldID) {
  * init player informations.
  * 
  * @this {Player}
- * @param [mPlayer}
+ * @param {mPlayer}
  *            mplayer of LordsAndKnight
  * @return {boolean} true if successful.
  */

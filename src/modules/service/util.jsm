@@ -282,20 +282,23 @@ rigantestools_Util.prototype.valideTimeHHMM = function(time, twentyHoursMax) {
 };
 
 /**
- * convert seconds to time string hh:mm:ss
+ * convert time to time string hh:mm:ss
  * 
  * @this {Util}
  * @param {number}
  *            time time in seconds.
  * @return {string} time in format hh:mm:ss.
  */
-rigantestools_Util.prototype.secToTimeStr = function(time) {
+rigantestools_Util.prototype.secToTimeStr = function(time, withoutSec) {
     if (time === null) {
         return "";
     }
 
     var a = parseInt(time / 3600);
     var b = parseInt((time - (a * 3600)) / 60);
+    if(withoutSec) {
+        return ((a < 10) ? "0" + a : a) + ":" + ((b < 10) ? "0" + b : b);
+    }
     var d = time - (a * 3600) - (b * 60);
     return ((a < 10) ? "0" + a : a) + ":" + ((b < 10) ? "0" + b : b) + ":" + ((d < 10) ? "0" + d : d);
 };
@@ -347,16 +350,6 @@ rigantestools_Util.prototype.formatDayTime = function(date) {
     var e = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours();
     var f = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
     return a + " " + e + ":" + f;
-};
-
-rigantestools_Util.prototype.formatTime = function(date) {
-    if (date === null) {
-        return "";
-    }
-
-    var e = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours();
-    var f = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
-    return e + ":" + f;
 };
 
 /**

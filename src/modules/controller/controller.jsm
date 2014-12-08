@@ -47,9 +47,10 @@ var EXPORTED_SYMBOLS = [ "rigantestools_Controller" ];
 /* ***************** Private object used by Controller ********************* */
 
 /**
- * Creates an instance of private data associated with the public Controller.
+ * Creates a single instance of private data associated.
  * 
  * @constructor
+ * @static
  * @this {Controller}
  */
 var rigantestools_Controller = {
@@ -71,7 +72,11 @@ var rigantestools_Controller = {
 };
 
 /**
+ * connect the listener to the controller
+ *
  * @this {Controller}
+ * @param {Object}
+ *            listener the listener
  */
 rigantestools_Controller.connect = function(listener) {
     if (!this._interfaceMapping) {
@@ -81,7 +86,11 @@ rigantestools_Controller.connect = function(listener) {
 };
 
 /**
+ * disconnect the listener of the controller
+ *
  * @this {Controller}
+ * @param {Object}
+ *            listener the listener
  */
 rigantestools_Controller.disconnect = function(listener) {
     this.lordAndKnightsInterfaceUnloaded(listener);
@@ -95,7 +104,13 @@ rigantestools_Controller.disconnect = function(listener) {
 };
 
 /**
+ * notify the controller that the lordAndKnightsInterface is loaded
+ *
  * @this {Controller}
+ * @param {Object}
+ *            listener the listener
+ * @param {DOMDocument}
+ *            doc the document of the current page
  */
 rigantestools_Controller.lordAndKnightsInterfaceLoaded = function(listener, doc) {
     if (this.isInitialized()) {
@@ -112,7 +127,11 @@ rigantestools_Controller.lordAndKnightsInterfaceLoaded = function(listener, doc)
 };
 
 /**
+ * notify the controller that the lordAndKnightsInterface is unloaded
+ *
  * @this {Controller}
+ * @param {Object}
+ *            listener the listener
  */
 rigantestools_Controller.lordAndKnightsInterfaceUnloaded = function(listener) {
     if (this._currentInterfaceListener != listener) {
@@ -137,56 +156,90 @@ rigantestools_Controller.getDocument = function() {
 };
 
 /**
+ * is initialized
+ *
  * @this {Controller}
+ * @return {boolean} true if interface initialized
  */
 rigantestools_Controller.isInitialized = function() {
     return this._interfaceMapping.isInitialized();
 };
 
 /**
+ * is player profile window is selected
+ *
  * @this {Controller}
+ * @param {Node}
+ *            target the current node selected
+ * @return {boolean} true if player profile window is selected
  */
 rigantestools_Controller.isPlayerProfileSelected = function(target) {
     return this._interfaceMapping.isPlayerProfileSelected(target);
 };
 
 /**
+ * is own information window is selected
+ *
  * @this {Controller}
+ * @param {Node}
+ *            target the current node selected
+ * @return {boolean} true if own information window is selected
  */
 rigantestools_Controller.isOwnInformationsSelected = function(target) {
     return this._interfaceMapping.isOwnInformationsSelected(target);
 };
 
 /**
+ * is report window is selected
+ *
  * @this {Controller}
+ * @param {Node}
+ *            target the current node selected
+ * @return {boolean} true if report window is selected
  */
 rigantestools_Controller.isReportDescriptionSelected = function(target) {
     return this._interfaceMapping.isReportDescriptionSelected(target);
 };
 
 /**
+ * copy profile
+ *
  * @this {Controller}
+ * @param {Node}
+ *            target the current node selected
+ * @return {boolean} true if copy is successful
  */
 rigantestools_Controller.copyProfile = function(target) {
     return this._interfaceMapping.copyProfile(target);
 };
 
 /**
+ * copy attack report
+ *
  * @this {Controller}
+ * @param {Node}
+ *            target the current node selected
+ * @return {Object} attack report information
  */
 rigantestools_Controller.copyAttackReport = function(target) {
     return this._interfaceMapping.copyAttackReport(target);
 };
 
 /**
+ * get number of unread messages
+ *
  * @this {Controller}
+ * @return {Number} the number unread messages
  */
 rigantestools_Controller.getNbUnreadMessage = function() {
     return this._interfaceMapping.getNotifier().getNbUnreadMessage();
 };
 
 /**
+ * get player
+ *
  * @this {Controller}
+ * @return {Player} the player
  */
 rigantestools_Controller.getPlayer = function() {
     return this._interfaceMapping.getPlayer();

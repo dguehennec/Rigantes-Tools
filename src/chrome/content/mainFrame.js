@@ -1265,7 +1265,6 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                 var minDate = null;
                 var maxDate = null;
                 // var probableDate = null ;
-                var maxLuck = 0;
                 var treechildrenAttack = [ "xul:treechildren", {}];
                 for(var indexHabTrans =0; indexHabTrans<habitatTransits.length; indexHabTrans++){
                     var found = false;
@@ -1298,9 +1297,6 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     }
                     if(maxDate===null || maxDate<habitatTransits[indexHabTrans].date) {
                         maxDate = habitatTransits[indexHabTrans].date;
-                    }
-                    if(maxLuck<Math.round(habitatTransits[indexHabTrans].luck)) {
-                        maxLuck = Math.round(habitatTransits[indexHabTrans].luck);
                     }
                     
                     // TODO test to determine the date of the impact "likely"
@@ -1449,15 +1445,13 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                         [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.castleTarget")}],
                         [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.nbUD")}],
                         [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.nbUDInProgress")}],
-                        [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.nbUOAttackers")}],
-                        [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.maxLuck")}]
+                        [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.nbUOAttackers")}]
                     ],
                     [ "xul:vbox", {}, 
                       [ "xul:label", { value : habitat.link}],
                       [ "xul:label", { value : totalUD + totalUDDet}],
                       [ "xul:label", { value : totalUDInProgress + totalUDInProgressDet}],
-                      [ "xul:label", { value : totalUO + totalUODet}],
-                      [ "xul:label", { value : maxLuck + " %"}]
+                      [ "xul:label", { value : totalUO + totalUODet}]
                     ],
                     [ "xul:spacer", { flex : 1 }],
                     [ "xul:vbox", {}, 
@@ -1465,7 +1459,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.nbCastlesAttackers")}],
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.firstDate")}],
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.lastDate")}],
-                      [ "xul:label", { value : this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime")}]
+                      [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.maxdefensetime")}]
                     ],
                     [ "xul:vbox", {}, 
                       [ "xul:label", { value : listAttackers.length}],
@@ -1486,9 +1480,6 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                 if(totalUO>0) {
                     message += "\n👊" + this._util.getBundleString("mainframe.warinprogress.nbUOAttackers") + " " + totalUO + totalUODet;
                 }
-                if(listCastlesAttackers.length>0) {
-                    message += "\n" + this._util.getBundleString("mainframe.warinprogress.maxLuck") + " " + maxLuck + " %";
-                }
                 if(minDate!==null) {
                     message += "\n\n📅" + this._util.getBundleString("mainframe.warinprogress.date") + " :";
                     message += "\n" + this._util.getBundleString("mainframe.warinprogress.firstUnit") + " " + this._util.formatDateTime(minDate);
@@ -1497,7 +1488,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     }
                 }
                 if(defense){
-                    message += "\n" + this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " " + this._util.secToTimeStr(defense.maxDefenseTime);
+                    message += "\n" + this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " :" + this._util.secToTimeStr(defense.maxDefenseTime, true);
                 }
                 if(listAttackers.length>0) {
                     var playerAttackersMes = "\n👊" + this._util.getBundleString("mainframe.warinprogress.attackOf").replace("%NB%",listAttackers.length);
@@ -1548,7 +1539,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
 
                    if( habitat.nextBattleDate !==null ) {
                     this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryIconeDate") ;
-                    this._generatedAttacksSummary += " " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryNextRound") + " " + this._util.formatTime(habitat.nextBattleDate) + "\n" ;
+                    this._generatedAttacksSummary += " " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryNextRound") + " " + this._util.formatDayTime(habitat.nextBattleDate) + "\n" ;
                  }
                    
                    if( (minDate!==null) ) { // incoming attacks
@@ -1573,7 +1564,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryUO").replace("%NBUO%", totalUO) + " " + totalUODet + "\n";
                 }
                 if(defense){
-                    this._generatedAttacksSummary += this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " " + this._util.secToTimeStr(defense.maxDefenseTime) + "\n";
+                    this._generatedAttacksSummary += this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " :" + this._util.secToTimeStr(defense.maxDefenseTime, true) + "\n";
                 }
                 this._generatedAttacksSummary += "\n";
 
@@ -1585,7 +1576,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     this._generatedAttacksSummary2OnTarget += habitat.link ;
                     this._generatedAttacksSummary2OnTarget += ", " + totalUO + " UO" ;
                      this._generatedAttacksSummary2OnTarget += ", " + (totalUD+totalUDInProgress) + " UD" ;
-                       this._generatedAttacksSummary2OnTarget += ", " + this._util.formatTime(habitat.nextBattleDate) ;
+                       this._generatedAttacksSummary2OnTarget += ", " + this._util.formatDayTime(habitat.nextBattleDate) ;
                        this._generatedAttacksSummary2OnTarget += "\n" ;
                    }
                    else

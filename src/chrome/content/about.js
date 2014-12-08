@@ -67,6 +67,11 @@ com.rigantestools.About.init = function() {
     this._util.setAttribute("rigantestools-version", "value", this._util.getBundleString("about.version.label").replace("%VERSION%", com.rigantestools_Constant.VERSION));
 };
 
+/**
+ * Open rigantes web site.
+ * 
+ * @this {About}
+ */
 com.rigantestools.About.openWebSite = function() {
     this._util.openURL('http://rigantes.free.fr/');
 };

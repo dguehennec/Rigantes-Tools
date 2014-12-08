@@ -432,6 +432,7 @@ com.rigantestools.Options.deleteWarArea = function() {
     // refresh area
     this.refreshWarArea();
 };
+
 /**
  * on selected item in war tree option.
  * 
