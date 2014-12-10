@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css"?>
+<?xml-stylesheet href="chrome://rigantestools/skin/rigantestools.css" type="text/css"?>
+<?xml-stylesheet href="chrome://rigantestools/skin/qunit-1.16.0.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://rigantestools/locale/rigantestools.dtd">
+
+<window title="tests"	
+	orient="vertical"
+	windowtype="window:rigantestoolsMessage"
+	width="1200" height="800"
+	lxX="0" lxY="0" layout="1" tab="0"
+    persist="width height tab layout textSize textSizeList lxX lxY"
+	onload="com.rigantestools.Tests.init();" 
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="rigantestools-bundle" src="chrome://rigantestools/locale/rigantestools.properties" />
+	</stringbundleset>
+	
+	<script type="application/x-javascript" src="chrome://rigantestools/content/qunit-1.16.0.js" />
+	<script type="application/x-javascript" src="chrome://rigantestools/content/tests.js" />
+
+	<hbox>
+		<spacer flex="1"/>
+		<button label="&message.close.label;" oncommand="window.close();"/>
+	</hbox>
+	
+	<vbox id="qunit" flex="1" style="overflow: scroll"></vbox>
+	
+
+</window>

@@ -26,7 +26,40 @@
 		</pluginRepository>
 	</pluginRepositories>
 
+
 	<profiles>
+		<profile>
+			<id>Test</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<phase>generate-test-resources</phase>
+								<configuration>
+									<target>
+										<echo message="Copy tests" />
+										<echo message="Tests are available at the url chrome://rigantestools/content/tests.xul" />
+										<copy todir="${project.build.directory}/sources/chrome/">
+											<fileset dir="${basedir}/tests/" />
+										</copy>
+									</target>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>Prod</id>
 			<activation>
@@ -61,22 +94,62 @@
 			</build>
 		</profile>
 	</profiles>
+
+
 	<build>
 		<sourceDirectory>src/</sourceDirectory>
 		<plugins>
+			<plugin>
+				<!-- replace version in files -->
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<executions>
+					<execution>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>${project.build.directory}/sources/install.rdf</include>
+								<include>${project.build.directory}/sources/modules/constant/constants.jsm</include>
+							</includes>
+							<replacements>
+								<replacement>
+									<token>PROJECT_VERSION</token>
+									<value>${project.version}</value>
+								</replacement>
+							</replacements>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
 				<executions>
 					<execution>
-						<phase>compile</phase>
+						<id>copy</id>
+						<phase>generate-sources</phase>
 						<configuration>
 							<target>
 								<echo message="Copy sources" />
 								<copy todir="${project.build.directory}/sources">
 									<fileset dir="${basedir}/src/" />
 								</copy>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>package</id>
+						<phase>prepare-package</phase>
+						<configuration>
+							<target>
 								<echo message="Generate XPI archive" />
 								<zip update="true" compress="true"
 									destfile="${project.build.directory}/${project.name}-${project.version}.xpi"
