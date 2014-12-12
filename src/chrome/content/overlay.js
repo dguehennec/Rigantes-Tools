@@ -139,7 +139,7 @@ com.rigantestools.Main.checkVersion = function() {
     if (lastversion === "") {
         this._util.installButton("nav-bar", "rigantestools-toolbar-button");
     }
-    this._util.setPref(com.rigantestools_Constant.PREF_CURRENT_VERSION, com.rigantestools_Constant.VERSION_NUMBER);
+    this._util.setPref(com.rigantestools_Constant.PREF_CURRENT_VERSION, com.rigantestools_Constant.VERSION);
 };
 
 /**

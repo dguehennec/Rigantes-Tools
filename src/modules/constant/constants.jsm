@@ -62,8 +62,7 @@ rigantestools_Constant.LOGGER = {
  * 
  * @constant
  */
-rigantestools_Constant.VERSION = "3.0.0";
-rigantestools_Constant.VERSION_NUMBER = 300;
+rigantestools_Constant.VERSION = "PROJECT_VERSION";
 
 /**
  * Preferences
