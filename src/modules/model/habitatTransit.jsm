@@ -41,7 +41,7 @@ Components.utils.import("resource://rigantestools/service/logger.jsm");
 Components.utils.import("resource://rigantestools/model/unit.jsm");
 Components.utils.import("resource://rigantestools/constant/constants.jsm");
 
-var EXPORTED_SYMBOLS = [ "rigantestools_HabitatTransit" ];
+var EXPORTED_SYMBOLS = [ "rigantestools_HabitatTransit", "rigantestools_HabitatUnit" ];
 
 /**
  * Creates an instance of HabitatTransit.
@@ -165,7 +165,79 @@ rigantestools_HabitatTransit.prototype.getResourceCount = function(resourceType)
     return 0;
 };
 
+
 /**
  * Freeze the interface
  */
 Object.freeze(rigantestools_HabitatTransit);
+
+
+/**
+ * Creates an instance of HabitatUnit
+ * 
+ * @constructor
+ * @this {HabitatUnit}
+ * @param {object}
+ *            mhabitat The Lords And Knights Habitat object.
+ */
+var rigantestools_HabitatUnit = function(mhabitatUnit, world) {
+   this.battleType = mhabitatUnit.battleType;
+
+    if (mhabitatUnit.sourceHabitat) 
+    {
+        this.sourceHabitatName = mhabitatUnit.sourceHabitat.name;
+        this.sourceHabitatId = mhabitatUnit.sourceHabitat.id;
+        this.sourceHabitatOrgX = mhabitatUnit.sourceHabitat.mapX;
+        this.sourceHabitatOrgY = mhabitatUnit.sourceHabitat.mapY;
+        this.sourceHabitatLink = 'l+k://coordinates?' + this.sourceHabitatOrgX + ',' + this.sourceHabitatOrgY + '&' + world;
+
+        if (mhabitatUnit.sourceHabitat.player) 
+        {
+            this.sourceHabitatPlayerName = mhabitatUnit.sourceHabitat.player.nick;
+            this.sourceHabitatPlayerLink = 'l+k://player?' + mhabitatUnit.sourceHabitat.player.id + '&' + world;
+            this.sourceHabitatPlayerId = mhabitatUnit.sourceHabitat.player.id;
+			//FIXME: ces 3 valeurs sont undefined sauf si l'habitat source est egal a l'habitat hote. Depuis la nouvelle interface
+        }
+         
+        
+    }
+
+    this._units = [];
+
+    // get Unites available
+    if (mhabitatUnit.units) 
+    {
+        var units = mhabitatUnit.units;
+        for (var indexUnit = 0; indexUnit < units.length; indexUnit++) 
+        {
+            var unit = new rigantestools_Unit(units[indexUnit]);
+            this._units.push(unit);
+        }
+    }
+};
+
+
+
+
+rigantestools_HabitatUnit.prototype.getUnitCount = function(unitType) {
+    var nb = 0;
+    for (var index = 0; index < this._units.length; index++) {
+        var unit = this._units[index];
+        if (unit.getType() === unitType) {
+            nb += unit.getCount();
+        }
+    }
+    return nb;
+};
+
+
+
+/**
+ * Freeze the interface
+ */
+Object.freeze(rigantestools_HabitatUnit);
+
+
+
+
+

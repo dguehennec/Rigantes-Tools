@@ -39,6 +39,7 @@
 Components.utils.import("resource://rigantestools/service/util.jsm");
 Components.utils.import("resource://rigantestools/service/logger.jsm");
 Components.utils.import("resource://rigantestools/constant/constants.jsm");
+Components.utils.import("resource://rigantestools/service/fightPreview.jsm");
 
 var EXPORTED_SYMBOLS = [ "rigantestools_CurrentSlowDefenseCalculate" ];
 
@@ -50,186 +51,124 @@ var EXPORTED_SYMBOLS = [ "rigantestools_CurrentSlowDefenseCalculate" ];
  * @param {Player}
  *            player the player
  */
-var rigantestools_CurrentSlowDefenseCalculate = function(player) {
+var rigantestools_CurrentSlowDefenseCalculate = function( habitat, battleDate ) 
+{
     this._logger = new rigantestools_Logger("CurrentSlowDefenseCalculate");
     this._logger.trace("init");
 
-    this._bufferRounds = [];
-    this._stepDuration = 10 * 60;
-    this._duration = 60 * 60 * 24;
+	var listud = [] ;
+ 
+	this.defense_list = [] ;
 
-    // get attaks to player
-    var habitats = player.getHabitatList();
-    for (var indexHab = 0; indexHab < habitats.length; indexHab++) {
-        var habitat = habitats[indexHab];
-        var habitatTransits = habitat.getHabitatTransits(rigantestools_Constant.TRANSITTYPE.ATTACKER, true);
-        if ((habitatTransits.length > 0) || (habitat.getUnitAttackersCount() > 0)) {
-            // get the min date of attack
-            var minDate = null;
-            for (var indexHabTrans = 0; indexHabTrans < habitatTransits.length; indexHabTrans++) {
-                if (minDate === null || minDate > habitatTransits[indexHabTrans].date) {
-                    minDate = habitatTransits[indexHabTrans].date;
-                }
-            }
-            var bufferRound = this.createNewBufferRound(minDate);
-            this.addUnitsToBufferRound(bufferRound, habitat);
-            var maxDefenseTime = this.calculateBufferRound(bufferRound);
-            this._bufferRounds[habitat.id] = {
-                'name' : habitat.name,
-                'bufferRound' : bufferRound,
-                'maxDefenseTime' : maxDefenseTime
-            };
-        }
+
+	var unitList ;
+
+	// Get units in castle */
+	for( var ii=0 ; ii<2; ii=ii+1 )
+	{
+     			
+		if( ii==0 )
+ 		{
+			unitList = habitat.getHabitatUnits(rigantestools_Constant.BATTLETYPE.OWN_HABITAT);
+		}
+		else
+ 		{
+			unitList = habitat.getHabitatUnits(rigantestools_Constant.BATTLETYPE.EXTERNAL_UNITS_TO_DEFENSE);
+		}
+
+		for( var key in unitList ) 
+		{
+			var nbud = 0 ;
+			if( 1 ) 
+			{
+                  
+                nbud = this.addUnits(  unitList[key], 0, listud ) ; 
+                    				
+				var item = {'castle':unitList[key].sourceHabitatName,'player':unitList[key].sourceHabitatPlayerName,'date':null,'nbud':nbud};
+   				
+				this.defense_list.push( item ) ;
+    		}
+          	   					
+		}
+	}	
+	
+
+	// Get incoming units
+	unitList = habitat.getHabitatTransits(rigantestools_Constant.TRANSITTYPE.DEFENSE,true);
+  	
+    
+	for(var key in unitList) 
+	{
+		var nbud = 0 ;
+ 		if (unitList.hasOwnProperty(key)) 
+		{             		
+                           
+          	nbud = this.addUnits(  unitList[key], unitList[key].date.getTime(), listud ) ; 
+
+			var item = {'castle':unitList[key].sourceHabitatName,'player':unitList[key].sourceHabitatPlayerName,'date':unitList[key].date,'nbud':nbud};
+
+			this.defense_list.push( item ) ;
+          	   					
+		}
     }
+		
+	this.fightPreview = new rigantestools_FightPreview( habitat, listud, battleDate  ) ;
+	this.maxDefenseTime = this.fightPreview.fightpreview_dltime/1000 ;
+	this.trou = this.fightPreview.fightpreview_trou ;
+ 
 };
 
-/**
- * generate buffer Round.
- * 
- * @this {CurrentSlowDefenseCalculate}
- */
-rigantestools_CurrentSlowDefenseCalculate.prototype.calculateBufferRound = function(bufferRound) {
-    var index;
-    var totalNbSpearman = 0;
-    var totalNbSwordman = 0;
-    var totalNbCrossbowman = 0;
-    var totalNbArcher = 0;
-    var totalNbScorpionRider = 0;
-    var totalNbLancer = 0;
-
-    var firstRoundTime = 0;
-    var lastRoundTime = 0;
-    var issue = false;
-    // calculate lost unit per round
-    for (index = 0; index < bufferRound.length; index++) {
-        var item = bufferRound[index];
-
-        if (index === 0) {
-            firstRoundTime = item.date.getTime();
-            lastRoundTime = firstRoundTime;
-        } else if (!issue) {
-            lastRoundTime = item.date.getTime();
-        }
-
-        totalNbSpearman = Math.floor(totalNbSpearman / 2) + item.nbNewSpearman;
-        totalNbSwordman = Math.floor(totalNbSwordman / 2) + item.nbNewSwordman;
-        totalNbCrossbowman = Math.floor(totalNbCrossbowman / 2) + item.nbNewCrossbowman;
-        totalNbArcher = Math.floor(totalNbArcher / 2) + item.nbNewArcher;
-        totalNbScorpionRider = Math.floor(totalNbScorpionRider / 2) + item.nbNewScorpionRider;
-        totalNbLancer = Math.floor(totalNbLancer / 2) + item.nbNewLancer;
-        item.unitCount = totalNbSpearman + totalNbSwordman + totalNbCrossbowman + totalNbArcher + totalNbScorpionRider + totalNbLancer;
-        if (item.unitCount <= 100) {
-            issue = true;
-            totalNbSpearman = 0;
-            totalNbSwordman = 0;
-            totalNbCrossbowman = 0;
-            totalNbArcher = 0;
-            totalNbScorpionRider = 0;
-            totalNbLancer = 0;
-            item.unitCount = 0;
-            item.issue = true;
-        }
+rigantestools_CurrentSlowDefenseCalculate.prototype.addUnits = function( habitat, time, listud )
+{
+    var index, unit;
+    var nb = 0;
+    for (index = 0; index < habitat._units.length; index++) {
+        unit = habitat._units[index];
+        if(  unit.getCount() > 0 )
+        {
+        	nb += unit.getCount() ;
+ 			var item = {'nb':unit.getCount(),'type':unit.getType(),'time':time};
+			listud.push(item);
+		}
     }
-    // remove not necessary round
-    for (index = bufferRound.length - 2; index >= 0; index--) {
-        if (bufferRound[index].unitCount !== 0) {
-            break;
-        }
-        bufferRound.pop();
-    }
-
-    var maxDefenseTime = Math.round((lastRoundTime - firstRoundTime) / 1000);
-    return maxDefenseTime;
-};
-
-/**
- * create new bufferRound.
- * 
- * @this {CurrentSlowDefenseCalculate}
- */
-rigantestools_CurrentSlowDefenseCalculate.prototype.createNewBufferRound = function(date) {
-    var bufferRound = [];
-    // initialize buffer Rounds with date + 5 minutes
-    var startDefenseRound = new Date().getTime() - 300000;
-    if (date) {
-        startDefenseRound = date.getTime() + this._stepDuration;
-    }
-
-    for (var step = 0; step <= (this._duration / this._stepDuration); step++) {
-        bufferRound.push({
-            'date' : new Date(startDefenseRound + step * this._stepDuration * 1000),
-            'unitCount' : 0,
-            'newUnitCount' : 0,
-            'issue' : false,
-            'nbNewSpearman' : 0,
-            'nbNewSwordman' : 0,
-            'nbNewCrossbowman' : 0,
-            'nbNewArcher' : 0,
-            'nbNewScorpionRider' : 0,
-            'nbNewLancer' : 0
-        });
-    }
-    return bufferRound;
-};
-
-/**
- * add Units To BufferRound.
- * 
- * @this {CurrentSlowDefenseCalculate}
- */
-rigantestools_CurrentSlowDefenseCalculate.prototype.addUnitsToBufferRound = function(bufferRound, habitat) {
-    var round;
-    // Add default units of caslte
-    if (bufferRound.length > 0) {
-        round = bufferRound[0];
-        round.nbNewSpearman = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.SPEARMAN, false);
-        round.nbNewSwordman = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.SWORDMAN, false);
-        round.nbNewCrossbowman = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.CROSSBOWMAN, false);
-        round.nbNewArcher = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.ARCHER, false);
-        round.nbNewScorpionRider = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.SCORPIONRIDER, false);
-        round.nbNewLancer = habitat.getUnitCount(rigantestools_Constant.UNITTYPE.LANCER, false);
-        round.newUnitCount = 0;
-    }
-    // Add units in transit
-    var habitatTransitsDefense = habitat.getHabitatTransits(rigantestools_Constant.TRANSITTYPE.DEFENSE, true);
-    for (var indexTransit = 0; indexTransit < habitatTransitsDefense.length; indexTransit++) {
-        var habitatTransit = habitatTransitsDefense[indexTransit];
-        for (var index = 0; index < bufferRound.length; index++) {
-            var diffTime = habitatTransit.date.getTime() - bufferRound[index].date.getTime();
-            if ((diffTime >= 0) && (diffTime < this._stepDuration * 1000)) {
-                round = bufferRound[index];
-                round.nbNewSpearman += habitatTransit.getUnitCount(rigantestools_Constant.UNITTYPE.SPEARMAN);
-                round.nbNewSwordman += habitatTransit.getUnitCount(rigantestools_Constant.UNITTYPE.SWORDMAN);
-                round.nbNewCrossbowman += habitatTransit.getUnitCount(rigantestools_Constant.UNITTYPE.CROSSBOWMAN);
-                round.nbNewArcher += habitatTransit.getUnitCount(rigantestools_Constant.UNITTYPE.ARCHER);
-                round.nbNewScorpionRider += habitatTransit.getUnitCount(rigantestools_Constant.UNITTYPE.SCORPIONRIDER);
-                round.nbNewLancer += habitatTransit.getUnitCount(rigantestools_Constant.UNITTYPE.LANCER);
-                round.newUnitCount = round.nbNewSpearman + round.nbNewSwordman + round.nbNewCrossbowman + round.nbNewArcher + round.nbNewScorpionRider + round.nbNewLancer;
-            }
-        }
-    }
-};
-
-/**
- * get result list.
- * 
- * @this {CurrentSlowDefenseCalculate}
- */
-rigantestools_CurrentSlowDefenseCalculate.prototype.getResultList = function() {
-    return this._bufferRounds;
-};
-
-
-/**
- * get slow defense.
- * 
- * @this {CurrentSlowDefenseCalculate}
- */
-rigantestools_CurrentSlowDefenseCalculate.prototype.getSlowDefense = function(habitat) {
-    return this._bufferRounds[habitat.id];
+	return nb ;
 };
 
 /**
  * Freeze the interface
  */
 Object.freeze(rigantestools_CurrentSlowDefenseCalculate);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
