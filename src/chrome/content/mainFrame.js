@@ -1213,54 +1213,29 @@ com.rigantestools.MainFrame.addProability = function(habitatTransits) {
     
 };
 
-
-// Callback of button "Go to DL"
-com.rigantestools.MainFrame.onGoToDLButtonClick = function() {
-
-	var link ;
-	var date ;
-	
-	
-	var index = document.getElementById("rigantestools-warinprogress-tabbox").selectedIndex;
-	if( index<com.rigantestools.MainFrame._AttackList.length ) 
-	{
-		link = com.rigantestools.MainFrame._AttackList[index].habitat_link ; 
-		date = com.rigantestools.MainFrame._AttackList[index].trou ; 
+/**
+ * call on go to DL button clicked
+ * 
+ * @this {MainFrame}
+ * @param {Event}
+ *            evt event of the element
+ */
+com.rigantestools.MainFrame.onGoToDLButtonClick = function(evt) {
+	var link = "";
+	var date = new Date();
+	var index = this._util.getAttribute('rigantestools-warinprogress-tabbox', 'selectedIndex');
+	if (index < this._AttackList.length) {
+		link = this._AttackList[index].habitat_link;
+		date = this._AttackList[index].trou;
 	}
-
-	var element = window.document.getElementById("rigantestools-attackDefenseSlowTargetLink");
-	element.value = link ;
-
-
-
-	element = window.document.getElementById("rigantestools-attackDefenseSlowTime");
-	element.value = com.rigantestools.MainFrame._util.formatTime(date) ;
-
-
-	element = window.document.getElementById("rigantestools-attackDefenseSlowDate");
-	element.dateValue = date ;
-	
-	
-	
-
-	var tabpanels = window.document.getElementById("rigantestools-tabpanels");
-	var panel = window.document.getElementById("attackdefensetab");
-	tabpanels.selectedIndex = 4 ;
-
-	var tabbox = window.document.getElementById("rigantestools-tabbox");
-	var panel = window.document.getElementById("attackdefensetab");
-	tabbox.selectedIndex = 4 ;
-
-	var tabs = window.document.getElementById("rigantestools-tabs");
-	tabs.selectedIndex = 4 ;
-
-    
-    //this._util.setAttribute('rigantestools-tabbox', 'selectedIndex', 4);
-
-	//this._util.setAttribute('rigantestools-tabpanels','selectedIndex',4);
+	this._util.setAttribute('rigantestools-attackDefenseSlowTargetLink', 'value', link);
+	this._util.setAttribute('rigantestools-attackDefenseSlowTime', 'value', this._util.formatTime(date));
+	var datePicker = document.getElementById('rigantestools-attackDefenseSlowDate');
+	if (datePicker) {
+	    datePicker._setValueNoSync(date);
+	}
+	this._util.setAttribute('rigantestools-tabbox', 'selectedIndex', 4);
 }
-
-
 
 /**
  * initialize window war in progess informations
@@ -1290,7 +1265,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
         this._generatedAttacksSummary2OnTarget = "";
         this._generatedAttacksSummary2OnTransit = "";
     	this._AttackList = [] ;
-        
+        var that = this;
 
         // Add attaks to player
         var habitats = this._player.getHabitatList();
@@ -1526,7 +1501,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     [ "xul:vbox", { flex : 1 },
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.fightInformation")}],
                       [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsSlowDefense, treechildrenSlowDefense],
-                      [ "xul:button", { label : "Go to DL", oncommand : com.rigantestools.MainFrame.onGoToDLButtonClick }]
+                      [ "xul:button", { label : "Go to DL", oncommand : function(evt) { that.onGoToDLButtonClick(evt);} }]
                    ],
                     [ "xul:spacer", { style : "width: 10px"}],
                     [ "xul:vbox", { flex : 1 },
