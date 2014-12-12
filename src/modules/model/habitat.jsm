@@ -90,6 +90,8 @@ var rigantestools_Habitat = function(mhabitat, world) {
         /** @private */
         this._habitatTransits = [];
         /** @private */
+        this._habitatUnits = [];
+        /** @private */
         this._modifiers = [];
         /** @private */
         this.isAttacked = false;
@@ -204,6 +206,25 @@ var rigantestools_Habitat = function(mhabitat, world) {
             this._logger.error("init error in get Unites in transits", e);
         }
 
+
+        try {
+            // get Units in habitat
+            this._logger.trace("get Units in habitats");
+            if (mhabitat.habitatUnits) {
+                 var mhabitatUnit = mhabitat.habitatUnits;
+                for (index = 0; index < mhabitatUnit.length; index++) {
+                    var habitatUnit = new rigantestools_HabitatUnit(mhabitatUnit[index], world);
+                    this._habitatUnits.push(habitatUnit);
+                }
+            }
+        } catch (e) {
+            this._logger.error("init error in get Unites in habitat:" + e);
+        }
+
+
+
+
+
         try {
             // get Units in mission
             this._logger.trace("get Units in mission");
@@ -311,11 +332,12 @@ rigantestools_Habitat.prototype.getHabitatTransits = function(transitType, onMe)
     for (var index = 0; index < this._habitatTransits.length; index++) {
         var currentHabitatTransit = this._habitatTransits[index];
         if (currentHabitatTransit.transitType === transitType) {
-            if (onMe) {
-                if (currentHabitatTransit.destinationHabitatId === this.id) {
+            if (onMe) { 
+    			//this._logger.info( "destinationHabitatId=" + currentHabitatTransit.destinationHabitatId + " while this.id=" + this.id ) ;
+                if( currentHabitatTransit.destinationHabitatId == this.id) { 
                     listHabitatTransits.push(currentHabitatTransit);
                 }
-            } else if (currentHabitatTransit.destinationHabitatId !== this.id) {
+            } else if (currentHabitatTransit.destinationHabitatId != this.id) {
                 listHabitatTransits.push(currentHabitatTransit);
             }
         }
@@ -325,6 +347,31 @@ rigantestools_Habitat.prototype.getHabitatTransits = function(transitType, onMe)
     });
     return listHabitatTransits;
 };
+
+
+
+/**
+ * Get habitatUnits on this habitat.
+ * 
+ * @this {Habitat}
+ * @param {battleType}
+ *            battleType The battle Type on this habitat.
+ * @return {object} The list of habitatUnit of this habitat.
+ */
+rigantestools_Habitat.prototype.getHabitatUnits = function(battleType) {
+    var listHabitatUnits = [];
+    for (var index = 0; index < this._habitatUnits.length; index++) {
+        var currentHabitatUnit = this._habitatUnits[index];
+        if (currentHabitatUnit.battleType === battleType) {
+    		listHabitatUnits.push(currentHabitatUnit);
+        }
+    }
+    return listHabitatUnits;
+};
+
+
+
+
 
 /**
  * Get the movement speed of the habitate.

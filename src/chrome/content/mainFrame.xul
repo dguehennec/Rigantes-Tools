@@ -25,7 +25,7 @@
 	<script type="application/x-javascript" src="chrome://rigantestools/content/mainFrame.js"/>
     
 	<tabbox id="rigantestools-tabbox" flex="1">
-		<tabs>
+		<tabs id="rigantestools-tabs">
 			<tab label="&mainframe.tabPlayer.label;"/>
 			<tab label="&mainframe.tabWar.label;"/>
 			<tab id="rigantestools-tabWarInProgress" label="&mainframe.tabWarInProgress.label;"/>
@@ -33,7 +33,7 @@
 			<tab label="&mainframe.tabAttackDefenseSlow.label;"/>
 			<tab label="&mainframe.tabSimulation.label;"/>
 		</tabs>
-		<tabpanels flex="1">
+		<tabpanels id="rigantestools-tabpanels" flex="1">
 			<tabpanel id="maintab" orient="vertical">
 				<label value="&mainframe.tabPlayer.description;"/>
 				<spacer style="height: 10px"/>

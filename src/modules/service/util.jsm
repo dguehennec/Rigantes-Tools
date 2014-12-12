@@ -364,6 +364,27 @@ rigantestools_Util.prototype.formatDayTime = function(date, withoutDayIfPossible
     return a + " " + e + ":" + f;
 };
 
+
+/**
+ * convert seconds to time string  hh:mm
+ * 
+ * @this {Util}
+ * @param {date}
+ *            date date to convert in seconds.
+ * @return {string} date in format hh:mm.
+ */
+rigantestools_Util.prototype.formatTime = function(date, withoutDayIfPossible) {
+    if (date === null) {
+        return "";
+    }
+
+    var e = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours();
+    var f = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes();
+    
+    return e + ":" + f;
+};
+
+
 /**
  * convert seconds to date string jj.mm.aaaa
  * 
