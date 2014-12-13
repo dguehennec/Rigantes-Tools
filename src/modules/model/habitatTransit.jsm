@@ -68,13 +68,22 @@ var rigantestools_HabitatTransit = function(mhabitatTransit, world) {
         this.sourceHabitatLink = 'l+k://coordinates?' + this.sourceHabitatOrgX + ',' + this.sourceHabitatOrgY + '&' + world;
 
         if (mhabitatTransit.sourceHabitat.player) {
-            /** @private */
-            this.sourceHabitatPlayerName = mhabitatTransit.sourceHabitat.player.nick;
-            /** @private */
-            this.sourceHabitatPlayerLink = 'l+k://player?' + mhabitatTransit.sourceHabitat.player.id + '&' + world;
-            /** @private */
-            this.sourceHabitatPlayerId = mhabitatTransit.sourceHabitat.player.id;
-            /** @private */
+            if(typeof mhabitatTransit.sourceHabitat.player === "number") {
+                /** @private */
+                this.sourceHabitatPlayerLink = 'l+k://player?' + mhabitatTransit.sourceHabitat.player + '&' + world;
+                /** @private */
+                this.sourceHabitatPlayerId = mhabitatTransit.sourceHabitat.player;
+                /** @private */
+                this.sourceHabitatPlayerName = this.sourceHabitatPlayerLink;
+            }
+            else {
+                /** @private */
+                this.sourceHabitatPlayerName = mhabitatTransit.sourceHabitat.player.nick;
+                /** @private */
+                this.sourceHabitatPlayerLink = 'l+k://player?' + mhabitatTransit.sourceHabitat.player.id + '&' + world;
+                /** @private */
+                this.sourceHabitatPlayerId = mhabitatTransit.sourceHabitat.player.id;
+            }
         }
         /** @private */
         this.sourceHabitatPoints = mhabitatTransit.sourceHabitat.points;
@@ -95,12 +104,22 @@ var rigantestools_HabitatTransit = function(mhabitatTransit, world) {
         this.destinationHabitatLink = 'l+k://coordinates?' + this.destinationHabitatOrgX + ',' + this.destinationHabitatOrgY + '&' + world;
 
         if (mhabitatTransit.destinationHabitat.player) {
-            /** @private */
-            this.destinationHabitatPlayerName = mhabitatTransit.destinationHabitat.player.nick;
-            /** @private */
-            this.destinationHabitatPlayerLink = 'l+k://player?' + mhabitatTransit.destinationHabitat.player.id + '&' + world;
-            /** @private */
-            this.destinationHabitatPlayerId = mhabitatTransit.destinationHabitat.player.id;
+            if(typeof mhabitatTransit.destinationHabitat.player === "number") {
+                /** @private */
+                this.destinationHabitatPlayerLink = 'l+k://player?' + mhabitatTransit.destinationHabitat.player + '&' + world;
+                /** @private */
+                this.destinationHabitatPlayerId = mhabitatTransit.destinationHabitat.player;
+                /** @private */
+                this.destinationHabitatPlayerName = this.destinationHabitatPlayerLink;
+            }
+            else {
+                /** @private */
+                this.destinationHabitatPlayerName = mhabitatTransit.destinationHabitat.player.nick;
+                /** @private */
+                this.destinationHabitatPlayerLink = 'l+k://player?' + mhabitatTransit.destinationHabitat.player.id + '&' + world;
+                /** @private */
+                this.destinationHabitatPlayerId = mhabitatTransit.destinationHabitat.player.id;
+            }
         }
         /** @private */
         this.destinationHabitatPoints = mhabitatTransit.destinationHabitat.points;
@@ -193,13 +212,17 @@ var rigantestools_HabitatUnit = function(mhabitatUnit, world) {
 
         if (mhabitatUnit.sourceHabitat.player) 
         {
-            this.sourceHabitatPlayerName = mhabitatUnit.sourceHabitat.player.nick;
-            this.sourceHabitatPlayerLink = 'l+k://player?' + mhabitatUnit.sourceHabitat.player.id + '&' + world;
-            this.sourceHabitatPlayerId = mhabitatUnit.sourceHabitat.player.id;
-			//FIXME: ces 3 valeurs sont undefined sauf si l'habitat source est egal a l'habitat hote. Depuis la nouvelle interface
+            if(typeof mhabitatUnit.sourceHabitat.player === "number") {
+                this.sourceHabitatPlayerLink = 'l+k://player?' + mhabitatUnit.sourceHabitat.player + '&' + world;
+                this.sourceHabitatPlayerId = mhabitatUnit.sourceHabitat.player;
+                this.sourceHabitatPlayerName = this.sourceHabitatPlayerLink;
+            }
+            else {
+                this.sourceHabitatPlayerName = mhabitatUnit.sourceHabitat.player.nick;
+                this.sourceHabitatPlayerLink = 'l+k://player?' + mhabitatUnit.sourceHabitat.player.id + '&' + world;
+                this.sourceHabitatPlayerId = mhabitatUnit.sourceHabitat.player.id;
+            }
         }
-         
-        
     }
 
     this._units = [];

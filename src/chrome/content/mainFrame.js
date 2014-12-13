@@ -1256,9 +1256,9 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
         // generate tabpanels element
         var tabpanels = this._util.JSONToDOM([ "xul:tabpanels", { flex : 1 }], document, {});
         
-        var colsAttacks = [this._util.getBundleString("mainframe.warinprogress.castle"), "2", this._util.getBundleString("mainframe.warinprogress.player"), "3", this._util.getBundleString("mainframe.warinprogress.date"), "2"];
-        var colsDefense = [this._util.getBundleString("mainframe.defenseinprogress.date"), "3", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "2", this._util.getBundleString("mainframe.defenseinprogress.newUnits"), "2", this._util.getBundleString("mainframe.defenseinprogress.status"), "1"];
-        var colsDefList = [this._util.getBundleString("mainframe.warinprogress.castle"), "3", this._util.getBundleString("mainframe.warinprogress.player"), "2", this._util.getBundleString("mainframe.warinprogress.date"), "2", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "1"];
+        var colsAttacks = [this._util.getBundleString("mainframe.warinprogress.castle"), "3", this._util.getBundleString("mainframe.warinprogress.player"), "3", this._util.getBundleString("mainframe.warinprogress.date"), "1"];
+        var colsDefense = [this._util.getBundleString("mainframe.defenseinprogress.date"), "1", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "1", this._util.getBundleString("mainframe.defenseinprogress.newUnits"), "1", this._util.getBundleString("mainframe.defenseinprogress.status"), "1"];
+        var colsDefList = [this._util.getBundleString("mainframe.warinprogress.castle"), "3", this._util.getBundleString("mainframe.warinprogress.player"), "3", this._util.getBundleString("mainframe.warinprogress.date"), "1", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "1"];
         var nbAttackFound = 0;
         this._generatedAttacks = [];
         this._generatedAttacksSummary = "";
@@ -1393,10 +1393,10 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                         treechildrenSlowDefense.push(
                             [ "xul:treeitem", {}, 
                                [ "xul:treerow", { properties : properties}, 
-                                 [ "xul:treecell", { label : this._util.formatTime(bufferRound[indexBuffer].date)}],
+                                 [ "xul:treecell", { label : this._util.formatDayTime(bufferRound[indexBuffer].date, true)}],
                                  [ "xul:treecell", { label : bufferRound[indexBuffer].unitCount}],
                                  [ "xul:treecell", { label : bufferRound[indexBuffer].newUnitCount}],
-                                 [ "xul:treecell", { label : (bufferRound[indexBuffer].issue?this._util.getBundleString(""):"Ok")}]
+                                 [ "xul:treecell", { label : (bufferRound[indexBuffer].issue?"":this._util.getBundleString("ok"))}]
                                ]
                             ]
                         );
@@ -1493,18 +1493,18 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                 // generate tabpanel element
                 var tabpanel = this._util.JSONToDOM([ "xul:tabpanel", { orient : "vertical"} ,
                   [ "xul:hbox", { flex : 1 },
-                    [ "xul:vbox", { flex : 1 }, 
+                    [ "xul:vbox", { flex : 4 }, 
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.attackInformation")}],
                       [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsAttack, treechildrenAttack]
                     ],
                     [ "xul:spacer", { style : "width: 10px"}],
-                    [ "xul:vbox", { flex : 1 },
+                    [ "xul:vbox", { flex : 3 },
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.fightInformation")}],
                       [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsSlowDefense, treechildrenSlowDefense],
-                      [ "xul:button", { label : "Go to DL", oncommand : function(evt) { that.onGoToDLButtonClick(evt);} }]
+                      [ "xul:button", { label : this._util.getBundleString("mainframe.warinprogress.goToDL"), oncommand : function(evt) { that.onGoToDLButtonClick(evt);} }]
                    ],
                     [ "xul:spacer", { style : "width: 10px"}],
-                    [ "xul:vbox", { flex : 1 },
+                    [ "xul:vbox", { flex : 5 },
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.defenseInformation")}],
                       [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsDefList, treechildrenDefList]
                     ]
@@ -1537,7 +1537,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                       [ "xul:label", { value : listCastlesAttackers.length}],
                       [ "xul:label", { value : this._util.formatDateTime(minDate)}],
                       [ "xul:label", { value : this._util.formatDateTime(maxDate)}],
-                      [ "xul:label", { value : this._util.secToTimeStr(defense.maxDefenseTime)}]
+                      [ "xul:label", { value : this._util.formatDateTime(defense.maxDefenseDate) + " (" + this._util.secToTimeStr(defense.maxDefenseTime, true) + ")"}]
                     ],
                     [ "xul:spacer", { flex : 1 }]
                   ]
@@ -1559,7 +1559,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     }
                 }
                 if(defense){
-                    message += "\n" + this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " :" + this._util.secToTimeStr(defense.maxDefenseTime, true);
+                    message += "\n" + this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " : " + this._util.formatDateTime(defense.maxDefenseDate) + " (" + this._util.secToTimeStr(defense.maxDefenseTime, true) + ")";
                 }
                 if(listAttackers.length>0) {
                     var playerAttackersMes = "\n👊" + this._util.getBundleString("mainframe.warinprogress.attackOf").replace("%NB%",listAttackers.length);
@@ -1621,10 +1621,6 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     }
                     else {
                            this._generatedAttacksSummary += " " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryDate").replace("%FISRTDATE%", this._util.formatDayTime(minDate)).replace("%LASTDATE%", this._util.formatDayTime(maxDate));
-                        // if( probableDate !==null) {
-                        // this._generatedAttacksSummary += " (Probable: " +
-                        // probableDate + ")" ;
-                        // }
                     }
                     this._generatedAttacksSummary += "\n" ; 
                 }
@@ -1635,7 +1631,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryUO").replace("%NBUO%", totalUO) + " " + totalUODet + "\n";
                 }
                 if(defense){
-                    this._generatedAttacksSummary += this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " :" + this._util.secToTimeStr(defense.maxDefenseTime, true) + "\n";
+                    this._generatedAttacksSummary += this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " : " + this._util.formatDateTime(defense.maxDefenseDate) + " (" + this._util.secToTimeStr(defense.maxDefenseTime, true) + ")\n";
                 }
                 this._generatedAttacksSummary += "\n";
 
