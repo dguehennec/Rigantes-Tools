@@ -79,7 +79,7 @@ com.rigantestools.Tests.init = function() {
     this._util = new com.rigantestools_Util(window);
     
     this.startUtilClassTests();
-    
+    this.startUtilPlayerClassTests();
 }
 
 com.rigantestools.Tests.startUtilClassTests = function() {
@@ -111,5 +111,38 @@ com.rigantestools.Tests.startUtilClassTests = function() {
         var currentDate = new Date();
         assert.equal(that._util.formatDayTime(new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate()), true), "00:00");
     });
+}
 
+com.rigantestools.Tests.startUtilPlayerClassTests = function() {
+    var that = this;
+    this._utilPlayer = com.rigantestools_UtilPlayer;
+    
+    QUnit.test("updatePlayersList", function(assert) {
+        var playerlist = [];
+        playerlist.push({id : 12345, nick : "aaaa"});
+        assert.equal(that._utilPlayer.updatePlayersList(playerlist, 20), true);
+    });
+    
+    QUnit.test("getPlayer", function(assert) {
+        var player = that._utilPlayer.getPlayer(12345, 20);
+        assert.equal(player.nick, "aaaa");
+    });
+    
+    QUnit.test("updatePlayer-Update", function(assert) {
+        assert.equal(that._utilPlayer.updatePlayer({id : 12345, nick : "bbbb"}, 20), true);
+    });
+    
+    QUnit.test("updatePlayer-Create", function(assert) {
+        assert.equal(that._utilPlayer.updatePlayer({id : 12346, nick : "ccccc"}, 20), true);
+    });
+    
+    QUnit.test("getPlayerUpdated", function(assert) {
+        var player = that._utilPlayer.getPlayer(12345, 20);
+        assert.equal(player.nick, "bbbb");
+    });
+    
+    QUnit.test("getPlayers", function(assert) {
+        var players = that._utilPlayer.getPlayers(20);
+        assert.notEqual(players.length, 0);
+    });
 }

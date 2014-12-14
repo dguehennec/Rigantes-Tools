@@ -37,10 +37,11 @@
 "use strict";
 
 Components.utils.import("resource://gre/modules/Services.jsm");
+Components.utils.import("resource://gre/modules/FileUtils.jsm");
 Components.utils.import("resource://rigantestools/service/logger.jsm");
 Components.utils.import("resource://rigantestools/constant/constants.jsm");
 
-var EXPORTED_SYMBOLS = [ "rigantestools_Util" ];
+var EXPORTED_SYMBOLS = [ "rigantestools_Util" , "rigantestools_UtilPlayer"];
 
 /**
  * Util object.
@@ -892,3 +893,152 @@ rigantestools_Util.prototype.setTimer = function(timer, func, delay) {
  * Freeze the interface
  */
 Object.freeze(rigantestools_Util);
+
+/**
+ * UtilPlayer object.
+ * 
+ * @constructor
+ * @this {UtilPlayer}
+ */
+var rigantestools_UtilPlayer = {
+    _dbConn : undefined,
+};
+
+/**
+ * initialize utilplayer if needed.
+ * 
+ * @this {UtilPlayer}
+ */
+rigantestools_UtilPlayer.isInitialized = function() {
+    if (!this._dbConn) {
+        try {
+            var file = FileUtils.getFile("ProfD", [ "rigantesTools.sqlite" ]);
+            this._dbConn = Services.storage.openDatabase(file);
+            this._dbConn.executeSimpleSQL("CREATE TABLE IF NOT EXISTS players (id INTEGER, world INTEGER, nick TEXT)");
+        } catch (e) {
+            this._dbConn = undefined;
+            return false;
+        }
+    }
+    return true;
+};
+
+/**
+ * get player.
+ * 
+ * @this {UtilPlayer}
+ * @param {Number}
+ *            world the world of the player.
+ */
+rigantestools_UtilPlayer.getPlayers = function(world) {
+    if (!this.isInitialized()) {
+        return false;
+    }
+    var statement = this._dbConn.createStatement("SELECT * FROM players where world = " + world);
+    var players = [];
+    while (statement.executeStep()) {
+        players.push({ id: statement.row.id, nick : statement.row.nick});
+    }
+    statement.finalize();
+    return players;
+}
+
+/**
+ * update the player list.
+ * 
+ * @this {UtilPlayer}
+ * @param {Array}
+ *            list the playerArray list.
+ * @param {Number}
+ *            world the world of the player.
+ */
+rigantestools_UtilPlayer.updatePlayersList = function(list, world) {
+    if (!this.isInitialized()) {
+        return false;
+    }
+    var statement = this._dbConn.createStatement("SELECT * FROM players where world = " + world);
+    var results = [];
+    while (statement.executeStep()) {
+        results[statement.row.id] = statement.row.nick;
+    }
+    statement.finalize();
+    for (var index = 0; index < list.length; index++) {
+        var id = list[index].id;
+        var nick = list[index].nick;
+        if(id && nick) {
+            if (!results[id]) {
+                statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + id + ", " + world + ", \"" + nick + "\")");
+                statement.executeStep();
+                statement.finalize()
+            } else if (results[id].nick != nick) {
+                statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + nick + "\" WHERE id = " + id + " AND world = " + world);
+                statement.executeStep();
+                statement.finalize();
+            }
+        }
+    }
+    return true;
+};
+
+/**
+ * get the player.
+ * 
+ * @this {UtilPlayer}
+ * @param {Number}
+ *            id the id of player.
+ * @param {Number}
+ *            world the world of the player.
+ */
+rigantestools_UtilPlayer.getPlayer = function(id, world) {
+    var player = {
+        id : id,
+        nick : 'l+k://player?' + id + '&' + world
+    };
+
+    if (this.isInitialized()) {
+        var statement = this._dbConn.createStatement("SELECT * FROM players WHERE world = " + world + " AND id = " + id);
+        if (statement.executeStep()) {
+            player = {
+                id : id,
+                nick : statement.row.nick
+            };
+        }
+        statement.finalize();
+    }
+    return player;
+};
+
+/**
+ * update the player.
+ * 
+ * @this {UtilPlayer}
+ * @param {Object}
+ *            player the player to update.
+ * @param {Number}
+ *            world the world of the player.
+ */
+rigantestools_UtilPlayer.updatePlayer = function(player, world) {
+    if(!player || !player.id || !player.nick) {
+        return false;
+    }
+    
+    if (this.isInitialized()) {
+        var statement = this._dbConn.createStatement("SELECT * FROM players WHERE world = " + world + " AND id = " + player.id);
+        var nick = undefined;
+        if (statement.executeStep()) {
+            nick = statement.row.nick;
+        }
+        statement.finalize();
+        if (!nick) {
+            statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + player.id + ", " + world + ", \"" + player.nick + "\")");
+            statement.executeStep();
+            statement.finalize()
+        } else if (nick != player.nick) {
+            statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + player.nick + "\" WHERE id = " + player.id + " AND world = " + world);
+            statement.executeStep();
+            statement.finalize();
+        }
+        return true;
+    }
+    return false;
+};

@@ -210,9 +210,9 @@
 <!ENTITY mainframe.tabAttackDefenseSlow.MaxPerMinute.Min6.label "6 par min">
 <!ENTITY mainframe.tabAttackDefenseSlow.calculate.button "Calculer">
 <!ENTITY mainframe.tabAttackDefenseSlow.castle.label "Château">
+<!ENTITY mainframe.tabAttackDefenseSlow.slower.label "Ralentisseur">
 <!ENTITY mainframe.tabAttackDefenseSlow.unitType.label "Unité">
 <!ENTITY mainframe.tabAttackDefenseSlow.unitCount.label "Nombre">
-<!ENTITY mainframe.tabAttackDefenseSlow.slower.label "Ralentisseur">
 <!ENTITY mainframe.tabAttackDefenseSlow.startDateTime.label "Date et heure de départ">
 <!ENTITY mainframe.tabAttackDefenseSlow.ArrivalDatetime.label "Date et heure d'arrivée">
 <!ENTITY mainframe.tabAttackDefenseSlow.castleLink.label "Château attaqué :">

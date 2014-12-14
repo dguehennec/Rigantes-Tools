@@ -107,9 +107,19 @@ rigantestools_Player.prototype.init = function(mplayer) {
         this.link = 'l+k://player?' + mplayer.id + '&' + this.world;
         this.id = mplayer.id;
         this.points = mplayer.points;
+        rigantestools_UtilPlayer.updatePlayer(mplayer, this.world);
+
         if (mplayer.alliance) {
             this.allianceName = mplayer.alliance.name;
             this.allianceId = mplayer.alliance.id;
+            
+            // update players list if necessary
+            if(mplayer.alliance.playerArray) {
+                rigantestools_UtilPlayer.updatePlayersList(mplayer.alliance.playerArray, this.world);
+            }
+            if(mplayer.alliance.invitedPlayerArray) {
+                rigantestools_UtilPlayer.updatePlayersList(mplayer.alliance.invitedPlayerArray, this.world);
+            }
         }
         this.creationDate = mplayer.creationDate;
         this.habitateisAttacked = mplayer.habitateisAttacked;
