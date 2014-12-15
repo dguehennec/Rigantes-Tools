@@ -409,7 +409,7 @@ rigantestools_Habitat.prototype.getUnitDurationTo = function(unitType, link) {
             unitsTime[index] = Math.floor(unit.getSecondsPerField() * speed);
         }
     }
-    ;
+
     var time = this.getLongestDuration(unitsTime);
     if (isNaN(time)) {
         return 0;

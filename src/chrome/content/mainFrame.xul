@@ -144,16 +144,16 @@
 				<menupopup id="rigantestools-war-treechildren-contextmenu">
 					<menuitem id="rigantestools-war-treechildren-contextmenu-noUnit" label="&mainframe.tabWar.noUnit.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, '');" />
 					<menuseparator />
-					<menuitem id="rigantestools-war-treechildren-contextmenu-spearman" name="Spearman" label="&mainframe.tabWar.spearman.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.SPEARMAN);" />
-					<menuitem id="rigantestools-war-treechildren-contextmenu-crossbowman" name="Crossbowman" label="&mainframe.tabWar.crossbowman.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.CROSSBOWMAN);" />
-					<menuitem id="rigantestools-war-treechildren-contextmenu-scorpionRider" name="ScorpionRider" label="&mainframe.tabWar.scorpionRider.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.SCORPIONRIDER);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-spearman" name="Spearman" label="&mainframe.tabWar.spearman.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools_Constant.UNITTYPE.SPEARMAN);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-crossbowman" name="Crossbowman" label="&mainframe.tabWar.crossbowman.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools_Constant.UNITTYPE.CROSSBOWMAN);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-scorpionRider" name="ScorpionRider" label="&mainframe.tabWar.scorpionRider.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools_Constant.UNITTYPE.SCORPIONRIDER);" />
 					<menuseparator />
-					<menuitem id="rigantestools-war-treechildren-contextmenu-swordman" name="Swordman" label="&mainframe.tabWar.swordman.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.SWORDMAN);" />
-					<menuitem id="rigantestools-war-treechildren-contextmenu-archer" name="Archer" label="&mainframe.tabWar.archer.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.ARCHER);" />
-					<menuitem id="rigantestools-war-treechildren-contextmenu-lancer" name="Lancer" label="&mainframe.tabWar.lancer.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.LANCER);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-swordman" name="Swordman" label="&mainframe.tabWar.swordman.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools_Constant.UNITTYPE.SWORDMAN);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-archer" name="Archer" label="&mainframe.tabWar.archer.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools_Constant.UNITTYPE.ARCHER);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-lancer" name="Lancer" label="&mainframe.tabWar.lancer.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools_Constant.UNITTYPE.LANCER);" />
 					<menuseparator />
-					<menuitem id="rigantestools-war-treechildren-contextmenu-pushcart" name="Pushcart" label="&mainframe.tabWar.pushcart.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.PUSHCART);" />
-					<menuitem id="rigantestools-war-treechildren-contextmenu-oxcart" name="Oxcart" label="&mainframe.tabWar.oxcart.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools.constant.UNITTYPE.OXCART);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-pushcart" name="Pushcart" label="&mainframe.tabWar.pushcart.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools_Constant.UNITTYPE.PUSHCART);" />
+					<menuitem id="rigantestools-war-treechildren-contextmenu-oxcart" name="Oxcart" label="&mainframe.tabWar.oxcart.label;" oncommand="com.rigantestools.MainFrame.selectTreeContext(event, com.rigantestools_Constant.UNITTYPE.OXCART);" />
 				</menupopup>
 				<groupbox orient="horizontal">
 					<caption label="&informations;"/>
