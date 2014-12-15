@@ -1361,7 +1361,8 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
  				else battleDate = new Date ( minDate.getTime() + 600 * 1000 ) ; // minDate = impact time, thus add 10'
          		
          		var defense = new com.rigantestools_CurrentSlowDefenseCalculate( habitat, battleDate );
-
+				var defense_comment ;
+								
 				// This is used in onGoToDLButtonClick to put informations in the SlowDefense tab
 				var item = {'habitat_link':habitat.link,'trou':defense.trou};
 				this._AttackList.push(item);
@@ -1610,7 +1611,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
 
                    if( habitat.nextBattleDate !==null ) {
                     this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryIconeDate") ;
-                    this._generatedAttacksSummary += " " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryNextRound") + " " + this._util.formatDayTime(habitat.nextBattleDate) + "\n" ;
+                    this._generatedAttacksSummary += " " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryNextRound") + " " + this._util.formatTime(habitat.nextBattleDate) + "\n" ;
                  }
                    
                    if( (minDate!==null) ) { // incoming attacks
@@ -1631,33 +1632,48 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryUO").replace("%NBUO%", totalUO) + " " + totalUODet + "\n";
                 }
                 if(defense){
-                    this._generatedAttacksSummary += this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " : " + this._util.formatDateTime(defense.maxDefenseDate) + " (" + this._util.secToTimeStr(defense.maxDefenseTime, true) + ")\n";
+                    //this._generatedAttacksSummary += this._util.getBundleString("mainframe.defenseinprogress.maxdefensetime") + " : " + this._util.formatDateTime(defense.maxDefenseDate) + " (" + this._util.secToTimeStr(defense.maxDefenseTime, true) + ")\n";
+                    this._generatedAttacksSummary += defense.comment ;
                 }
                 this._generatedAttacksSummary += "\n";
 
-                 if( habitat.nextBattleDate !==null )
-                {
-                    if( this._generatedAttacksSummary2OnTarget.length==0 ) {
-                        this._generatedAttacksSummary2OnTarget += this._util.getBundleString("mainframe.warinprogress.LabelSummaryFight") + "\n" ;
-                    }
-                    this._generatedAttacksSummary2OnTarget += habitat.link ;
-                    this._generatedAttacksSummary2OnTarget += ", " + totalUO + " UO" ;
-                     this._generatedAttacksSummary2OnTarget += ", " + (totalUD+totalUDInProgress) + " UD" ;
-                       this._generatedAttacksSummary2OnTarget += ", " + this._util.formatDayTime(habitat.nextBattleDate) ;
-                       this._generatedAttacksSummary2OnTarget += "\n" ;
-                   }
-                   else
-                   {
-                       if( this._generatedAttacksSummary2OnTransit.length==0 ) {
-                           this._generatedAttacksSummary2OnTransit += this._util.getBundleString("mainframe.warinprogress.LabelSummaryProgress") + "\n" ;
-                    }
-                    this._generatedAttacksSummary2OnTransit += habitat.link ;
-                    this._generatedAttacksSummary2OnTransit += ", " + this._util.formatDayTime(minDate) ;
-                     this._generatedAttacksSummary2OnTransit += ", " + listCastlesAttackers.length + " ch" ;
-                     this._generatedAttacksSummary2OnTransit += ", " + (totalUD+totalUDInProgress) + " UD" ;
-                       this._generatedAttacksSummary2OnTransit += "\n" ;
-                }                     
-                    
+     			if( habitat.nextBattleDate !==null )
+    			{
+    				if( this._generatedAttacksSummary2OnTarget.length==0 ) 
+    				{
+    					this._generatedAttacksSummary2OnTarget += this._util.getBundleString("mainframe.warinprogress.LabelSummaryFight") + "\n" ;
+    				}
+    				this._generatedAttacksSummary2OnTarget += habitat.link ;
+    				this._generatedAttacksSummary2OnTarget += ", " + totalUO + " UO" ;
+     				this._generatedAttacksSummary2OnTarget += ", " + (totalUD+totalUDInProgress) + " UD" ;
+   					this._generatedAttacksSummary2OnTarget += ", " + this._util.formatTime(habitat.nextBattleDate) ;
+   					this._generatedAttacksSummary2OnTarget += "\n" ;
+      				this._generatedAttacksSummary2OnTarget += defense.comment ;
+    				this._generatedAttacksSummary2OnTarget += "\n" ;
+ 				}
+   				else
+   				{
+   					if( this._generatedAttacksSummary2OnTransit.length==0 ) 
+   					{
+   						this._generatedAttacksSummary2OnTransit += this._util.getBundleString("mainframe.warinprogress.LabelSummaryProgress") + "\n" ;
+    				}
+    				this._generatedAttacksSummary2OnTransit += habitat.link ;
+    				this._generatedAttacksSummary2OnTransit += ", " + this._util.formatDayTime(minDate) ;
+     				this._generatedAttacksSummary2OnTransit += ", " + listCastlesAttackers.length + " ch" ;
+   					this._generatedAttacksSummary2OnTransit += "\n" ;
+     				
+     				if( totalUDInProgress > 0 || totalUD > 5000 )
+     				{
+     					this._generatedAttacksSummary2OnTransit += (totalUD+totalUDInProgress) + " UD" ;
+      					if( totalUDInProgress > 0 )
+     					{
+     						this._generatedAttacksSummary2OnTransit += ", " + defense.comment ;
+     					}
+   						this._generatedAttacksSummary2OnTransit += "\n" ;
+    				}
+   					this._generatedAttacksSummary2OnTransit += "\n" ;
+				}     				
+                     
             }
         }
         // add player attaks

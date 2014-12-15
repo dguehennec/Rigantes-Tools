@@ -116,6 +116,7 @@ var rigantestools_CurrentSlowDefenseCalculate = function( habitat, battleDate )
 	this.maxDefenseTime = this.fightPreview.fightpreview_dltime/1000 ;
 	this.maxDefenseDate = this.fightPreview.fightpreview_trou;
 	this.trou = this.fightPreview.fightpreview_trou ;
+	this.comment = this.fightPreview.comment ;
  
 };
 
