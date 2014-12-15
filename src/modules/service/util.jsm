@@ -264,7 +264,7 @@ rigantestools_Util.prototype.valideReportLink = function(link) {
  * 
  * @this {Util}
  * @param {string}
- *            time time to validat.
+ *            time time to validate.
  * @return {boolean} true if a good time.
  */
 rigantestools_Util.prototype.valideTimeHHMM = function(time, twentyHoursMax) {
@@ -374,7 +374,7 @@ rigantestools_Util.prototype.formatDayTime = function(date, withoutDayIfPossible
  *            date date to convert in seconds.
  * @return {string} date in format hh:mm.
  */
-rigantestools_Util.prototype.formatTime = function(date, withoutDayIfPossible) {
+rigantestools_Util.prototype.formatTime = function(date) {
     if (date === null) {
         return "";
     }

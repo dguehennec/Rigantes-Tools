@@ -51,126 +51,86 @@ var EXPORTED_SYMBOLS = [ "rigantestools_CurrentSlowDefenseCalculate" ];
  * @param {Player}
  *            player the player
  */
-var rigantestools_CurrentSlowDefenseCalculate = function( habitat, battleDate ) 
-{
+var rigantestools_CurrentSlowDefenseCalculate = function(habitat, battleDate) {
     this._logger = new rigantestools_Logger("CurrentSlowDefenseCalculate");
     this._logger.trace("init");
 
-	var listud = [] ;
- 
-	this.defense_list = [] ;
+    var listud = [];
+    this.defense_list = [];
+    var unitList;
 
-
-	var unitList ;
-
-	// Get units in castle */
-	for( var ii=0 ; ii<2; ii=ii+1 )
-	{
-     			
-		if( ii==0 )
- 		{
-			unitList = habitat.getHabitatUnits(rigantestools_Constant.BATTLETYPE.OWN_HABITAT);
-		}
-		else
- 		{
-			unitList = habitat.getHabitatUnits(rigantestools_Constant.BATTLETYPE.EXTERNAL_UNITS_TO_DEFENSE);
-		}
-
-		for( var key in unitList ) 
-		{
-			var nbud = 0 ;
-			if( 1 ) 
-			{
-                  
-                nbud = this.addUnits(  unitList[key], 0, listud ) ; 
-                    				
-				var item = {'castle':unitList[key].sourceHabitatName,'player':unitList[key].sourceHabitatPlayerName,'date':null,'nbud':nbud};
-   				
-				this.defense_list.push( item ) ;
-    		}
-          	   					
-		}
-	}	
-	
-
-	// Get incoming units
-	unitList = habitat.getHabitatTransits(rigantestools_Constant.TRANSITTYPE.DEFENSE,true);
-  	
-    
-	for(var key in unitList) 
-	{
-		var nbud = 0 ;
- 		if (unitList.hasOwnProperty(key)) 
-		{             		
-                           
-          	nbud = this.addUnits(  unitList[key], unitList[key].date.getTime(), listud ) ; 
-
-			var item = {'castle':unitList[key].sourceHabitatName,'player':unitList[key].sourceHabitatPlayerName,'date':unitList[key].date,'nbud':nbud};
-
-			this.defense_list.push( item ) ;
-          	   					
-		}
+    // Get units in castle */
+    for (var ii = 0; ii < 2; ii = ii + 1) {
+        if (ii == 0) {
+            unitList = habitat.getHabitatUnits(rigantestools_Constant.BATTLETYPE.OWN_HABITAT);
+        } else {
+            unitList = habitat.getHabitatUnits(rigantestools_Constant.BATTLETYPE.EXTERNAL_UNITS_TO_DEFENSE);
+        }
+        for ( var key in unitList) {
+            var nbud = this.addUnits(unitList[key], 0, listud);
+            var item = {
+                'castle' : unitList[key].sourceHabitatName,
+                'player' : unitList[key].sourceHabitatPlayerName,
+                'date' : null,
+                'nbud' : nbud
+            };
+            this.defense_list.push(item);
+        }
     }
-		
-	this.fightPreview = new rigantestools_FightPreview( habitat, listud, battleDate  ) ;
-	this.maxDefenseTime = this.fightPreview.fightpreview_dltime/1000 ;
-	this.maxDefenseDate = this.fightPreview.fightpreview_trou;
-	this.trou = this.fightPreview.fightpreview_trou ;
-	this.comment = this.fightPreview.comment ;
- 
+
+    // Get incoming units
+    unitList = habitat.getHabitatTransits(rigantestools_Constant.TRANSITTYPE.DEFENSE, true);
+    for ( var key in unitList) {
+        var nbud = 0;
+        if (unitList.hasOwnProperty(key)) {
+            nbud = this.addUnits(unitList[key], unitList[key].date.getTime(), listud);
+            var item = {
+                'castle' : unitList[key].sourceHabitatName,
+                'player' : unitList[key].sourceHabitatPlayerName,
+                'date' : unitList[key].date,
+                'nbud' : nbud
+            };
+            this.defense_list.push(item);
+        }
+    }
+
+    this.fightPreview = new rigantestools_FightPreview(habitat, listud, battleDate);
+    this.maxDefenseTime = this.fightPreview.fightpreview_dltime / 1000;
+    this.maxDefenseDate = this.fightPreview.fightpreview_trou;
+    this.trou = this.fightPreview.fightpreview_trou;
+    this.comment = this.fightPreview.comment;
 };
 
-rigantestools_CurrentSlowDefenseCalculate.prototype.addUnits = function( habitat, time, listud )
-{
+/**
+ * add units.
+ * 
+ * @this {CurrentSlowDefenseCalculate}
+ * @param {Habitat}
+ *            habitat the habitat
+ * @param {Number}
+ *            time the time
+ * @param {Array}
+ *            listud the list of ud
+ */
+rigantestools_CurrentSlowDefenseCalculate.prototype.addUnits = function(habitat, time, listud) {
     var index, unit;
     var nb = 0;
     for (index = 0; index < habitat._units.length; index++) {
         unit = habitat._units[index];
-        if(  unit.getCount() > 0 )
-        {
-        	nb += unit.getCount() ;
- 			var item = {'nb':unit.getCount(),'type':unit.getType(),'time':time};
-			listud.push(item);
-		}
+        if (unit.getCount() > 0) {
+            nb += unit.getCount();
+            var item = {
+                'nb' : unit.getCount(),
+                'type' : unit.getType(),
+                'time' : time
+            };
+            listud.push(item);
+        }
     }
-	return nb ;
+    return nb;
 };
 
 /**
  * Freeze the interface
  */
 Object.freeze(rigantestools_CurrentSlowDefenseCalculate);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
