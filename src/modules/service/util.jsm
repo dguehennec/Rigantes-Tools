@@ -902,6 +902,8 @@ Object.freeze(rigantestools_Util);
  */
 var rigantestools_UtilPlayer = {
     _dbConn : undefined,
+    _players : [],
+    _world: undefined
 };
 
 /**
@@ -934,13 +936,16 @@ rigantestools_UtilPlayer.getPlayers = function(world) {
     if (!this.isInitialized()) {
         return false;
     }
-    var statement = this._dbConn.createStatement("SELECT * FROM players where world = " + world);
-    var players = [];
-    while (statement.executeStep()) {
-        players.push({ id: statement.row.id, nick : statement.row.nick});
+    if ((this._players.length == 0) || (this._world != world)) {
+            var statement = this._dbConn.createStatement("SELECT * FROM players where world = " + world);
+            this._players = [];
+            while (statement.executeStep()) {
+                this._players[statement.row.id] = { id: statement.row.id, nick: statement.row.nick};
+            }
+            this._world = world;
+            statement.finalize();
     }
-    statement.finalize();
-    return players;
+    return this._players;
 }
 
 /**
@@ -956,24 +961,23 @@ rigantestools_UtilPlayer.updatePlayersList = function(list, world) {
     if (!this.isInitialized()) {
         return false;
     }
-    var statement = this._dbConn.createStatement("SELECT * FROM players where world = " + world);
-    var results = [];
-    while (statement.executeStep()) {
-        results[statement.row.id] = statement.row.nick;
-    }
-    statement.finalize();
+    // load players if necessary
+    this.getPlayers(world);
+    // check players
     for (var index = 0; index < list.length; index++) {
         var id = list[index].id;
         var nick = list[index].nick;
         if(id && nick) {
-            if (!results[id]) {
-                statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + id + ", " + world + ", \"" + nick + "\")");
-                statement.executeStep();
-                statement.finalize()
-            } else if (results[id].nick != nick) {
-                statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + nick + "\" WHERE id = " + id + " AND world = " + world);
+            if (!this._players[id]) {
+                var statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + id + ", " + world + ", \"" + nick + "\")");
                 statement.executeStep();
                 statement.finalize();
+                this._players[id] = { id: id, nick: nick};
+            } else if (this._players[id].nick != nick) {
+                var statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + nick + "\" WHERE id = " + id + " AND world = " + world);
+                statement.executeStep();
+                statement.finalize();
+                this._players[id] = { id: id, nick: nick};
             }
         }
     }
@@ -994,16 +998,11 @@ rigantestools_UtilPlayer.getPlayer = function(id, world) {
         id : id,
         nick : 'l+k://player?' + id + '&' + world
     };
-
-    if (this.isInitialized()) {
-        var statement = this._dbConn.createStatement("SELECT * FROM players WHERE world = " + world + " AND id = " + id);
-        if (statement.executeStep()) {
-            player = {
-                id : id,
-                nick : statement.row.nick
-            };
-        }
-        statement.finalize();
+    // load players if necessary
+    this.getPlayers(world);
+    // get player
+    if(this._players[id]) {
+        player = this._players[id]; 
     }
     return player;
 };
@@ -1023,20 +1022,19 @@ rigantestools_UtilPlayer.updatePlayer = function(player, world) {
     }
     
     if (this.isInitialized()) {
-        var statement = this._dbConn.createStatement("SELECT * FROM players WHERE world = " + world + " AND id = " + player.id);
-        var nick = undefined;
-        if (statement.executeStep()) {
-            nick = statement.row.nick;
-        }
-        statement.finalize();
-        if (!nick) {
-            statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + player.id + ", " + world + ", \"" + player.nick + "\")");
-            statement.executeStep();
-            statement.finalize()
-        } else if (nick != player.nick) {
-            statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + player.nick + "\" WHERE id = " + player.id + " AND world = " + world);
+        // load players if necessary
+        this.getPlayers(world);
+        // check player
+        if (!this._players[player.id]) {
+            var statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + player.id + ", " + world + ", \"" + player.nick + "\")");
             statement.executeStep();
             statement.finalize();
+            this._players[player.id] = { id: player.id, nick: player.nick};
+        } else if (player.nick != this._players[player.id].nick) {
+            var statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + player.nick + "\" WHERE id = " + player.id + " AND world = " + world);
+            statement.executeStep();
+            statement.finalize();
+            this._players[player.id] = { id: player.id, nick: player.nick};
         }
         return true;
     }
