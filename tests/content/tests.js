@@ -57,6 +57,7 @@ if (!com.rigantestools) {
 
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://rigantestools/constant/constants.jsm", com);
+Components.utils.import("resource://rigantestools/model/habitat.jsm", com);
 Components.utils.import("resource://rigantestools/service/logger.jsm", com);
 Components.utils.import("resource://rigantestools/service/util.jsm", com);
 
@@ -77,22 +78,23 @@ com.rigantestools.Tests.init = function() {
     /** @private */
     /** The util tool. */
     this._util = new com.rigantestools_Util(window);
-    
+
     this.startUtilClassTests();
     this.startUtilPlayerClassTests();
+    this.startHabitatClassTests();
 }
 
 com.rigantestools.Tests.startUtilClassTests = function() {
     var that = this;
-    
+
     QUnit.test("getBundleString", function(assert) {
         assert.notEqual(that._util.getBundleString("locale"), "");
     });
-    
+
     QUnit.test("getPref", function(assert) {
         assert.equal(that._util.getPref(com.rigantestools_Constant.PREF_CURRENT_VERSION), com.rigantestools_Constant.VERSION);
     });
-    
+
     QUnit.test("isNumeric", function(assert) {
         function isNumeric(value, withDecimals, withNegatives, expected) {
             assert.equal(that._util.isNumeric(value, withDecimals, withNegatives), expected);
@@ -104,45 +106,70 @@ com.rigantestools.Tests.startUtilClassTests = function() {
         isNumeric("1.1", undefined, undefined, false);
         isNumeric("1.1", true, undefined, true);
     });
-    
+
     QUnit.test("formatDayTime", function(assert) {
-        assert.equal(that._util.formatDayTime(new Date("1/1/2014 22:46:16")), that._util.getBundleString("smallDay.2")+ " 22:46");
-        
+        assert.equal(that._util.formatDayTime(new Date("1/1/2014 22:46:16")), that._util.getBundleString("smallDay.2") + " 22:46");
+
         var currentDate = new Date();
-        assert.equal(that._util.formatDayTime(new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate()), true), "00:00");
+        assert.equal(that._util.formatDayTime(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()), true), "00:00");
     });
 }
 
 com.rigantestools.Tests.startUtilPlayerClassTests = function() {
     var that = this;
     this._utilPlayer = com.rigantestools_UtilPlayer;
-    
+
     QUnit.test("updatePlayersList", function(assert) {
         var playerlist = [];
-        playerlist.push({id : 12345, nick : "aaaa"});
+        playerlist.push({
+            id : 12345,
+            nick : "aaaa"
+        });
         assert.equal(that._utilPlayer.updatePlayersList(playerlist, 20), true);
     });
-    
+
     QUnit.test("getPlayer", function(assert) {
         var player = that._utilPlayer.getPlayer(12345, 20);
         assert.equal(player.nick, "aaaa");
     });
-    
+
     QUnit.test("updatePlayer-Update", function(assert) {
-        assert.equal(that._utilPlayer.updatePlayer({id : 12345, nick : "bbbb"}, 20), true);
+        assert.equal(that._utilPlayer.updatePlayer({
+            id : 12345,
+            nick : "bbbb"
+        }, 20), true);
     });
-    
+
     QUnit.test("updatePlayer-Create", function(assert) {
-        assert.equal(that._utilPlayer.updatePlayer({id : 12346, nick : "ccccc"}, 20), true);
+        assert.equal(that._utilPlayer.updatePlayer({
+            id : 12346,
+            nick : "ccccc"
+        }, 20), true);
     });
-    
+
     QUnit.test("getPlayerUpdated", function(assert) {
         var player = that._utilPlayer.getPlayer(12345, 20);
         assert.equal(player.nick, "bbbb");
     });
-    
-    QUnit.test("getPlayers", function(assert) {
-        var players = that._utilPlayer.getPlayers(20);
-        assert.notEqual(players.length, 0);
+}
+
+com.rigantestools.Tests.startHabitatClassTests = function() {
+    var that = this;
+    var habitat = new com.rigantestools_Habitat({
+        name : "test",
+        id : 12345,
+        mapX : 16234,
+        mapY : 16501,
+        points : 288
+    }, 20);
+
+    QUnit.test("getDistanceTo", function(assert) {
+        assert.equal(habitat.getDistanceTo(16260, 16483), 35);
+        assert.equal(habitat.getDistanceTo(16234, 16501), 0);
+        assert.equal(habitat.getDistanceTo(16235, 16499), 2);
+        assert.equal(habitat.getDistanceTo(16235, 16501), 1);
+        assert.equal(habitat.getDistanceTo(16237, 16504), 4);
+        assert.equal(habitat.getDistanceTo(16290, 16419), 97);
     });
+
 }

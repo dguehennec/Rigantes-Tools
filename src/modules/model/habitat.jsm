@@ -92,7 +92,7 @@ var rigantestools_Habitat = function(mhabitat, world) {
         /** @private */
         this._habitatUnits = [];
         /** @private */
-        this._modifiers = [];
+        this._habitatKnowledges = [];
         /** @private */
         this.isAttacked = false;
         /** @private */
@@ -206,12 +206,11 @@ var rigantestools_Habitat = function(mhabitat, world) {
             this._logger.error("init error in get Unites in transits", e);
         }
 
-
         try {
             // get Units in habitat
             this._logger.trace("get Units in habitats");
             if (mhabitat.habitatUnits) {
-                 var mhabitatUnit = mhabitat.habitatUnits;
+                var mhabitatUnit = mhabitat.habitatUnits;
                 for (index = 0; index < mhabitatUnit.length; index++) {
                     var habitatUnit = new rigantestools_HabitatUnit(mhabitatUnit[index], world);
                     this._habitatUnits.push(habitatUnit);
@@ -220,10 +219,6 @@ var rigantestools_Habitat = function(mhabitat, world) {
         } catch (e) {
             this._logger.error("init error in get Unites in habitat:" + e);
         }
-
-
-
-
 
         try {
             // get Units in mission
@@ -281,8 +276,8 @@ var rigantestools_Habitat = function(mhabitat, world) {
             this._logger.error("init error in get Units in mission", e);
         }
         // get Modifier
-        if (mhabitat.habitatModifier) {
-            this._modifiers = mhabitat.habitatModifier;
+        if (mhabitat.habitatKnowledges) {
+            this._habitatKnowledges = mhabitat.habitatKnowledges;
         }
     } catch (e) {
         this._logger.error("init error", e);
@@ -332,9 +327,8 @@ rigantestools_Habitat.prototype.getHabitatTransits = function(transitType, onMe)
     for (var index = 0; index < this._habitatTransits.length; index++) {
         var currentHabitatTransit = this._habitatTransits[index];
         if (currentHabitatTransit.transitType === transitType) {
-            if (onMe) { 
-    			//this._logger.info( "destinationHabitatId=" + currentHabitatTransit.destinationHabitatId + " while this.id=" + this.id ) ;
-                if( currentHabitatTransit.destinationHabitatId == this.id) { 
+            if (onMe) {
+                if (currentHabitatTransit.destinationHabitatId == this.id) {
                     listHabitatTransits.push(currentHabitatTransit);
                 }
             } else if (currentHabitatTransit.destinationHabitatId != this.id) {
@@ -347,8 +341,6 @@ rigantestools_Habitat.prototype.getHabitatTransits = function(transitType, onMe)
     });
     return listHabitatTransits;
 };
-
-
 
 /**
  * Get habitatUnits on this habitat.
@@ -363,15 +355,11 @@ rigantestools_Habitat.prototype.getHabitatUnits = function(battleType) {
     for (var index = 0; index < this._habitatUnits.length; index++) {
         var currentHabitatUnit = this._habitatUnits[index];
         if (currentHabitatUnit.battleType === battleType) {
-    		listHabitatUnits.push(currentHabitatUnit);
+            listHabitatUnits.push(currentHabitatUnit);
         }
     }
     return listHabitatUnits;
 };
-
-
-
-
 
 /**
  * Get the movement speed of the habitate.
@@ -381,13 +369,21 @@ rigantestools_Habitat.prototype.getHabitatUnits = function(battleType) {
  */
 rigantestools_Habitat.prototype.getMovementSpeed = function() {
     var a = 1;
-    for (var index = 0; index < this._modifiers.length; index++) {
-        var modifier = this._modifiers[index];
-        if ((modifier.type === rigantestools_Constant.MODIFIERTYPE.MOVEMENTSPEED) && (modifier.targets.indexOf("Unit") > -1)) {
-            a += (modifier.percentage - 1);
+    for ( var key in this._habitatKnowledges) {
+        var knowledge = this._habitatKnowledges[key];
+        var modifiers = knowledge.modifier;
+        for ( var key1 in modifiers) {
+            var modifier = modifiers[key1];
+            if (modifier && (modifier.type === rigantestools_Constant.MODIFIERTYPE.MOVEMENTSPEED) && (modifier.targets.indexOf("Unit") > -1)) {
+                // fix issue when castle is not a fortress d
+                if ((knowledge.identifier == "Compass") && (this.points < 1000)) {
+                    continue;
+                }
+                a += (modifier.percentage.toFixed(2) - 1);
+            }
         }
     }
-    return Number(a.toFixed(2));
+    return a;
 };
 
 /**

@@ -52,7 +52,7 @@ var rigantestools_Constant = {};
  * @constant
  */
 rigantestools_Constant.LOGGER = {
-    LEVEL : 2,
+    LEVEL : 0,
     PRINT_STACK : true,
     PRINT_DATE : true
 };
