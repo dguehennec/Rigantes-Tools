@@ -92,7 +92,7 @@ com.rigantestools.domain.Habitat = function(mhabitat, world) {
         /** @private */
         this._habitatTransits = [];
         /** @private */
-        this._modifiers = [];
+        this._habitatKnowledges = [];
         /** @private */
         this.isAttacked = false;
         /** @private */
@@ -257,8 +257,8 @@ com.rigantestools.domain.Habitat = function(mhabitat, world) {
             this._logger.error("init error in get Units in mission:" + e);
         }
         // get Modifier
-        if (mhabitat.habitatModifier) {
-            this._modifiers = mhabitat.habitatModifier;
+        if (mhabitat.habitatKnowledges) {
+            this._habitatKnowledges = mhabitat.habitatKnowledges;
         }
     } catch (e) {
         this._logger.error("init error:" + e);
@@ -331,13 +331,21 @@ com.rigantestools.domain.Habitat.prototype.getHabitatTransits = function(transit
  */
 com.rigantestools.domain.Habitat.prototype.getMovementSpeed = function() {
     var a = 1;
-    for (var index = 0; index < this._modifiers.length; index++) {
-        var modifier = this._modifiers[index];
-        if ((modifier.type === com.rigantestools.constant.MODIFIERTYPE.MOVEMENTSPEED) && (modifier.targets.indexOf("Unit") > -1)) {
-            a += (modifier.percentage - 1);
+    for (var key in this._habitatKnowledges) {
+        var knowledge = this._habitatKnowledges[key];
+        var modifiers = knowledge.modifier;
+        for (var key1 in modifiers) {
+            var modifier = modifiers[key1];
+            if (modifier && (modifier.type === com.rigantestools.constant.MODIFIERTYPE.MOVEMENTSPEED) && (modifier.targets.indexOf("Unit") > -1)) {
+                // fix issue when castle is not a fortress d
+                if ((knowledge.identifier == "Compass") && (this.points < 1000)) {
+                    continue;
+                }
+                a += (modifier.percentage.toFixed(2) - 1);
+            }
         }
     }
-    return Number(a.toFixed(2));
+    return a;
 };
 
 /**

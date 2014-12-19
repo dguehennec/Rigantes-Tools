@@ -4,7 +4,7 @@
 	<Description about="urn:mozilla:install-manifest">
 
 		<em:id>{33f35432-14bd-6211-fa3b-760976b5ee10}</em:id>
-		<em:version>2.4.0</em:version>
+		<em:version>2.4.1</em:version>
 		<em:type>2</em:type>
 		<em:creator>David GUEHENNEC</em:creator>
 		<em:aboutURL>chrome://rigantestools/content/about.xul</em:aboutURL>
