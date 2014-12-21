@@ -120,6 +120,7 @@ com.rigantestools.MainFrame.init = function() {
     }
     this._util.setAttribute("rigantestools-playerLink", "value", this._player.link);
     this._util.setAttribute("rigantestools-playerNbCastles", "value", this._player.getHabitatList().length);
+    this.initializeAttackDefenseSlowUnitCount();
     // select current show tab
     this.selectTab();
     // Init player castles and attacks in progress after show interface
@@ -291,6 +292,26 @@ com.rigantestools.MainFrame.getAttackType = function() {
  */
 com.rigantestools.MainFrame.isWarWithUD = function() {
     return this._util.getAttribute('rigantestools-warWithUD', 'checked');
+};
+
+/**
+ * indicate if it's a fortress link in war tab
+ * 
+ * @this {MainFrame}
+ * @return {Boolean} true if used
+ */
+com.rigantestools.MainFrame.isWarFortress = function() {
+    return this._util.getAttribute('rigantestools-warIsFortress', 'checked');
+};
+
+/**
+ * indicate if it's a fortress link in slow attack defense tab
+ * 
+ * @this {MainFrame}
+ * @return {Boolean} true if used
+ */
+com.rigantestools.MainFrame.isAttackDefenseSlowFortress = function() {
+    return this._util.getAttribute('rigantestools-attackDefenseSlowIsFortress', 'checked');
 };
 
 /**
@@ -1156,64 +1177,6 @@ com.rigantestools.MainFrame.clearAttackDefenseSlowInformations = function() {
 };
 
 /**
- * set probability of the war in progress
- * 
- * @this {MainFrame}
- * @param {Array}
- *            habitatTransits
- */
-com.rigantestools.MainFrame.addProability = function(habitatTransits) {
-    var lasthab = null;
-    var diff = 0;
-    var minutes = 0;
-    var nbhabitate = habitatTransits.length;
-    var indexToSet = 0;
-    var nbProb = 0;
-    for(var indexHabTrans=0; indexHabTrans<nbhabitate; indexHabTrans++){
-        var currenthab = habitatTransits[indexHabTrans];
-        if(lasthab!==null) {
-            diff = currenthab.date.getTime()-lasthab.date.getTime();
-            if(diff<600000) {
-                minutes += diff;
-                if(minutes<600000) {
-                    if(indexToSet<0) {
-                        indexToSet = indexHabTrans-1;
-                    }
-                }
-                else {
-                    var value = (indexHabTrans-indexToSet)*(indexHabTrans-indexToSet);
-                    nbProb += value;
-                    for(var i=indexToSet; i < indexHabTrans; i++) {
-                        habitatTransits[i].luck =value;
-                    }
-                    indexToSet = indexHabTrans;
-                    minutes -= 600000;
-                }
-            }
-            else {
-                var value = (indexHabTrans-indexToSet)*(indexHabTrans-indexToSet);
-                nbProb += value;
-                for(var i=indexToSet; i < indexHabTrans; i++) {
-                    habitatTransits[i].luck = value;
-                }
-                minutes = 0;
-                indexToSet = indexHabTrans;
-            }
-        }
-        lasthab = currenthab;
-    }
-    var value = (nbhabitate-indexToSet)*(nbhabitate-indexToSet);
-    nbProb += value;
-    for(var i=indexToSet; i < nbhabitate; i++) {
-        habitatTransits[i].luck = value;
-    }
-    for(var i=0; i < nbhabitate; i++) {
-        habitatTransits[i].luck = habitatTransits[i].luck*100/nbProb;
-    }
-    
-};
-
-/**
  * call on go to DL button clicked
  * 
  * @this {MainFrame}
@@ -1221,15 +1184,19 @@ com.rigantestools.MainFrame.addProability = function(habitatTransits) {
  *            evt event of the element
  */
 com.rigantestools.MainFrame.onGoToDLButtonClick = function(evt) {
-	var link = "";
-	var date = new Date();
-	var index = this._util.getAttribute('rigantestools-warinprogress-tabbox', 'selectedIndex');
-	if (index < this._AttackList.length) {
-		link = this._AttackList[index].habitat_link;
-		date = this._AttackList[index].trou;
-	}
+    var link = "";
+    var date = new Date();
+    var isFortress = false;
+    var index = this._util.getAttribute('rigantestools-warinprogress-tabbox', 'selectedIndex');
+    if (index < this._AttackList.length) {
+        link = this._AttackList[index].habitat_link;
+        date = this._AttackList[index].trou;
+        isFortress = this._AttackList[index].isFortress;
+    }
 	this._util.setAttribute('rigantestools-attackDefenseSlowTargetLink', 'value', link);
 	this._util.setAttribute('rigantestools-attackDefenseSlowTime', 'value', this._util.formatTime(date));
+	this._util.setAttribute('rigantestools-attackDefenseSlowIsFortress', 'checked', isFortress);
+	this.initializeAttackDefenseSlowUnitCount();
 	var datePicker = document.getElementById('rigantestools-attackDefenseSlowDate');
 	if (datePicker) {
 	    datePicker._setValueNoSync(date);
@@ -1237,6 +1204,46 @@ com.rigantestools.MainFrame.onGoToDLButtonClick = function(evt) {
 	this._util.setAttribute('rigantestools-tabbox', 'selectedIndex', 4);
 }
 
+/**
+ * initialize Attack Defense Slow Unit Count
+ * 
+ * @this {MainFrame}
+ */
+com.rigantestools.MainFrame.initializeAttackDefenseSlowUnitCount = function() {
+    var itemsFortress = {
+            "500+252  (10')" : "500",
+            "1000+504 (10') SAFE" : "501",
+            "1000+752 (15') SAFE" : "750",
+            "1000+752 (20')" : "1000",
+            "2000+1504 (20') SAFE" : "1001",
+            "2000+1752 (30')" : "2000"
+    };
+    var itemsCastle = {
+            "100+52  (10')" : "100",
+            "200+104 (10') SAFE" : "101",
+            "200+152 (15') SAFE" : "150",
+            "200+152 (20')" : "200",
+            "400+304 (20') SAFE" : "201",
+            "400+352 (30')" : "400"
+    };
+    var items = itemsCastle;
+    if(this.isAttackDefenseSlowFortress()) {
+        items = itemsFortress;
+    }
+    var itemsList = [];
+    for(var label in items){
+        itemsList.push([ "xul:menuitem", { 'label' : label, 'value' : items[label]}]);
+    }
+    var menupopup = this._util.JSONToDOM([ "xul:menupopup", {}, itemsList], document, {});
+    var menulist = document.getElementById('rigantestools-attackDefenseSlowUnitCount');
+    if(menulist) {
+        while (menulist.hasChildNodes()) {
+            menulist.removeChild(menulist.lastChild);
+        }
+        menulist.appendChild(menupopup);
+        menulist.selectedIndex = 3;
+    }
+}
 /**
  * initialize window war in progess informations
  * 
@@ -1264,7 +1271,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
         this._generatedAttacksSummary = "";
         this._generatedAttacksSummary2OnTarget = "";
         this._generatedAttacksSummary2OnTransit = "";
-    	this._AttackList = [] ;
+        this._AttackList = [];
         var that = this;
 
         // Add attaks to player
@@ -1272,7 +1279,6 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
         for (var indexHab = 0; indexHab < habitats.length; indexHab++) {
             var habitat = habitats[indexHab];
             var habitatTransits = habitat.getHabitatTransits(com.rigantestools_Constant.TRANSITTYPE.ATTACKER, true);
-            this.addProability(habitatTransits);
             var listAttackers = [];
             var listCastlesAttackers = [];
             // var listImpactTimes = [];
@@ -1362,11 +1368,11 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
          		
          		var defense = new com.rigantestools_CurrentSlowDefenseCalculate( habitat, battleDate );
 				var defense_comment ;
-								
-				// This is used in onGoToDLButtonClick to put informations in the SlowDefense tab
-				var item = {'habitat_link':habitat.link,'trou':defense.trou};
-				this._AttackList.push(item);
 
+				// this is used in onGoToDLButtonClick to put informations in the SlowDefense tab
+				var item = { 'habitat_link' : habitat.link, 'trou' : defense.trou, 'isFortress' : habitat.isFortress()};
+				this._AttackList.push(item);
+				
                 // generate treecolsSlowDefense JSON
                 var treecolsSlowDefense = [ "xul:treecols", {}];
                 for(var indexCol=0; indexCol<colsDefense.length; indexCol = indexCol+2){
@@ -1402,9 +1408,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                             ]
                         );
                     }
- 
- 
-                    
+
                    var deflist = defense.defense_list ;
                    for(var indexBuffer =0; indexBuffer<deflist.length; indexBuffer++){
                         var properties = '';
@@ -1502,7 +1506,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     [ "xul:vbox", { flex : 3 },
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.fightInformation")}],
                       [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsSlowDefense, treechildrenSlowDefense],
-                      [ "xul:button", { label : this._util.getBundleString("mainframe.warinprogress.goToDL"), oncommand : function(evt) { that.onGoToDLButtonClick(evt);} }]
+                      [ "xul:button", { label : this._util.getBundleString("mainframe.warinprogress.goToDL"), oncommand : function(evt) { that.onGoToDLButtonClick(evt); } }]
                    ],
                     [ "xul:spacer", { style : "width: 10px"}],
                     [ "xul:vbox", { flex : 5 },
@@ -2407,15 +2411,15 @@ com.rigantestools.MainFrame.refreshWarTree = function() {
         treeChildren.appendChild(treeitem);
     }
     // update war informations
-    var nbCastles = this._player.getHabitatList().length;
+    var isFortress = this.isWarFortress();
     var targetLink = this._util.getAttribute('rigantestools-warTargetLink', 'value');
     this._generatedWarInformations = this._util.getBundleString("mainframe.war.target") + " : " + targetLink + "##";
     this._generatedWarInformations += this._util.getBundleString("mainframe.war.nbCastles") + " : " + nbCastlesWar + "##";
     this._generatedWarInformations += this._util.getBundleString("mainframe.war.nbUO") + " : " + totalUO + " (" + swordmanCount + "/" + archerCount + "/" + lancerCount + ")##";
-    var nbCaption = this.getNbCaption(paCount, nbCastles);
+    var nbCaption = this._player.getNbCaption(paCount, isFortress);
     this._generatedWarInformations += this._util.getBundleString("mainframe.war.totalCaption") + " : " + nbCaption;
-    if ((paCount !== paCountUD) && (nbCaption !== this.getNbCaption(paCountUD, nbCastles))) {
-        this._generatedWarInformations += " ( " + this.getNbCaption(paCountUD, nbCastles) + " avec UD)";
+    if ((paCount !== paCountUD) && (nbCaption !== this._player.getNbCaption(paCountUD, isFortress))) {
+        this._generatedWarInformations += " ( " + this._player.getNbCaption(paCountUD, isFortress) + " avec UD)";
     }
     this._generatedWarInformations += "##";
     if (minDuration > 0) {
@@ -2428,10 +2432,10 @@ com.rigantestools.MainFrame.refreshWarTree = function() {
     this._util.setAttribute('rigantestools-warInfoAttackDate', 'value', this._util.formatDateTime(this.currentDateTime));
     this._util.setAttribute('rigantestools-warInfoCastles', 'value', nbCastlesWar);
     if (paCount === paCountUD) {
-        this._util.setAttribute('rigantestools-warNbCaptions', 'value', this.getNbCaption(paCount, nbCastles) + " (" + paCount + " PA)");
+        this._util.setAttribute('rigantestools-warNbCaptions', 'value', this._player.getNbCaption(paCount, isFortress) + " (" + paCount + " PA)");
     }
     else {
-        this._util.setAttribute('rigantestools-warNbCaptions', 'value', this.getNbCaption(paCount, nbCastles) + " (" + paCount + " PA)  " + this._util.getBundleString("mainframe.war.withUD") + "  " + this.getNbCaption(paCountUD, nbCastles) + " (" + paCountUD
+        this._util.setAttribute('rigantestools-warNbCaptions', 'value', this._player.getNbCaption(paCount, isFortress) + " (" + paCount + " PA)  " + this._util.getBundleString("mainframe.war.withUD") + "  " + this._player.getNbCaption(paCountUD, isFortress) + " (" + paCountUD
                 + " PA)");
     }
     this.simulationSwordmanCount = swordmanCount;
@@ -2619,7 +2623,7 @@ com.rigantestools.MainFrame.refreshPlayerTree = function(indexProv) {
     }
     if(this._util.getAttribute('rigantestools-player-nbCasltes'+indexProv, 'value')!==items.length) {
         this._util.setAttribute('rigantestools-player-nbCasltes'+indexProv, 'value', items.length);
-                this._util.setAttribute('rigantestools-player-nbCaption'+indexProv, 'value', this.getNbCaption(paCount, this.currentHabitats[0].length) + " (" + paCount + " "+this._util.getBundleString("mainframe.player.PA")+")");
+                this._util.setAttribute('rigantestools-player-nbCaption'+indexProv, 'value', this._player.getNbCaption(paCount) + " (" + paCount + " "+this._util.getBundleString("mainframe.player.PA")+")");
         var nbUO = swordmanCount + archerCount + lancerCount;
         this._util.setAttribute('rigantestools-player-nbUO'+indexProv, 'value', nbUO + " (" + swordmanCount + "/" + archerCount + "/" + lancerCount + ")");
         var nbUD = spearmanCount + crossbowmanCount + scorpionRiderCount;
@@ -2627,26 +2631,6 @@ com.rigantestools.MainFrame.refreshPlayerTree = function(indexProv) {
     }
 };
 
-/**
- * get number captions
- * 
- * @this {MainFrame}
- * @param {Number}
- *            paCount
- * @param {Number}
- *            nbCastles
- * @return {Number} nbCaption
- */
-com.rigantestools.MainFrame.getNbCaption = function(paCount, nbCastles) {
-    var nbCaption = 0;
-    var nbPACaption = nbCastles * 1000;
-    while (paCount >= nbPACaption) {
-        nbCaption++;
-        paCount = paCount - nbPACaption;
-        nbPACaption = nbPACaption + 1000;
-    }
-    return nbCaption;
-};
 /**
  * call on calculate war button click event
  * 
@@ -2916,7 +2900,7 @@ com.rigantestools.MainFrame.onGenerateCastlesUOPlayerButtonClick = function(evt)
                 generatedCastlesUO += province[0] + " : "+nbCastles +"\n";
             }
             generatedCastlesUO += "UO : " + (swordmanCount + archerCount + lancerCount) + " (" + swordmanCount + "/" + archerCount + "/" + lancerCount + ")\n";
-            generatedCastlesUO += this._util.getBundleString("mainframe.player.totalCaption") + " : " + this.getNbCaption(paCount, itemsProv[0].length) + "\n\n";
+            generatedCastlesUO += this._util.getBundleString("mainframe.player.totalCaption") + " : " + this._player.getNbCaption(paCount) + "\n\n";
         }
     }
     this._util.copieToClipboard(generatedCastlesUO);

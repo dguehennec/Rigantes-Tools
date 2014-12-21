@@ -89,25 +89,49 @@ var rigantestools_SlowAttackDefenseCalculate = function(habitats, targetLink, da
         this.nbNewUnits = 100;
         this.nbCurrentUnits = 52;
     }
-    if (unitCount == 101) {
+    else if (unitCount == 101) {
         this.nbNewUnits = 200;
         this.nbCurrentUnits = 104;
     }
-    if (unitCount == 150) {
+    else if (unitCount == 150) {
         this.nbNewUnits = 200;
         this.nbCurrentUnits = 152;
     }
-    if (unitCount == 200) {
+    else if (unitCount == 200) {
         this.nbNewUnits = 200;
         this.nbCurrentUnits = 152;
     }
-    if (unitCount == 201) {
+    else if (unitCount == 201) {
         this.nbNewUnits = 400;
         this.nbCurrentUnits = 304;
     }
-    if (unitCount == 400) {
+    else if (unitCount == 400) {
         this.nbNewUnits = 400;
         this.nbCurrentUnits = 352;
+    }
+    else if (unitCount == 500) {
+        this.nbNewUnits = 500;
+        this.nbCurrentUnits = 252;
+    }
+    else if (unitCount == 501) {
+        this.nbNewUnits = 1000;
+        this.nbCurrentUnits = 504;
+    }
+    else if (unitCount == 750) {
+        this.nbNewUnits = 1000;
+        this.nbCurrentUnits = 752;
+    }
+    else if (unitCount == 1000) {
+        this.nbNewUnits = 1000;
+        this.nbCurrentUnits = 752;
+    }
+    else if (unitCount == 1001) {
+        this.nbNewUnits = 2000;
+        this.nbCurrentUnits = 1504;
+    }
+    else if (unitCount == 2000) {
+        this.nbNewUnits = 2000;
+        this.nbCurrentUnits = 1752;
     }
 
     this.habitats = habitats;

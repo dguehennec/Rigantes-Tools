@@ -75,6 +75,9 @@
 						<hbox align="center">
 							<label value="&mainframe.tabWar.castleLinkPrompt.label;" width="200"/>
 							<textbox id="rigantestools-warTargetLink" value="" width="220" maxlength="40"/>
+							<spacer width="20"/>
+							<label value="&mainframe.tabWar.isFortress.label;"/>
+							<checkbox id="rigantestools-warIsFortress" value="false" onchange="this.value=this.checked" />		
 							<spacer flex="1"/>
 						</hbox>
 						<hbox align="center">
@@ -292,6 +295,9 @@
 						<hbox align="center">
 							<label value="&mainframe.tabAttackDefenseSlow.castleLinkPrompt.label;" width="170"/>
 							<textbox id="rigantestools-attackDefenseSlowTargetLink" value="" width="220" maxlength="40"/>
+							<spacer width="20"/>
+							<label value="&mainframe.tabAttackDefenseSlow.isFortress.label;"/>
+							<checkbox id="rigantestools-attackDefenseSlowIsFortress" value="false" oncommand="this.value=this.checked;com.rigantestools.MainFrame.initializeAttackDefenseSlowUnitCount();" />		
 							<spacer flex="1"/>
 						</hbox>
 						<hbox align="center">
@@ -333,14 +339,8 @@
 							  	</menupopup>
 							</menulist>
 							<label value="&mainframe.tabAttackDefenseSlow.UnitCount.label;"/>
-							<menulist id="rigantestools-attackDefenseSlowUnitCount" selectedIndex="3" value="200">
+							<menulist id="rigantestools-attackDefenseSlowUnitCount">
 								<menupopup>
-							    	<menuitem label="100+52  (10')" value="100"/>
-							    	<menuitem label="200+104 (10') SAFE" value="101"/>
-							    	<menuitem label="200+152 (15') SAFE" value="150"/>
-							    	<menuitem label="200+152 (20')" value="200"/>
-							    	<menuitem label="400+304 (20') SAFE" value="201"/>
-							    	<menuitem label="400+352 (30')" value="400"/>
 							  	</menupopup>
 							</menulist>
 							<label value="&mainframe.tabAttackDefenseSlow.MaxPerMinute.label;"/>

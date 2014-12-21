@@ -375,8 +375,8 @@ rigantestools_Habitat.prototype.getMovementSpeed = function() {
         for ( var key1 in modifiers) {
             var modifier = modifiers[key1];
             if (modifier && (modifier.type === rigantestools_Constant.MODIFIERTYPE.MOVEMENTSPEED) && (modifier.targets.indexOf("Unit") > -1)) {
-                // fix issue when castle is not a fortress d
-                if ((knowledge.identifier == "Compass") && (this.points < 1000)) {
+                // fix issue when castle is not a fortress
+                if ((knowledge.identifier == "Compass") && !this.isFortress()) {
                     continue;
                 }
                 a += (modifier.percentage.toFixed(2) - 1);
@@ -557,6 +557,19 @@ rigantestools_Habitat.prototype.getMapYFromLink = function(link) {
         return link.substring(link.indexOf(',') + 1, link.indexOf('&'));
     }
     return 0;
+};
+
+/**
+ * indicate if it is a fortress
+ * 
+ * @this {Habitat}
+ * @return {boolean} true if fortress, false else.
+ */
+rigantestools_Habitat.prototype.isFortress = function() {
+    if(this.points>1000) {
+        return true;
+    }
+    return false;
 };
 
 /**

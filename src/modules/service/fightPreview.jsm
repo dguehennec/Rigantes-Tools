@@ -68,11 +68,11 @@ var rigantestools_FightPreview = function(habitat, listud, battleDate) {
     var minu;
     var minrenfort;
 
-    if (0) {
-        minu = 250;
-        minrenfort = 128;
-    } // BattleServer
-    else {
+    // initialize minus units
+    if (habitat.isFortress()) {
+        minu = 500;
+        minrenfort = 252;
+    } else {
         minu = 100;
         minrenfort = 52;
     }

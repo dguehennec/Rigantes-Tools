@@ -107,10 +107,11 @@
 <!ENTITY mainframe.tabPlayer.player.nbUD.label "Nombre UD">
 <!ENTITY mainframe.tabPlayer.loading.label "Chargement...">
 <!-- MainFrame War dialog -->
-<!ENTITY mainframe.tabWar.label "Préparation d'une attaque">
+<!ENTITY mainframe.tabWar.label "Attaque">
 <!ENTITY mainframe.tabWar.description "Ecran permettant de calculer le temps de trajet pour une cible donnée pour l'ensemble de vos châteaux.">
 <!ENTITY mainframe.tabWar.criterion.label "Critères">
 <!ENTITY mainframe.tabWar.castleLinkPrompt.label "Lien du château cible :">
+<!ENTITY mainframe.tabWar.isFortress.label "De type forteresse :">
 <!ENTITY mainframe.tabWar.attackType.label "Type d'attaque :">
 <!ENTITY mainframe.tabWar.attackTypeProgrammed.label "Programmée">
 <!ENTITY mainframe.tabWar.attackTypeFlash.label "Eclair">
@@ -159,7 +160,7 @@
 <!ENTITY mainframe.tabWarInProgress.generateWarInProgressInformations.button "Générer les informations de l'attaque">
 <!ENTITY mainframe.tabWarInProgress.noWarInProgress "Aucune attaque en cours détectée.">
 <!-- MainFrame Defense dialog -->
-<!ENTITY mainframe.tabDefense.label "Préparation d'une défense">
+<!ENTITY mainframe.tabDefense.label "Défense">
 <!ENTITY mainframe.tabDefense.description "Ecran permettant de calculer le temps de trajet pour une cible donnée pour l'ensemble de vos châteaux.">
 <!ENTITY mainframe.tabDefense.criterion.label "Critères">
 <!ENTITY mainframe.tabDefense.castleLinkPrompt.label "Lien du château attaqué :">
@@ -182,10 +183,11 @@
 <!ENTITY mainframe.tabDefense.unit.label "Unités conservées dans un château :">
 <!ENTITY mainframe.tabDefense.unit.button "Modifier">
 <!-- MainFrame attack/defense slow dialog -->
-<!ENTITY mainframe.tabAttackDefenseSlow.label "Attaque/défense lente">
+<!ENTITY mainframe.tabAttackDefenseSlow.label "Défense lente">
 <!ENTITY mainframe.tabAttackDefenseSlow.description "Ecran permettant de préparer une attaque ou une défense lente afin de tenir le plus longtemps face à l'ennemi">
 <!ENTITY mainframe.tabAttackDefenseSlow.criterion.label "Critères">
 <!ENTITY mainframe.tabAttackDefenseSlow.castleLinkPrompt.label "Lien du château attaqué">
+<!ENTITY mainframe.tabAttackDefenseSlow.isFortress.label "De type forteresse :">
 <!ENTITY mainframe.tabAttackDefenseSlow.datetimePrompt.label "Date et heure (du round)">
 <!ENTITY mainframe.tabAttackDefenseSlow.datetimePromptAt.label "à">
 <!ENTITY mainframe.tabAttackDefenseSlow.durationPrompt.label "Durée :">

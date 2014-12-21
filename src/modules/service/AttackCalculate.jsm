@@ -51,20 +51,7 @@ var EXPORTED_SYMBOLS = [ "rigantestools_AttackCalculate" ];
  *            habitats Habitat array
  * @param {String}
  *            targetLink the target link
- * @param {Date}
- *            date the date of the first defense
- * @param {Number}
- *            duration the duration of the defense
- * @param {Boolean}
- *            withUD with UD
- * @param {Boolean}
- *            withUO with UO
- * @param {Number}
- *            unitCount the unit count
- * @param {Number}
- *            startTimeUnit the time to launch before the first attack
- * @param {Boolean}
- *            allCastles use all Castles
+ *
  */
 var rigantestools_AttackCalculate = function(habitats, targetLink) {
     this._logger = new rigantestools_Logger("AttackCalculate");
@@ -83,6 +70,20 @@ var rigantestools_AttackCalculate = function(habitats, targetLink) {
  * get Programmed Attack.
  * 
  * @this {AttackCalculate}
+ * @param {Date}
+ *            date the date of the first defense
+ * @param {Number}
+ *            duration the duration of the defense
+ * @param {Boolean}
+ *            withUD with UD
+ * @param {Boolean}
+ *            withUO with UO
+ * @param {Number}
+ *            unitCount the unit count
+ * @param {Number}
+ *            startTimeUnit the time to launch before the first attack
+ * @param {Boolean}
+ *            allCastles use all Castles
  */
 rigantestools_AttackCalculate.prototype.getProgrammedAttack = function(date, maxTime, minPA, withUD, withAllCastles) {
     var index;
