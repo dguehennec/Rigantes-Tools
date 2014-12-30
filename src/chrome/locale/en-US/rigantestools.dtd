@@ -258,3 +258,5 @@
 <!ENTITY mainframe.tabSimulation.round.label "Round">
 <!ENTITY mainframe.tabSimulation.simulationResultAttacker.label "Attacker statistics">
 <!ENTITY mainframe.tabSimulation.simulationResultDefenseur.label "Defenser Statistics">
+<!-- External Defense dialog -->
+<!ENTITY mainframe.tabExternalDefense.label "External defense">

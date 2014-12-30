@@ -47,14 +47,14 @@ var EXPORTED_SYMBOLS = [ "rigantestools_FightPreview" ];
  * 
  * @constructor
  * @this {FightPreview}
- * @param {Habitat}
- *            habitat the habitat
+ * @param {isFortress}
+ *            is it a Fortress?
  * @param {Array}
  *            listud the list of ud
  * @param {Date}
  *            battleDate the date of the battle
  */
-var rigantestools_FightPreview = function(habitat, listud, battleDate) {
+var rigantestools_FightPreview = function(isFortress, listud, battleDate) {
     /** @private */
     this._logger = new rigantestools_Logger("rigantestools_FightPreview");
     this._logger.trace("init");
@@ -69,7 +69,7 @@ var rigantestools_FightPreview = function(habitat, listud, battleDate) {
     var minrenfort;
 
     // initialize minus units
-    if (habitat.isFortress()) {
+    if (isFortress) {
         minu = 500;
         minrenfort = 252;
     } else {

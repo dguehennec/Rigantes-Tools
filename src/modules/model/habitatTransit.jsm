@@ -41,7 +41,7 @@ Components.utils.import("resource://rigantestools/service/logger.jsm");
 Components.utils.import("resource://rigantestools/model/unit.jsm");
 Components.utils.import("resource://rigantestools/constant/constants.jsm");
 
-var EXPORTED_SYMBOLS = [ "rigantestools_HabitatTransit", "rigantestools_HabitatUnit" ];
+var EXPORTED_SYMBOLS = [ "rigantestools_HabitatTransit", "rigantestools_HabitatUnit", "rigantestools_HabitatExternal" ];
 
 /**
  * Creates an instance of HabitatTransit.
@@ -118,6 +118,7 @@ var rigantestools_HabitatTransit = function(mhabitatTransit, world) {
     }
     /** @private */
     this.date = mhabitatTransit.destinationETA;
+    this.dateset = true ;
     /** @private */
     this._ressources = [];
     /** @private */
@@ -217,6 +218,8 @@ var rigantestools_HabitatUnit = function(mhabitatUnit, world) {
     }
 
     this._units = [];
+    this.date = new Date(0) ;
+    this.dateset = false ;
 
     // get Unites available
     if (mhabitatUnit.units) 
@@ -253,5 +256,98 @@ Object.freeze(rigantestools_HabitatUnit);
 
 
 
+
+/**
+ * Creates an instance of HabitatExternal;
+ * 
+ * @constructor
+ * @this {HabitatExternal}
+ * @param {object}
+ *            mhabitatExternal : external habitat (destination).
+ *            mhabitat : source habitat (main player's castle
+ */
+var rigantestools_HabitatExternal = function(mhabitatExternal, world, mhabitat) {
+    /** @private */
+    this.transitType = mhabitatExternal.battleType;
+    this.battleType = mhabitatExternal.battleType;
+
+    if (mhabitat) {
+        /** @private */
+        this.sourceHabitatName = mhabitat.name;
+        /** @private */
+        this.sourceHabitatId = mhabitat.id;
+        /** @private */
+        this.sourceHabitatOrgX = mhabitat.mapX;
+        /** @private */
+        this.sourceHabitatOrgY = mhabitat.mapY;
+        /** @private */
+        this.sourceHabitatLink = 'l+k://coordinates?' + this.sourceHabitatOrgX + ',' + this.sourceHabitatOrgY + '&' + world;
+
+        if (mhabitat.player) {
+            var sourceHabitatPlayer = mhabitat.player;
+            if(typeof sourceHabitatPlayer === "number") {
+                sourceHabitatPlayer = rigantestools_UtilPlayer.getPlayer(sourceHabitatPlayer, world);
+            } else {
+                rigantestools_UtilPlayer.updatePlayer(sourceHabitatPlayer, world);
+            }
+            /** @private */
+            this.sourceHabitatPlayerName = sourceHabitatPlayer.nick;
+            /** @private */
+            this.sourceHabitatPlayerLink = 'l+k://player?' + sourceHabitatPlayer.id + '&' + world;
+            /** @private */
+            this.sourceHabitatPlayerId = sourceHabitatPlayer.id;
+        }
+        /** @private */
+        this.sourceHabitatPoints = mhabitat.points;
+    }
+    if (mhabitatExternal.habitat) {
+        /** @private */
+        this.destinationHabitatName = mhabitatExternal.habitat.name;
+        /** @private */
+        this.destinationHabitatId = mhabitatExternal.habitat.id;
+        if (!this.destinationHabitatName) {
+            this.destinationHabitatName = "Free castle " + this.destinationHabitatId;
+        }
+        /** @private */
+        this.destinationHabitatOrgX = mhabitatExternal.habitat.mapX;
+        /** @private */
+        this.destinationHabitatOrgY = mhabitatExternal.habitat.mapY;
+        /** @private */
+        this.destinationHabitatLink = 'l+k://coordinates?' + this.destinationHabitatOrgX + ',' + this.destinationHabitatOrgY + '&' + world;
+
+        if (mhabitatExternal.habitat.player) {
+            var destinationHabitatPlayer = mhabitatExternal.habitat.player;
+            if(typeof destinationHabitatPlayer === "number") {
+                destinationHabitatPlayer = rigantestools_UtilPlayer.getPlayer(destinationHabitatPlayer, world);
+            } else {
+                rigantestools_UtilPlayer.updatePlayer(destinationHabitatPlayer, world);
+            }
+            /** @private */
+            this.destinationHabitatPlayerName = destinationHabitatPlayer.nick;
+            /** @private */
+            this.destinationHabitatPlayerLink = 'l+k://player?' + destinationHabitatPlayer.id + '&' + world;
+            /** @private */
+            this.destinationHabitatPlayerId = destinationHabitatPlayer.id;
+        }
+        /** @private */
+        this.destinationHabitatPoints = mhabitatExternal.habitat.points;
+    }
+    /** @private */
+    this.date = new Date(0);
+    this.dateset = false ;
+    /** @private */
+    this._ressources = [];
+    /** @private */
+    this._units = [];
+
+    // get Unites available
+    if (mhabitatExternal.units) {
+        var units = mhabitatExternal.units;
+        for (var indexUnit = 0; indexUnit < units.length; indexUnit++) {
+            var unit = new rigantestools_Unit(units[indexUnit]);
+            this._units.push(unit);
+        }
+    }
+};
 
 
