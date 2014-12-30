@@ -32,6 +32,7 @@
 			<tab label="&mainframe.tabDefense.label;"/>
 			<tab label="&mainframe.tabAttackDefenseSlow.label;"/>
 			<tab label="&mainframe.tabSimulation.label;"/>
+			<tab label="&mainframe.tabExternalDefense.label;"/>
 		</tabs>
 		<tabpanels id="rigantestools-tabpanels" flex="1">
 			<tabpanel id="maintab" orient="vertical">
@@ -562,6 +563,14 @@
 						</vbox>
 					</hbox>
 				</groupbox>
+			</tabpanel>
+			<tabpanel id="externaldefense" orient="vertical">
+				<label value="Defense externe"/>
+				<spacer style="height: 10px"/>
+				<label id="rigantestools-externalDefenseNoDefense" value="Aucune defense externe"/>
+				<tabbox flex="1" id="rigantestools-externaldefense-tabbox">
+				</tabbox>
+				<spacer height="5"/>
 			</tabpanel>
 		</tabpanels>
 	</tabbox>

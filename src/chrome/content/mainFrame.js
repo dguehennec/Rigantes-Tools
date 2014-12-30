@@ -52,6 +52,7 @@ Components.utils.import("resource://rigantestools/service/slowAttackDefenseCalcu
 Components.utils.import("resource://rigantestools/service/exporter.jsm", com);
 Components.utils.import("resource://rigantestools/service/logger.jsm", com);
 Components.utils.import("resource://rigantestools/service/util.jsm", com);
+Components.utils.import("resource://rigantestools/service/fightPreview.jsm");
 
 /**
  * The Class MainFrame.
@@ -127,6 +128,7 @@ com.rigantestools.MainFrame.init = function() {
     window.setTimeout(function() {
         object.initializePlayerInformation();
         object.initializeWarInProgressInformation();
+        object.initializeExternalDefenseInformation();
     }, 10);
     return true;
 };
@@ -3678,4 +3680,404 @@ com.rigantestools.MainFrame.sortcolumnPlayer = function(column, lastColumn, tree
         }
     }
     return column;
+};
+
+
+
+
+
+
+
+com.rigantestools.MainFrame.addUnits = function(habitat, time, listud, count) 
+{
+    var index, unit;
+    var nb = 0;
+    for (index = 0; index < habitat._units.length; index++) {
+        unit = habitat._units[index];
+        if (unit.getCount() > 0) {
+        	var type =  unit.getType() ;
+            nb += unit.getCount();
+            var item = {
+                'nb' : unit.getCount(),
+                'type' : type,
+                'time' : time
+            };
+            listud.push(item);
+            
+            if( type == com.rigantestools_Constant.UNITTYPE.SWORDMAN ) count[0] += Math.round(unit.getCount()/2 ) ;
+            if( type == com.rigantestools_Constant.UNITTYPE.SPEARMAN ) count[0] += Math.round(unit.getCount()/1 ) ;
+            if( type == com.rigantestools_Constant.UNITTYPE.ARCHER ) count[1] += Math.round(unit.getCount()/3 ) ;
+            if( type == com.rigantestools_Constant.UNITTYPE.CROSSBOWMAN ) count[1] += Math.round(unit.getCount()/1 ) ;
+            if( type == com.rigantestools_Constant.UNITTYPE.LANCER ) count[2] += Math.round(unit.getCount()/3 ) ;
+            if( type == com.rigantestools_Constant.UNITTYPE.SCORPIONRIDER ) count[2] += Math.round(unit.getCount()/1 ) ;
+           
+            
+        }
+    }
+    return nb;
+};
+
+
+com.rigantestools.MainFrame.initializeDefList = function()
+{
+	var mydeflist = [] ;
+	var index ;
+	
+		/*Adds defense in transit*/
+	
+        var habitats = this._player.getHabitatList();
+        for (var indexHab = 0; indexHab < habitats.length; indexHab++)
+        {
+            var habitat = habitats[indexHab];
+
+        	var myTransitList = habitat.getHabitatTransits(com.rigantestools_Constant.TRANSITTYPE.DEFENSE, false) ;
+           	for (index = 0; index < myTransitList.length; index++) 
+           	{
+           		var myHabitat = myTransitList[index] ;
+       			if(  myHabitat.destinationHabitatPlayerId != myHabitat.sourceHabitatPlayerId )
+       			{
+               		var found = false;
+      				var ii ;
+      				for( ii=0; ii<mydeflist.length; ++ii )
+      				{
+      					if( myHabitat.destinationHabitatId == mydeflist[ii].destinationHabitatId )
+      					{
+      						found = true ;
+      						mydeflist[ii].habitatTransitList.push( myHabitat ) ;
+            				this._logger.info (" add defender castle to " + myHabitat.destinationHabitatName );
+     						break ;
+      					}
+      				}
+      				if( !found ) 
+      				{
+      					var ll= [] ;
+      					ll.push( myHabitat ) ;
+						var item = 
+						{ 
+							'destinationHabitatId' : myHabitat.destinationHabitatId,
+							'destinationHabitatLink' : myHabitat.destinationHabitatLink,
+							'destinationHabitatName' : myHabitat.destinationHabitatName,
+							'destinationHabitatPlayerName' : myHabitat.destinationHabitatPlayerName,
+							'destinationHabitatPlayerLink' : myHabitat.destinationHabitatPlayerLink,
+							'destinationHabitatPlayerId' : myHabitat.destinationHabitatPlayerId,
+							'habitatTransitList' : ll 
+						}
+						mydeflist.push( item ) ;
+	           				this._logger.info (" new external castle defended " + myHabitat.destinationHabitatName );
+					}
+				}
+			}  
+		}
+
+
+		/*Adds defense in place*/
+
+        var habitats = this._player.getHabitatList();
+        for (var indexHab = 0; indexHab < habitats.length; indexHab++)
+        {
+            var habitat = habitats[indexHab];
+
+        	var myTransitList = habitat.getExternalHabitatUnits(com.rigantestools_Constant.BATTLETYPE.EXTERNAL_UNITS_TO_DEFENSE);
+           	for (index = 0; index < myTransitList.length; index++) 
+           	{
+           		var myHabitat = myTransitList[index] ;
+				
+       			if(  myHabitat.destinationHabitatPlayerId != myHabitat.sourceHabitatPlayerId )
+       			{
+               		var found = false;
+      				var ii ;
+      				for( ii=0; ii<mydeflist.length; ++ii )
+      				{
+      					if( myHabitat.destinationHabitatId == mydeflist[ii].destinationHabitatId )
+      					{
+      						found = true ;
+      						mydeflist[ii].habitatTransitList.push( myHabitat ) ;
+            				this._logger.info (" add defender castle to " + myHabitat.destinationHabitatName );
+     						break ;
+      					}
+      				}
+      				if( !found ) 
+      				{
+      					var ll= [] ;
+      					ll.push( myHabitat ) ;
+						var item = 
+						{ 
+							'destinationHabitatId' : myHabitat.destinationHabitatId,
+							'destinationHabitatLink' : myHabitat.destinationHabitatLink,
+							'destinationHabitatName' : myHabitat.destinationHabitatName,
+							'destinationHabitatPlayerName' : myHabitat.destinationHabitatPlayerName,
+							'destinationHabitatPlayerLink' : myHabitat.destinationHabitatPlayerLink,
+							'destinationHabitatPlayerId' : myHabitat.destinationHabitatPlayerId,
+							'habitatTransitList' : ll 
+						}
+						mydeflist.push( item ) ;
+	           				this._logger.info (" new external castle defended " + myHabitat.destinationHabitatName );
+					}
+				}
+				
+			}
+		}
+
+		
+	
+	return 	mydeflist ;
+}				
+
+
+
+
+
+/**
+ * initialize window external defense informations
+ * 
+ * @this {MainFrame}
+ * @return {Boolean} true if successful
+ */
+  
+
+ 
+com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
+    try {
+    
+    	var mydeflist = this.initializeDefList() ;
+    
+        var tabbox = document.getElementById("rigantestools-externaldefense-tabbox");
+        while (tabbox.hasChildNodes()) {
+            tabbox.removeChild(tabbox.firstChild);
+        }
+        // generate arrowscrollbox element
+        var arrowscrollbox = this._util.JSONToDOM([ "xul:arrowscrollbox", { orient : "horizontal" }], document, {});
+        // generate tabs element
+        var tabs = this._util.JSONToDOM([ "xul:tabs", {}], document, {});
+        // generate tabpanels element
+        var tabpanels = this._util.JSONToDOM([ "xul:tabpanels", { flex : 1 }], document, {});
+        
+       	var colsDefense = [this._util.getBundleString("mainframe.defenseinprogress.date"), "1", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "1", this._util.getBundleString("mainframe.defenseinprogress.newUnits"), "1", this._util.getBundleString("mainframe.defenseinprogress.status"), "1"];
+        var colsDefList = [this._util.getBundleString("mainframe.warinprogress.castle"), "3", this._util.getBundleString("mainframe.warinprogress.date"), "1", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "1"];
+        var that = this;
+		var nbDefenseFound = 0 ;
+		
+		
+
+        for (var indexHab = 0; indexHab < mydeflist.length; indexHab++) 
+        {
+            var habitat = mydeflist[indexHab];
+            var TTTLLL = habitat.habitatTransitList ;
+            var nbUD = [] ;
+            var nbUDTransit = [] ;
+			
+			var defense_list = [] ;
+			var unitList = [] ;
+			
+			var now = new Date();
+			var mintime=0 ;
+			
+			nbUD[0] = 0 ;
+			nbUD[1] = 0 ;
+			nbUD[2] = 0 ;
+			nbUDTransit[0] = 0 ;
+			nbUDTransit[1] = 0 ;
+			nbUDTransit[2] = 0 ;
+			  
+		    for ( var key in TTTLLL) 
+		    {
+		    	var dateset = TTTLLL[key].dateset ;
+		    	
+		        var nbud = 0;
+		        if( dateset )
+		        {
+		         	if( mintime==0 || TTTLLL[key].date.getTime() < mintime  ) mintime = TTTLLL[key].date.getTime() ;
+		       	}
+		       	
+		       	if( dateset )  nbud = this.addUnits(TTTLLL[key], TTTLLL[key].date.getTime(), unitList, nbUDTransit );
+		       	else nbud = this.addUnits(TTTLLL[key], 0, unitList, nbUD );
+	           
+	            var item = {
+	                'castle' : TTTLLL[key].sourceHabitatName,
+	                'date' : (dateset ? TTTLLL[key].date : null ),
+	                'nbud' : nbud
+	            };
+	            defense_list.push(item);
+		    }
+		    
+		    var do_it = false ;
+		    
+		    if( mintime == 0 ) 
+		    {
+		    	/* If no defense is on transit, we display a tab only if enough units are defending (1000 at least) */
+		    	mintime = now.getTime () ;
+		    	if( nbUD[0]+nbUD[1]+nbUD[2] > 999 ) do_it = true ;
+		    }
+		    else 
+		    {
+		    	/*We suppose that the 1st unit will arrive between 2 rounds*/
+		    	mintime += 300 ;
+		    	do_it = true ;
+		    }
+		    
+		    if( !do_it ) continue ;
+		    
+		    defense_list.sort(function(item1, item2) 
+		    { 
+		    	var t1 ;
+		    	var t2 ;
+		    	t1 = ( item1.date === null ? 0 : item1.date.getTime() ) ;
+		    	t2 = ( item2.date === null ? 0 : item2.date.getTime() ) ;
+		    	return t1-t2; 
+		    } ) ;
+
+
+			var battleDate = new Date(mintime)
+			var fightPreview = new rigantestools_FightPreview(habitat, unitList, battleDate);
+			
+			nbDefenseFound++;
+			
+			// generate tab attacks element
+			var tabAttack = this._util.JSONToDOM([ "xul:tab", { label : this._util.maxStringLength(habitat.destinationHabitatName,20) }], document, {});
+			tabs.appendChild(tabAttack);
+			
+			
+			
+			
+                
+
+                // generate treecolsSlowDefense JSON
+                var treecolsSlowDefense = [ "xul:treecols", {}];
+                for(var indexCol=0; indexCol<colsDefense.length; indexCol = indexCol+2){
+                    treecolsSlowDefense.push([ "xul:treecol", { label :  colsDefense[indexCol], flex : colsDefense[indexCol+1], ignoreincolumnpicker : true}]);
+                }
+                var treechildrenSlowDefense = [ "xul:treechildren", {}];
+                
+               // generate treecolsDefList JSON
+                var treecolsDefList = [ "xul:treecols", {}];
+                for(var indexCol=0; indexCol<colsDefList.length; indexCol = indexCol+2){
+                    treecolsDefList.push([ "xul:treecol", { label :  colsDefList[indexCol], flex : colsDefList[indexCol+1], ignoreincolumnpicker : true}]);
+                }
+                 var treechildrenDefList = [ "xul:treechildren", {}];
+
+                if(1) 
+                {
+                    var bufferRound = fightPreview.bufferRound;
+                    for(var indexBuffer =0; indexBuffer<bufferRound.length; indexBuffer++){
+                        var properties = '';
+                        if(indexBuffer%2) {
+                            properties = 'inGrey';
+                        }
+                        if(bufferRound[indexBuffer].issue) {
+                            properties = 'inRed';
+                        }
+                        // add treeitem JSON
+                        treechildrenSlowDefense.push(
+                            [ "xul:treeitem", {}, 
+                               [ "xul:treerow", { properties : properties}, 
+                                 [ "xul:treecell", { label : this._util.formatDayTime(bufferRound[indexBuffer].date, true)}],
+                                 [ "xul:treecell", { label : bufferRound[indexBuffer].unitCount}],
+                                 [ "xul:treecell", { label : bufferRound[indexBuffer].newUnitCount}],
+                                 [ "xul:treecell", { label : (bufferRound[indexBuffer].issue?"":this._util.getBundleString("ok"))}]
+                               ]
+                            ]
+                        );
+                    }
+ 
+ 
+                    
+                   var deflist = defense_list ;
+                   for(var indexBuffer =0; indexBuffer<deflist.length; indexBuffer++){
+                       
+                        var properties = '';
+                        if(indexBuffer%2) {
+                            properties = 'inGrey';
+                        }
+ 
+                        // add treeitem JSON
+                        var datestring = "" ;
+                        if( deflist[indexBuffer].date !== null ) 
+                        {
+                        	datestring = this._util.formatDayTime(deflist[indexBuffer].date,true) ;
+                        }
+                        else datestring = "" ;
+                        treechildrenDefList.push(
+                            [ "xul:treeitem", {}, 
+                               [ "xul:treerow", { properties : properties}, 
+                                 [ "xul:treecell", { label : deflist[indexBuffer].castle}],
+                                 [ "xul:treecell", { label : datestring}],
+                                 [ "xul:treecell", { label : deflist[indexBuffer].nbud}]
+                               ]
+                            ]
+                        );
+                    }
+                    
+                }
+
+                  var totalUD = nbUD[0] + nbUD[1] + nbUD[2] ;
+                  var totalUDDet = nbUD[0] + "/" + nbUD[1] + "/" +  nbUD[2] ;
+                  var totalUDInProgress = nbUDTransit[0] + nbUDTransit[1] + nbUDTransit[2] ;
+                  var totalUDInProgressDet = nbUDTransit[0] + "/" + nbUDTransit[1] + "/" +  nbUDTransit[2] ;
+  
+
+                // generate tabpanel element
+                var tabpanel = this._util.JSONToDOM([ "xul:tabpanel", { orient : "vertical"} ,
+                  [ "xul:hbox", { flex : 1 },
+
+                    [ "xul:vbox", { flex : 5 },
+                      [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.defenseInformation")}],
+                      [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsDefList, treechildrenDefList]
+                    ],
+
+                    [ "xul:vbox", { flex : 3 },
+                      [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.fightInformation")}],
+                      [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsSlowDefense, treechildrenSlowDefense],
+                      //[ "xul:button", { label : this._util.getBundleString("mainframe.warinprogress.goToDL"), oncommand : function(evt) { that.onGoToDLButtonClick(evt);} }]
+                    ],
+                   ],
+ 
+                 [ "xul:spacer", { style : "height: 10px"}],
+                  [ "xul:groupbox", { orient : "horizontal"}, 
+                    [ "xul:caption", { label : "Informations" }],
+                    [ "xul:vbox", {}, 
+                        [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.castleTarget")}],
+                        [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.Link")}],
+                        [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.owner")}],
+                        [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.Link")}],
+                   ],
+                    [ "xul:vbox", {}, 
+                      [ "xul:label", { value : habitat.destinationHabitatName}],
+                      [ "xul:label", { value : habitat.destinationHabitatLink}],
+                      [ "xul:label", { value : habitat.destinationHabitatPlayerName}],
+                      [ "xul:label", { value : habitat.destinationHabitatPlayerLink}],
+                    ],
+                    [ "xul:spacer", { flex : 1 }],
+                    [ "xul:vbox", {}, 
+                         [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.nbUD")}],
+                         [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.nbUDInProgress")}],
+                    ],
+                    [ "xul:vbox", {}, 
+                      [ "xul:label", { value : totalUD + " ("+ totalUDDet + ")"}],
+                      [ "xul:label", { value : totalUDInProgress + " ("+ totalUDInProgressDet + ")"}],
+                    ],
+                    [ "xul:spacer", { flex : 1 }]
+                  ]
+ 
+ 
+                ], document, {});
+                
+                tabpanels.appendChild(tabpanel);
+                
+ 
+        }
+
+        if(nbDefenseFound>0) 
+        {
+            this._util.setVisibility('rigantestools-externalDefenseNoDefense',"collapse");
+            arrowscrollbox.appendChild(tabs);
+            tabbox.appendChild(arrowscrollbox);
+            tabbox.appendChild(tabpanels);
+        }
+        else {
+            this._util.setVisibility('rigantestools-externalDefenseNoDefense',"visible");
+        }
+    }catch(e) {
+        this._logger.error("initializeExternalDefenseInformation", e);
+        this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));  
+    }
 };

@@ -92,6 +92,8 @@ var rigantestools_Habitat = function(mhabitat, world) {
         /** @private */
         this._habitatUnits = [];
         /** @private */
+        this._externalhabitatUnits = [];
+        /** @private */
         this._modifiers = [];
         /** @private */
         this.isAttacked = false;
@@ -222,7 +224,19 @@ var rigantestools_Habitat = function(mhabitat, world) {
         }
 
 
-
+       try {
+            // get Units in habitat
+            this._logger.trace("get Units in habitats");
+            if (mhabitat.externalHabitatUnits) {
+                 var mhabitatUnit = mhabitat.externalHabitatUnits;
+                for (index = 0; index < mhabitatUnit.length; index++) {
+                    var habitatUnit = new rigantestools_HabitatExternal(mhabitatUnit[index], world, mhabitat );
+                    this._externalhabitatUnits.push(habitatUnit);
+                }
+            }
+        } catch (e) {
+            this._logger.error("init error in get ExternalUnites in habitat:" + e);
+        }
 
 
         try {
@@ -362,6 +376,17 @@ rigantestools_Habitat.prototype.getHabitatUnits = function(battleType) {
     var listHabitatUnits = [];
     for (var index = 0; index < this._habitatUnits.length; index++) {
         var currentHabitatUnit = this._habitatUnits[index];
+        if (currentHabitatUnit.battleType === battleType) {
+    		listHabitatUnits.push(currentHabitatUnit);
+        }
+    }
+    return listHabitatUnits;
+};
+
+rigantestools_Habitat.prototype.getExternalHabitatUnits = function(battleType) {
+    var listHabitatUnits = [];
+    for (var index = 0; index < this._externalhabitatUnits.length; index++) {
+        var currentHabitatUnit = this._externalhabitatUnits[index];
         if (currentHabitatUnit.battleType === battleType) {
     		listHabitatUnits.push(currentHabitatUnit);
         }
