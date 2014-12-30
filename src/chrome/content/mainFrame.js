@@ -52,7 +52,7 @@ Components.utils.import("resource://rigantestools/service/slowAttackDefenseCalcu
 Components.utils.import("resource://rigantestools/service/exporter.jsm", com);
 Components.utils.import("resource://rigantestools/service/logger.jsm", com);
 Components.utils.import("resource://rigantestools/service/util.jsm", com);
-Components.utils.import("resource://rigantestools/service/fightPreview.jsm");
+Components.utils.import("resource://rigantestools/service/fightPreview.jsm", com);
 
 /**
  * The Class MainFrame.
@@ -3819,10 +3819,9 @@ com.rigantestools.MainFrame.initializeDefList = function()
 
  
 com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
-    //try {
-    
+    try {
     	var mydeflist = this.initializeDefList() ;
-    
+
         var tabbox = document.getElementById("rigantestools-externaldefense-tabbox");
         while (tabbox.hasChildNodes()) {
             tabbox.removeChild(tabbox.firstChild);
@@ -3833,46 +3832,46 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
         var tabs = this._util.JSONToDOM([ "xul:tabs", {}], document, {});
         // generate tabpanels element
         var tabpanels = this._util.JSONToDOM([ "xul:tabpanels", { flex : 1 }], document, {});
-        
+
        	var colsDefense = [this._util.getBundleString("mainframe.defenseinprogress.date"), "1", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "1", this._util.getBundleString("mainframe.defenseinprogress.newUnits"), "1", this._util.getBundleString("mainframe.defenseinprogress.status"), "1"];
         var colsDefList = [this._util.getBundleString("mainframe.warinprogress.castle"), "3", this._util.getBundleString("mainframe.warinprogress.date"), "1", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "1"];
         var that = this;
-		var nbDefenseFound = 0 ;
-		
-		
+        var nbDefenseFound = 0;
 
-        for (var indexHab = 0; indexHab < mydeflist.length; indexHab++) 
-        {
+        for (var indexHab = 0; indexHab < mydeflist.length; indexHab++) {
             var habitat = mydeflist[indexHab];
-            var TTTLLL = habitat.habitatTransitList ;
-            var nbUD = [] ;
-            var nbUDTransit = [] ;
+            var TTTLLL = habitat.habitatTransitList;
+            var nbUD = [];
+            var nbUDTransit = [];
 			
-			var defense_list = [] ;
-			var unitList = [] ;
+			var defense_list = [];
+			var unitList = [];
 			
 			var now = new Date();
-			var mintime=0 ;
+			var mintime=0;
 			
-			nbUD[0] = 0 ;
-			nbUD[1] = 0 ;
-			nbUD[2] = 0 ;
-			nbUDTransit[0] = 0 ;
-			nbUDTransit[1] = 0 ;
-			nbUDTransit[2] = 0 ;
+			nbUD[0] = 0;
+			nbUD[1] = 0;
+			nbUD[2] = 0;
+			nbUDTransit[0] = 0;
+			nbUDTransit[1] = 0;
+			nbUDTransit[2] = 0;
 			  
-		    for ( var key in TTTLLL) 
-		    {
-		    	var dateset = TTTLLL[key].dateset ;
+		    for (var key in TTTLLL) {
+		        var dateset = TTTLLL[key].dateset;
 		    	
 		        var nbud = 0;
-		        if( dateset )
-		        {
-		         	if( mintime==0 || TTTLLL[key].date.getTime() < mintime  ) mintime = TTTLLL[key].date.getTime() ;
+		        if( dateset ) {
+                    if( mintime==0 || TTTLLL[key].date.getTime() < mintime  ) {
+                        mintime = TTTLLL[key].date.getTime();
+                    }
 		       	}
 		       	
-		       	if( dateset )  nbud = this.addUnits(TTTLLL[key], TTTLLL[key].date.getTime(), unitList, nbUDTransit );
-		       	else nbud = this.addUnits(TTTLLL[key], 0, unitList, nbUD );
+                if( dateset )  {
+                    nbud = this.addUnits(TTTLLL[key], TTTLLL[key].date.getTime(), unitList, nbUDTransit);
+                } else {
+                    nbud = this.addUnits(TTTLLL[key], 0, unitList, nbUD);
+                }
 	           
 	            var item = {
 	                'castle' : TTTLLL[key].sourceHabitatName,
@@ -3882,35 +3881,36 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 	            defense_list.push(item);
 		    }
 		    
-		    var do_it = false ;
+		    var do_it = false;
 		    
-		    if( mintime == 0 ) 
-		    {
-		    	/* If no defense is on transit, we display a tab only if enough units are defending (1000 at least) */
-		    	mintime = now.getTime () ;
-		    	if( nbUD[0]+nbUD[1]+nbUD[2] > 999 ) do_it = true ;
+            if( mintime == 0 ) {
+                /* If no defense is on transit, we display a tab only if enough units are defending (1000 at least) */
+                mintime = now.getTime ();
+                if( nbUD[0]+nbUD[1]+nbUD[2] > 999 ) {
+                    do_it = true;
+                }
+            } else {
+                /*We suppose that the 1st unit will arrive between 2 rounds*/
+                mintime += 300;
+                do_it = true;
+            }
+		    
+		    if( !do_it ) {
+		        continue;
 		    }
-		    else 
-		    {
-		    	/*We suppose that the 1st unit will arrive between 2 rounds*/
-		    	mintime += 300 ;
-		    	do_it = true ;
-		    }
 		    
-		    if( !do_it ) continue ;
-		    
-		    defense_list.sort(function(item1, item2) 
-		    { 
-		    	var t1 ;
-		    	var t2 ;
-		    	t1 = ( item1.date === null ? 0 : item1.date.getTime() ) ;
-		    	t2 = ( item2.date === null ? 0 : item2.date.getTime() ) ;
-		    	return t1-t2; 
-		    } ) ;
+            defense_list.sort(function(item1, item2)
+                    {
+                        var t1;
+                        var t2;
+                        t1 = ( item1.date === null ? 0 : item1.date.getTime() );
+                        t2 = ( item2.date === null ? 0 : item2.date.getTime() );
+                        return t1-t2;
+                    }
+            );
 
-
-			var battleDate = new Date(mintime)
-			var fightPreview = new rigantestools_FightPreview( ( habitat.destinationHabitatPoints > 1000 ? true : false ), unitList, battleDate);
+			var battleDate = new Date(mintime);
+			var fightPreview = new com.rigantestools_FightPreview( ( habitat.destinationHabitatPoints > 1000 ? true : false ), unitList, battleDate);
 			
 			nbDefenseFound++;
 			
@@ -3918,148 +3918,127 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 			var tabAttack = this._util.JSONToDOM([ "xul:tab", { label : this._util.maxStringLength(habitat.destinationHabitatName,20) }], document, {});
 			tabs.appendChild(tabAttack);
 			
-			
-			
-			
-                
+            // generate treecolsSlowDefense JSON
+            var treecolsSlowDefense = [ "xul:treecols", {}];
+            for(var indexCol=0; indexCol<colsDefense.length; indexCol = indexCol+2){
+                treecolsSlowDefense.push([ "xul:treecol", { label :  colsDefense[indexCol], flex : colsDefense[indexCol+1], ignoreincolumnpicker : true}]);
+            }
+            var treechildrenSlowDefense = [ "xul:treechildren", {}];
+            
+            // generate treecolsDefList JSON
+            var treecolsDefList = [ "xul:treecols", {}];
+            for(var indexCol=0; indexCol<colsDefList.length; indexCol = indexCol+2){
+                treecolsDefList.push([ "xul:treecol", { label :  colsDefList[indexCol], flex : colsDefList[indexCol+1], ignoreincolumnpicker : true}]);
+            }
+            var treechildrenDefList = [ "xul:treechildren", {}];
 
-                // generate treecolsSlowDefense JSON
-                var treecolsSlowDefense = [ "xul:treecols", {}];
-                for(var indexCol=0; indexCol<colsDefense.length; indexCol = indexCol+2){
-                    treecolsSlowDefense.push([ "xul:treecol", { label :  colsDefense[indexCol], flex : colsDefense[indexCol+1], ignoreincolumnpicker : true}]);
+            var bufferRound = fightPreview.bufferRound;
+            for(var indexBuffer =0; indexBuffer<bufferRound.length; indexBuffer++){
+                var properties = '';
+                if(indexBuffer%2) {
+                    properties = 'inGrey';
                 }
-                var treechildrenSlowDefense = [ "xul:treechildren", {}];
-                
-               // generate treecolsDefList JSON
-                var treecolsDefList = [ "xul:treecols", {}];
-                for(var indexCol=0; indexCol<colsDefList.length; indexCol = indexCol+2){
-                    treecolsDefList.push([ "xul:treecol", { label :  colsDefList[indexCol], flex : colsDefList[indexCol+1], ignoreincolumnpicker : true}]);
+                if(bufferRound[indexBuffer].issue) {
+                    properties = 'inRed';
                 }
-                 var treechildrenDefList = [ "xul:treechildren", {}];
+                // add treeitem JSON
+                treechildrenSlowDefense.push(
+                    [ "xul:treeitem", {}, 
+                       [ "xul:treerow", { properties : properties}, 
+                         [ "xul:treecell", { label : this._util.formatDayTime(bufferRound[indexBuffer].date, true)}],
+                         [ "xul:treecell", { label : bufferRound[indexBuffer].unitCount}],
+                         [ "xul:treecell", { label : bufferRound[indexBuffer].newUnitCount}],
+                         [ "xul:treecell", { label : (bufferRound[indexBuffer].issue?"":this._util.getBundleString("ok"))}]
+                       ]
+                    ]
+                );
 
-                if(1) 
-                {
-                    var bufferRound = fightPreview.bufferRound;
-                    for(var indexBuffer =0; indexBuffer<bufferRound.length; indexBuffer++){
-                        var properties = '';
-                        if(indexBuffer%2) {
-                            properties = 'inGrey';
-                        }
-                        if(bufferRound[indexBuffer].issue) {
-                            properties = 'inRed';
-                        }
-                        // add treeitem JSON
-                        treechildrenSlowDefense.push(
-                            [ "xul:treeitem", {}, 
-                               [ "xul:treerow", { properties : properties}, 
-                                 [ "xul:treecell", { label : this._util.formatDayTime(bufferRound[indexBuffer].date, true)}],
-                                 [ "xul:treecell", { label : bufferRound[indexBuffer].unitCount}],
-                                 [ "xul:treecell", { label : bufferRound[indexBuffer].newUnitCount}],
-                                 [ "xul:treecell", { label : (bufferRound[indexBuffer].issue?"":this._util.getBundleString("ok"))}]
-                               ]
-                            ]
-                        );
+                var deflist = defense_list;
+                for(var indexBuffer =0; indexBuffer<deflist.length; indexBuffer++) {
+                    var properties = '';
+                    if(indexBuffer%2) {
+                        properties = 'inGrey';
                     }
- 
- 
-                    
-                   var deflist = defense_list ;
-                   for(var indexBuffer =0; indexBuffer<deflist.length; indexBuffer++){
-                       
-                        var properties = '';
-                        if(indexBuffer%2) {
-                            properties = 'inGrey';
-                        }
- 
-                        // add treeitem JSON
-                        var datestring = "" ;
-                        if( deflist[indexBuffer].date !== null ) 
-                        {
-                        	datestring = this._util.formatDayTime(deflist[indexBuffer].date,true) ;
-                        }
-                        else datestring = "" ;
-                        treechildrenDefList.push(
-                            [ "xul:treeitem", {}, 
-                               [ "xul:treerow", { properties : properties}, 
-                                 [ "xul:treecell", { label : deflist[indexBuffer].castle}],
-                                 [ "xul:treecell", { label : datestring}],
-                                 [ "xul:treecell", { label : deflist[indexBuffer].nbud}]
-                               ]
-                            ]
-                        );
+                     
+                    // add treeitem JSON
+                    var datestring = "";
+                    if( deflist[indexBuffer].date !== null ) {
+                    	datestring = this._util.formatDayTime(deflist[indexBuffer].date,true);
+                    } else {
+                        datestring = "";
                     }
-                    
+                    treechildrenDefList.push(
+                        [ "xul:treeitem", {}, 
+                           [ "xul:treerow", { properties : properties}, 
+                             [ "xul:treecell", { label : deflist[indexBuffer].castle}],
+                             [ "xul:treecell", { label : datestring}],
+                             [ "xul:treecell", { label : deflist[indexBuffer].nbud}]
+                           ]
+                        ]
+                    );
                 }
+            }
 
-                  var totalUD = nbUD[0] + nbUD[1] + nbUD[2] ;
-                  var totalUDDet = nbUD[0] + "/" + nbUD[1] + "/" +  nbUD[2] ;
-                  var totalUDInProgress = nbUDTransit[0] + nbUDTransit[1] + nbUDTransit[2] ;
-                  var totalUDInProgressDet = nbUDTransit[0] + "/" + nbUDTransit[1] + "/" +  nbUDTransit[2] ;
+            var totalUD = nbUD[0] + nbUD[1] + nbUD[2];
+            var totalUDDet = nbUD[0] + "/" + nbUD[1] + "/" +  nbUD[2];
+            var totalUDInProgress = nbUDTransit[0] + nbUDTransit[1] + nbUDTransit[2];
+            var totalUDInProgressDet = nbUDTransit[0] + "/" + nbUDTransit[1] + "/" +  nbUDTransit[2];
   
-
-                // generate tabpanel element
-                var tabpanel = this._util.JSONToDOM([ "xul:tabpanel", { orient : "vertical"} ,
-                  [ "xul:hbox", { flex : 1 },
-
-                    [ "xul:vbox", { flex : 5 },
-                      [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.defenseInformation")}],
-                      [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsDefList, treechildrenDefList]
-                    ],
-
-                    [ "xul:vbox", { flex : 3 },
-                      [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.fightInformation")}],
-                      [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsSlowDefense, treechildrenSlowDefense],
-                      //[ "xul:button", { label : this._util.getBundleString("mainframe.warinprogress.goToDL"), oncommand : function(evt) { that.onGoToDLButtonClick(evt);} }]
-                    ],
-                   ],
- 
-                 [ "xul:spacer", { style : "height: 10px"}],
-                  [ "xul:groupbox", { orient : "horizontal"}, 
-                    [ "xul:caption", { label : "Informations" }],
-                    [ "xul:vbox", {}, 
-                        [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.castleTarget")}],
-                        [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.Link")}],
-                        [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.owner")}],
-                        [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.Link")}],
-                   ],
-                    [ "xul:vbox", {}, 
-                      [ "xul:label", { value : habitat.destinationHabitatName}],
-                      [ "xul:label", { value : habitat.destinationHabitatLink}],
-                      [ "xul:label", { value : habitat.destinationHabitatPlayerName}],
-                      [ "xul:label", { value : habitat.destinationHabitatPlayerLink}],
-                    ],
-                    [ "xul:spacer", { flex : 1 }],
-                    [ "xul:vbox", {}, 
-                         [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.nbUD")}],
-                         [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.nbUDInProgress")}],
-                    ],
-                    [ "xul:vbox", {}, 
-                      [ "xul:label", { value : totalUD + " ("+ totalUDDet + ")"}],
-                      [ "xul:label", { value : totalUDInProgress + " ("+ totalUDInProgressDet + ")"}],
-                    ],
-                    [ "xul:spacer", { flex : 1 }]
-                  ]
- 
- 
-                ], document, {});
+            // generate tabpanel element
+            var tabpanel = this._util.JSONToDOM([ "xul:tabpanel", { orient : "vertical"} ,
+                [ "xul:hbox", { flex : 1 },
+                  [ "xul:vbox", { flex : 5 },
+                    [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.defenseInformation")}],
+                    [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsDefList, treechildrenDefList]
+                  ],
                 
-                tabpanels.appendChild(tabpanel);
-                
- 
+                  [ "xul:vbox", { flex : 3 },
+                    [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.fightInformation")}],
+                    [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsSlowDefense, treechildrenSlowDefense]
+                  ],
+                ],
+                [ "xul:spacer", { style : "height: 10px"}],
+                [ "xul:groupbox", { orient : "horizontal"}, 
+                  [ "xul:caption", { label : "Informations" }],
+                  [ "xul:vbox", {}, 
+                    [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.castleTarget")}],
+                    [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.Link")}],
+                    [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.owner")}],
+                    [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.Link")}]
+                  ],
+                  [ "xul:vbox", {}, 
+                    [ "xul:label", { value : habitat.destinationHabitatName}],
+                    [ "xul:label", { value : habitat.destinationHabitatLink}],
+                    [ "xul:label", { value : habitat.destinationHabitatPlayerName}],
+                    [ "xul:label", { value : habitat.destinationHabitatPlayerLink}]
+                  ],
+                  [ "xul:spacer", { flex : 1 }],
+                  [ "xul:vbox", {},
+                    [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.nbUD")}],
+                    [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.nbUDInProgress")}]
+                  ],
+                  [ "xul:vbox", {}, 
+                    [ "xul:label", { value : totalUD + " ("+ totalUDDet + ")"}],
+                    [ "xul:label", { value : totalUDInProgress + " ("+ totalUDInProgressDet + ")"}]
+                  ],
+                  [ "xul:spacer", { flex : 1 }]
+                ]
+              ], document, {});
+
+            tabpanels.appendChild(tabpanel);
         }
-
-        if(nbDefenseFound>0) 
-        {
+        
+        this._util.setAttribute('rigantestools-tabExternalDefenseInProgress','label',this._util.getBundleString('mainframe.defexterne.tabtitle').replace("%NB%",nbDefenseFound));
+        if (nbDefenseFound>0) {
             this._util.setVisibility('rigantestools-externalDefenseNoDefense',"collapse");
             arrowscrollbox.appendChild(tabs);
             tabbox.appendChild(arrowscrollbox);
             tabbox.appendChild(tabpanels);
-        }
-        else {
+        } else {
             this._util.setVisibility('rigantestools-externalDefenseNoDefense',"visible");
         }
-  //  }catch(e) {
- //       this._logger.error("initializeExternalDefenseInformation", e);
-  //      this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));  
-  //  }
+    }catch(e) {
+        this._logger.error("initializeExternalDefenseInformation", e);
+        this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
+    }
 };
