@@ -176,6 +176,38 @@ rigantestools_Player.prototype.getHabitatList = function() {
 };
 
 /**
+ * get number captions
+ * 
+ * @this {Player}
+ * @param {Number}
+ *            nbPA
+ * @param {Boolean}
+ *            typeFortress
+ * @return {Number} nbCaption
+ */
+rigantestools_Player.prototype.getNbCaption = function(nbPA, typeFortress) {
+    var nbCaption = 0;
+    var nbPACaption = 0;
+    for (var index = 0; index < this.habitateList.length; index++) {
+        if(this.habitateList[index].isFortress()) {
+            nbPACaption += 5000;
+        } else {
+            nbPACaption += 1000;
+        }
+    }
+    // the fortress costs 5 times the amount of silver that the ordinary castle
+    if(typeFortress) {
+        nbPACaption = nbPACaption * 5;
+    }
+    while (nbPA >= nbPACaption) {
+        nbCaption++;
+        nbPA = nbPA - nbPACaption;
+        nbPACaption = nbPACaption + 1000;
+    }
+    return nbCaption;
+};
+
+/**
  * Freeze the interface
  */
 Object.freeze(rigantestools_Player);

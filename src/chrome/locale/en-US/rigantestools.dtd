@@ -107,10 +107,11 @@
 <!ENTITY mainframe.tabPlayer.player.nbUD.label "Number UD">
 <!ENTITY mainframe.tabPlayer.loading.label "Loading...">
 <!-- MainFrame War dialog -->
-<!ENTITY mainframe.tabWar.label "Preparation of attack">
+<!ENTITY mainframe.tabWar.label "Attack">
 <!ENTITY mainframe.tabWar.description "Screen to calculate travel time to the target for all your castles.">
 <!ENTITY mainframe.tabWar.criterion.label "Criterion">
 <!ENTITY mainframe.tabWar.castleLinkPrompt.label "Link target castle :">
+<!ENTITY mainframe.tabWar.isFortress.label "Type fortress :">
 <!ENTITY mainframe.tabWar.attackType.label "Attack type :">
 <!ENTITY mainframe.tabWar.attackTypeProgrammed.label "Programmed">
 <!ENTITY mainframe.tabWar.attackTypeFlash.label "Flash">
@@ -159,7 +160,7 @@
 <!ENTITY mainframe.tabWarInProgress.generateWarInProgressInformations.button "Generate the informations of this attack">
 <!ENTITY mainframe.tabWarInProgress.noWarInProgress "No ongoing attack detected.">
 <!-- MainFrame Defense dialog -->
-<!ENTITY mainframe.tabDefense.label "Preparation of Defense">
+<!ENTITY mainframe.tabDefense.label "Defense">
 <!ENTITY mainframe.tabDefense.description "Screen to calculate travel time to the target for all your castles.">
 <!ENTITY mainframe.tabDefense.criterion.label "Criterion">
 <!ENTITY mainframe.tabDefense.castleLinkPrompt.label "Link target castle :">
@@ -182,10 +183,11 @@
 <!ENTITY mainframe.tabDefense.unit.label "Units kept in a castle :">
 <!ENTITY mainframe.tabDefense.unit.button "Modify">
 <!-- MainFrame attack/defense slow dialog -->
-<!ENTITY mainframe.tabAttackDefenseSlow.label "Slow attack/defense">
+<!ENTITY mainframe.tabAttackDefenseSlow.label "Slow defense">
 <!ENTITY mainframe.tabAttackDefenseSlow.description "Screen to prepare a slow attack or defense in order to hold the longer face the enemy">
 <!ENTITY mainframe.tabAttackDefenseSlow.criterion.label "Criterion">
 <!ENTITY mainframe.tabAttackDefenseSlow.castleLinkPrompt.label "Link target castle :">
+<!ENTITY mainframe.tabAttackDefenseSlow.isFortress.label "type fortress :">
 <!ENTITY mainframe.tabAttackDefenseSlow.datetimePrompt.label "Date and time (of round) :">
 <!ENTITY mainframe.tabAttackDefenseSlow.datetimePromptAt.label "at">
 <!ENTITY mainframe.tabAttackDefenseSlow.durationPrompt.label "Duration :">
