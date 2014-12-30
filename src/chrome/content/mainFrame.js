@@ -1107,10 +1107,9 @@ com.rigantestools.MainFrame.calculateAttackDefenseSlowTimeAndShow = function() {
 		var onlyCastles = this._util.getAttribute('rigantestools-attackDefenseSlowOnlyCastles', 'value') ;
 		var noCastles = this._util.getAttribute('rigantestools-attackDefenseSlowNoCastles', 'value') ;
         var maxperminute  = this._util.getAttribute('rigantestools-attackDefenseSlowMaxPerMinute', 'value') ;
-
         
         this.clearAttackDefenseSlowTab();
-        var slowAttackDefenseCalculate = new com.rigantestools_SlowAttackDefenseCalculate(this._player.getHabitatList(), targetLink, date, duration, unitType, unitCount, startTimeUnit, allCastles, errorMargin, onlyCastles, noCastles, ralentit, maxperminute);
+        var slowAttackDefenseCalculate = new com.rigantestools_SlowAttackDefenseCalculate(this._player.getHabitatList(), targetLink, date, duration, unitType, unitCount, startTimeUnit, allCastles, errorMargin, onlyCastles, noCastles, ralentit, maxperminute );
         this.currentHabitatsAttackDefenseSlow = slowAttackDefenseCalculate.getResultList();
         this.sortcolumnAttackDefenseSlowTree(null);
         
@@ -1213,12 +1212,9 @@ com.rigantestools.MainFrame.onGoToDLButtonClick = function(evt) {
  */
 com.rigantestools.MainFrame.initializeAttackDefenseSlowUnitCount = function() {
     var itemsFortress = {
-            "500+252  (10')" : "500",
-            "1000+504 (10') SAFE" : "501",
-            "1000+752 (15') SAFE" : "750",
-            "1000+752 (20')" : "1000",
-            "2000+1504 (20') SAFE" : "1001",
-            "2000+1752 (30')" : "2000"
+            "500+254  (10')" : "500",
+            "1000+754 (15') SAFE" : "750",
+            "1000+754 (20')" : "1000"
     };
     var itemsCastle = {
             "100+52  (10')" : "100",
@@ -3744,6 +3740,7 @@ com.rigantestools.MainFrame.initializeDefList = function()
 							'destinationHabitatPlayerName' : myHabitat.destinationHabitatPlayerName,
 							'destinationHabitatPlayerLink' : myHabitat.destinationHabitatPlayerLink,
 							'destinationHabitatPlayerId' : myHabitat.destinationHabitatPlayerId,
+							'destinationHabitatPoints': myHabitat.destinationHabitatPoints,
 							'habitatTransitList' : ll 
 						}
 						mydeflist.push( item ) ;
@@ -3792,6 +3789,7 @@ com.rigantestools.MainFrame.initializeDefList = function()
 							'destinationHabitatPlayerName' : myHabitat.destinationHabitatPlayerName,
 							'destinationHabitatPlayerLink' : myHabitat.destinationHabitatPlayerLink,
 							'destinationHabitatPlayerId' : myHabitat.destinationHabitatPlayerId,
+							'destinationHabitatPoints': myHabitat.destinationHabitatPoints,
 							'habitatTransitList' : ll 
 						}
 						mydeflist.push( item ) ;
@@ -3821,7 +3819,7 @@ com.rigantestools.MainFrame.initializeDefList = function()
 
  
 com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
-    try {
+    //try {
     
     	var mydeflist = this.initializeDefList() ;
     
@@ -3912,7 +3910,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 
 
 			var battleDate = new Date(mintime)
-			var fightPreview = new rigantestools_FightPreview(habitat, unitList, battleDate);
+			var fightPreview = new rigantestools_FightPreview( ( habitat.destinationHabitatPoints > 1000 ? true : false ), unitList, battleDate);
 			
 			nbDefenseFound++;
 			
@@ -4060,8 +4058,8 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
         else {
             this._util.setVisibility('rigantestools-externalDefenseNoDefense',"visible");
         }
-    }catch(e) {
-        this._logger.error("initializeExternalDefenseInformation", e);
-        this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));  
-    }
+  //  }catch(e) {
+ //       this._logger.error("initializeExternalDefenseInformation", e);
+  //      this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));  
+  //  }
 };

@@ -85,53 +85,57 @@ var rigantestools_SlowAttackDefenseCalculate = function(habitats, targetLink, da
     this.ralentit = ralentit;
     this.maxperminute = maxperminute;
 
+    var stepDuration = 1800;
+
     if (unitCount == 100) {
         this.nbNewUnits = 100;
         this.nbCurrentUnits = 52;
+        stepDuration = 600 ;
     }
     else if (unitCount == 101) {
         this.nbNewUnits = 200;
         this.nbCurrentUnits = 104;
+        stepDuration = 600 ;
     }
     else if (unitCount == 150) {
         this.nbNewUnits = 200;
         this.nbCurrentUnits = 152;
+        stepDuration = 900 ;
     }
     else if (unitCount == 200) {
         this.nbNewUnits = 200;
         this.nbCurrentUnits = 152;
+        stepDuration = 1200 ;
     }
     else if (unitCount == 201) {
         this.nbNewUnits = 400;
         this.nbCurrentUnits = 304;
+        stepDuration = 1200 ;
     }
     else if (unitCount == 400) {
         this.nbNewUnits = 400;
         this.nbCurrentUnits = 352;
+        stepDuration = 1800 ;
     }
     else if (unitCount == 500) {
         this.nbNewUnits = 500;
-        this.nbCurrentUnits = 252;
-    }
-    else if (unitCount == 501) {
-        this.nbNewUnits = 1000;
-        this.nbCurrentUnits = 504;
+        this.nbCurrentUnits = 254;
+        stepDuration = 600 ;
     }
     else if (unitCount == 750) {
         this.nbNewUnits = 1000;
-        this.nbCurrentUnits = 752;
+        this.nbCurrentUnits = 754;
+        stepDuration = 900 ;
     }
     else if (unitCount == 1000) {
         this.nbNewUnits = 1000;
-        this.nbCurrentUnits = 752;
+        this.nbCurrentUnits = 754;
+        stepDuration = 1200 ;
     }
-    else if (unitCount == 1001) {
-        this.nbNewUnits = 2000;
-        this.nbCurrentUnits = 1504;
-    }
-    else if (unitCount == 2000) {
-        this.nbNewUnits = 2000;
-        this.nbCurrentUnits = 1752;
+     else {
+        this.nbNewUnits = 1;
+        this.nbCurrentUnits = 1;
+        stepDuration = 600 ;
     }
 
     this.habitats = habitats;
@@ -157,16 +161,6 @@ var rigantestools_SlowAttackDefenseCalculate = function(habitats, targetLink, da
 
     // initialize buffer times with date + 5 minutes
     var startAttackDefenseTime = date.getTime() - 300000;
-    var stepDuration = 1800;
-    if (unitCount < 200) {
-        if (unitCount == 150) {
-            stepDuration = 900;
-        } else {
-            stepDuration = 600;
-        }
-    } else if (unitCount < 400) {
-        stepDuration = 1200;
-    }
 
     for (step = 0; step <= duration / stepDuration; step++) {
         this.bufferTime.push({
