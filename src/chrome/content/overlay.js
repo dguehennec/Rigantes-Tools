@@ -442,7 +442,7 @@ com.rigantestools.Main.onDefenseTargetClick = function(evt) {
  */
 com.rigantestools.Main.onCopyAttackReportTargetClick = function(evt) {
     this._logger.trace("onCopyAttackReportTargetClick");
-    this.showMainFrame(5, com.rigantestools_Controller.copyAttackReport(gContextMenu.target));
+    this.showMainFrame(6, com.rigantestools_Controller.copyAttackReport(gContextMenu.target));
 };
 
 /**

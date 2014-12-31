@@ -171,7 +171,7 @@ com.rigantestools.MainFrame.selectTab = function() {
             this._util.setAttribute('rigantestools-defenseTargetLink', 'value', parameters.parameters);
             this.clearDefenseTab();
         }
-        else if (parameters.tab===5) {
+        else if (parameters.tab===6) {
             this._util.setAttribute('rigantestools-simulationAttaqueSpearman', 'value', parameters.parameters.attackers.spearman);
             this._util.setAttribute('rigantestools-simulationAttaqueSwordman', 'value', parameters.parameters.attackers.swordman);
             this._util.setAttribute('rigantestools-simulationAttaqueArcher', 'value', parameters.parameters.attackers.archer);
@@ -2712,7 +2712,7 @@ com.rigantestools.MainFrame.onSimulateWarButtonClick = function(evt) {
     this._util.setAttribute('rigantestools-simulationAttaqueCrossbowman', 'value', '');
     this._util.setAttribute('"rigantestools-simulationAttaqueScorpionRider', 'value', '');
     this._util.setAttribute('rigantestools-simulationAttaqueLancer', 'value', this.simulationLancerCount);
-    this._util.setAttribute('rigantestools-tabbox', 'selectedIndex', 5);
+    this._util.setAttribute('rigantestools-tabbox', 'selectedIndex', 6);
     
 };
 
