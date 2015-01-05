@@ -3724,7 +3724,7 @@ com.rigantestools.MainFrame.initializeDefList = function()
       					{
       						found = true ;
       						mydeflist[ii].habitatTransitList.push( myHabitat ) ;
-            				this._logger.info (" add defender castle to " + myHabitat.destinationHabitatName );
+            				//this._logger.info (" add defender castle to " + myHabitat.destinationHabitatName );
      						break ;
       					}
       				}
@@ -3744,7 +3744,7 @@ com.rigantestools.MainFrame.initializeDefList = function()
 							'habitatTransitList' : ll 
 						}
 						mydeflist.push( item ) ;
-	           				this._logger.info (" new external castle defended " + myHabitat.destinationHabitatName );
+	           			//this._logger.info (" new external castle defended " + myHabitat.destinationHabitatName );
 					}
 				}
 			}  
@@ -3773,7 +3773,7 @@ com.rigantestools.MainFrame.initializeDefList = function()
       					{
       						found = true ;
       						mydeflist[ii].habitatTransitList.push( myHabitat ) ;
-            				this._logger.info (" add defender castle to " + myHabitat.destinationHabitatName );
+            				//this._logger.info (" add defender castle to " + myHabitat.destinationHabitatName );
      						break ;
       					}
       				}
@@ -3793,7 +3793,7 @@ com.rigantestools.MainFrame.initializeDefList = function()
 							'habitatTransitList' : ll 
 						}
 						mydeflist.push( item ) ;
-	           				this._logger.info (" new external castle defended " + myHabitat.destinationHabitatName );
+	           			//this._logger.info (" new external castle defended " + myHabitat.destinationHabitatName );
 					}
 				}
 				
@@ -3893,7 +3893,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 		    else 
 		    {
 		    	/*We suppose that the 1st unit will arrive between 2 rounds*/
-		    	mintime += 300 ;
+		    	mintime += 300*1000
 		    	do_it = true ;
 		    }
 		    
