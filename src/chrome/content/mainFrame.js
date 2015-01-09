@@ -1205,6 +1205,30 @@ com.rigantestools.MainFrame.onGoToDLButtonClick = function(evt) {
 	this._util.setAttribute('rigantestools-tabbox', 'selectedIndex', 4);
 }
 
+
+com.rigantestools.MainFrame.onGoToDLButtonClick2 = function(evt) {
+    var link = "";
+    var date = new Date();
+    var isFortress = false;
+    var index = this._util.getAttribute('rigantestools-externaldefense-tabbox', 'selectedIndex');
+    if (index < this._DefenseList.length) {
+        link = this._DefenseList[index].habitat_link;
+        date = this._DefenseList[index].trou;
+        isFortress = this._DefenseList[index].isFortress;
+    }
+	this._util.setAttribute('rigantestools-attackDefenseSlowTargetLink', 'value', link);
+	this._util.setAttribute('rigantestools-attackDefenseSlowTime', 'value', this._util.formatTime(date));
+	this._util.setAttribute('rigantestools-attackDefenseSlowIsFortress', 'checked', isFortress);
+	this.initializeAttackDefenseSlowUnitCount();
+	var datePicker = document.getElementById('rigantestools-attackDefenseSlowDate');
+	if (datePicker) {
+	    datePicker._setValueNoSync(date);
+	}
+	this._util.setAttribute('rigantestools-tabbox', 'selectedIndex', 4);
+}
+
+
+
 /**
  * initialize Attack Defense Slow Unit Count
  * 
@@ -3806,6 +3830,126 @@ com.rigantestools.MainFrame.initializeDefList = function()
 }				
 
 
+com.rigantestools.MainFrame.RedisplayPreview = function( treechildrenSlowDefense, fightPreview) {
+
+    while (treechildrenSlowDefense.hasChildNodes()) 
+    {
+        treechildrenSlowDefense.removeChild(treechildrenSlowDefense.firstChild);
+    }
+
+
+	var bufferRound = fightPreview.bufferRound;
+    for(var indexBuffer =0; indexBuffer<bufferRound.length; indexBuffer++)
+    {
+		var properties = '';
+		if(indexBuffer%2) properties = 'inGrey';
+		if(bufferRound[indexBuffer].issue) properties = 'inRed';
+		
+        var treerow = [ "xul:treerow", { properties : properties }];
+		treerow.push([ "xul:treecell", {label : this._util.formatDayTime(bufferRound[indexBuffer].date, true)} ]);
+		treerow.push([ "xul:treecell", {label : bufferRound[indexBuffer].unitCount} ]);
+		treerow.push([ "xul:treecell", {label : bufferRound[indexBuffer].newUnitCount} ]);
+		treerow.push([ "xul:treecell", {label : (bufferRound[indexBuffer].issue?"":this._util.getBundleString("ok"))} ]);
+				 
+        var treeitem = this._util.JSONToDOM([ "xul:treeitem", {}, treerow ], document, {});
+        treechildrenSlowDefense.appendChild(treeitem);
+ 
+	}	
+
+}
+
+
+com.rigantestools.MainFrame.GetPreviewDate = function(index) {
+
+    var datePicker = document.getElementById( "rigantestools-mydatepicker" + index );
+    var time = this._util.getAttribute( "rigantestools-myhour"+index, 'value');
+    if (!this._util.valideTimeHHMM(time, true)) {
+        this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.format.time"));
+        return null;
+    }
+    var hours = time.substring(0, time.indexOf(':'));
+    var minutes = time.substring(time.indexOf(':') + 1);
+    var date = new Date(datePicker.year, datePicker.month, datePicker.date, hours, minutes, 0, 0);
+ 
+	return date ;
+
+}
+
+
+com.rigantestools.MainFrame.RecalculePreview = function(evt) {
+
+    //Index of tab
+    var index = this._util.getAttribute('rigantestools-externaldefense-tabbox', 'selectedIndex');
+
+	//Get date of round
+	var date = this.GetPreviewDate( index ) ;
+   
+    
+
+	// Recompute fight preview
+	var fightPreview = new rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, date );
+	this._DefenseList[index].trou = fightPreview.fightpreview_trou ;
+
+	// Refresh UI
+    var treechildrenSlowDefense = document.getElementById("rigantestools-externaldef-fight-preview" + index);
+	this.RedisplayPreview( treechildrenSlowDefense, fightPreview ) ;
+	
+}
+ 
+com.rigantestools.MainFrame.DephasePreview = function(evt) {
+
+    //Index of tab
+    var index = this._util.getAttribute('rigantestools-externaldefense-tabbox', 'selectedIndex');
+
+	//Get date of round
+	var date = this.GetPreviewDate( index ) ;
+   
+	
+	// Compute preview for normal date (no shift)
+	var fightPreview = new rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, date );
+	var mintime = 	fightPreview.fightpreview_trou.getTime()  ;
+	var mindate = date ;
+	
+	// Compute preview with shifts
+	for( var shift=-4; shift<=5; ++shift )
+	{
+		if( shift==0 ) continue ;
+		var decalage = shift*60*1000 ; // <shift> minutes
+		var newdate  = new Date( date.getTime() + decalage  ) ; 
+		var preview = new rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, newdate );
+		var mytime =  preview.fightpreview_trou.getTime() - decalage  ;
+		if( mytime < mintime )
+		{
+			// store worse result
+			mintime = mytime ;
+			mindate = newdate ;
+		}
+	}
+	
+	// Compute preview for the worst case
+	fightPreview = new rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, mindate );	
+	this._DefenseList[index].trou = fightPreview.fightpreview_trou ;
+	
+			
+
+
+	// Refresh UI
+    var treechildrenSlowDefense = document.getElementById("rigantestools-externaldef-fight-preview" + index);
+	this.RedisplayPreview( treechildrenSlowDefense, fightPreview ) ;
+
+	this._util.setAttribute( "rigantestools-myhour"+index, 'value', this._util.formatTime(mindate));
+	var datePicker = document.getElementById( "rigantestools-mydatepicker" + index );
+	datePicker._setValueNoSync(mindate);
+
+	
+}
+
+
+
+
+
+
+
 
 
 
@@ -3839,6 +3983,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
         var that = this;
 		var nbDefenseFound = 0 ;
 		
+        this._DefenseList = [];
 		
 
         for (var indexHab = 0; indexHab < mydeflist.length; indexHab++) 
@@ -3892,8 +4037,8 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 		    }
 		    else 
 		    {
-		    	/*We suppose that the 1st unit will arrive between 2 rounds*/
-		    	mintime += 300*1000
+		    	/*We suppose that the 1st unit will arrive 5 mins before the 1st round */
+		    	mintime += 300*1000;
 		    	do_it = true ;
 		    }
 		    
@@ -3909,18 +4054,25 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 		    } ) ;
 
 
+			var isf = ( habitat.destinationHabitatPoints > 1000 ? true : false ) ;
 			var battleDate = new Date(mintime)
-			var fightPreview = new rigantestools_FightPreview( ( habitat.destinationHabitatPoints > 1000 ? true : false ), unitList, battleDate);
 			
-			nbDefenseFound++;
+			
+
+			
+			var fightPreview = new rigantestools_FightPreview( isf, unitList, battleDate);
+
+			// this is used in onGoToDLButtonClick2 to put informations in the SlowDefense tab
+			var item = { 'habitat_link' : habitat.destinationHabitatLink, 'trou' : fightPreview.fightpreview_trou, 'isFortress' : isf, 'unitList': unitList };
+			this._DefenseList.push(item);
+
+			
 			
 			// generate tab attacks element
 			var tabAttack = this._util.JSONToDOM([ "xul:tab", { label : this._util.maxStringLength(habitat.destinationHabitatName,20) }], document, {});
 			tabs.appendChild(tabAttack);
 			
-			
-			
-			
+						
                 
 
                 // generate treecolsSlowDefense JSON
@@ -3928,15 +4080,9 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                 for(var indexCol=0; indexCol<colsDefense.length; indexCol = indexCol+2){
                     treecolsSlowDefense.push([ "xul:treecol", { label :  colsDefense[indexCol], flex : colsDefense[indexCol+1], ignoreincolumnpicker : true}]);
                 }
-                var treechildrenSlowDefense = [ "xul:treechildren", {}];
+                var treechildrenSlowDefense = [ "xul:treechildren", { id : "rigantestools-externaldef-fight-preview" + nbDefenseFound}];
                 
-               // generate treecolsDefList JSON
-                var treecolsDefList = [ "xul:treecols", {}];
-                for(var indexCol=0; indexCol<colsDefList.length; indexCol = indexCol+2){
-                    treecolsDefList.push([ "xul:treecol", { label :  colsDefList[indexCol], flex : colsDefList[indexCol+1], ignoreincolumnpicker : true}]);
-                }
-                 var treechildrenDefList = [ "xul:treechildren", {}];
-
+ 
                 if(1) 
                 {
                     var bufferRound = fightPreview.bufferRound;
@@ -3962,7 +4108,13 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                     }
  
  
-                    
+               		// generate treecolsDefList JSON
+                	var treecolsDefList = [ "xul:treecols", {}];
+               	 	for(var indexCol=0; indexCol<colsDefList.length; indexCol = indexCol+2){
+                 	  	 treecolsDefList.push([ "xul:treecol", { label :  colsDefList[indexCol], flex : colsDefList[indexCol+1], ignoreincolumnpicker : true}]);
+               		 }
+                	 var treechildrenDefList = [ "xul:treechildren", {}];
+                	   
                    var deflist = defense_list ;
                    for(var indexBuffer =0; indexBuffer<deflist.length; indexBuffer++){
                        
@@ -3990,6 +4142,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                     }
                     
                 }
+                             	
 
                   var totalUD = nbUD[0] + nbUD[1] + nbUD[2] ;
                   var totalUDDet = nbUD[0] + "/" + nbUD[1] + "/" +  nbUD[2] ;
@@ -4008,8 +4161,15 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 
                     [ "xul:vbox", { flex : 3 },
                       [ "xul:label", { value : this._util.getBundleString("mainframe.warinprogress.fightInformation")}],
+                  	  [ "xul:groupbox", { orient : "horizontal"}, 
+                      	 [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.rounddate")}],
+                     	 [ "xul:datepicker", { id : "rigantestools-mydatepicker"+nbDefenseFound, firstdayofweek:"NaN", type : "popup", value : this._util.formatDateForDatePicker(battleDate) }],
+                     	 [ "xul:textbox", { id : "rigantestools-myhour"+nbDefenseFound, width:"50", maxlength : "5", value : this._util.formatTime(battleDate)}],
+                     	 [ "xul:button", { label : this._util.getBundleString("mainframe.defexterne.recompute"), oncommand : function(evt) { that.RecalculePreview(evt);} }],
+                     	 [ "xul:button", { label : this._util.getBundleString("mainframe.defexterne.dephase"), oncommand : function(evt) { that.DephasePreview(evt);} }],
+					  ],
                       [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsSlowDefense, treechildrenSlowDefense],
-                      //[ "xul:button", { label : this._util.getBundleString("mainframe.warinprogress.goToDL"), oncommand : function(evt) { that.onGoToDLButtonClick(evt);} }]
+                      [ "xul:button", { label : this._util.getBundleString("mainframe.warinprogress.goToDL"), oncommand : function(evt) { that.onGoToDLButtonClick2(evt);} }],
                     ],
                    ],
  
@@ -4044,7 +4204,11 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                 ], document, {});
                 
                 tabpanels.appendChild(tabpanel);
-                
+
+
+
+ 				nbDefenseFound++;
+               
  
         }
 

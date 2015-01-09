@@ -336,6 +336,21 @@ rigantestools_Util.prototype.formatDateTime = function(date, withYear) {
     return a + " " + b + "." + c + " " + e + ":" + f;
 };
 
+
+rigantestools_Util.prototype.formatDateForDatePicker = function(date, withYear) {
+
+    if (date === null) {
+        return "";
+    }
+
+    var b = (date.getDate() < 10) ? "0" + date.getDate() : date.getDate();
+    var c = ((date.getMonth() + 1) < 10) ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1);
+    var d = date.getFullYear();
+
+    return d + "-" + c + "-" + b ;
+};
+
+
 /**
  * convert seconds to time string day hh:mm
  * 
@@ -404,6 +419,10 @@ rigantestools_Util.prototype.formatShortDateTime = function(date) {
     var c = date.getFullYear();
     return b + d + c;
 };
+
+
+
+
 
 /**
  * return max length string

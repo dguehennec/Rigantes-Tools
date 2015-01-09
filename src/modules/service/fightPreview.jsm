@@ -78,7 +78,8 @@ var rigantestools_FightPreview = function(isFortress, listud, battleDate) {
     }
 
     var mytime = battleDate.getTime();
-    var listud_orig = this.CloneUDListe(listud);
+    var listud_orig = listud;
+    listud = this.CloneUDListe(listud_orig);
     var starttime = mytime;
     var mydate = new Date(mytime)
 
