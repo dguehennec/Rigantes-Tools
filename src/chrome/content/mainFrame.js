@@ -52,7 +52,7 @@ Components.utils.import("resource://rigantestools/service/slowAttackDefenseCalcu
 Components.utils.import("resource://rigantestools/service/exporter.jsm", com);
 Components.utils.import("resource://rigantestools/service/logger.jsm", com);
 Components.utils.import("resource://rigantestools/service/util.jsm", com);
-Components.utils.import("resource://rigantestools/service/fightPreview.jsm");
+Components.utils.import("resource://rigantestools/service/fightPreview.jsm", com);
 
 /**
  * The Class MainFrame.
@@ -171,7 +171,7 @@ com.rigantestools.MainFrame.selectTab = function() {
             this._util.setAttribute('rigantestools-defenseTargetLink', 'value', parameters.parameters);
             this.clearDefenseTab();
         }
-        else if (parameters.tab===5) {
+        else if (parameters.tab===6) {
             this._util.setAttribute('rigantestools-simulationAttaqueSpearman', 'value', parameters.parameters.attackers.spearman);
             this._util.setAttribute('rigantestools-simulationAttaqueSwordman', 'value', parameters.parameters.attackers.swordman);
             this._util.setAttribute('rigantestools-simulationAttaqueArcher', 'value', parameters.parameters.attackers.archer);
@@ -2736,7 +2736,7 @@ com.rigantestools.MainFrame.onSimulateWarButtonClick = function(evt) {
     this._util.setAttribute('rigantestools-simulationAttaqueCrossbowman', 'value', '');
     this._util.setAttribute('"rigantestools-simulationAttaqueScorpionRider', 'value', '');
     this._util.setAttribute('rigantestools-simulationAttaqueLancer', 'value', this.simulationLancerCount);
-    this._util.setAttribute('rigantestools-tabbox', 'selectedIndex', 5);
+    this._util.setAttribute('rigantestools-tabbox', 'selectedIndex', 6);
     
 };
 
@@ -3887,7 +3887,7 @@ com.rigantestools.MainFrame.RecalculePreview = function(evt) {
     
 
 	// Recompute fight preview
-	var fightPreview = new rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, date );
+	var fightPreview = new com.rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, date );
 	this._DefenseList[index].trou = fightPreview.fightpreview_trou ;
 
 	// Refresh UI
@@ -3906,7 +3906,7 @@ com.rigantestools.MainFrame.DephasePreview = function(evt) {
    
 	
 	// Compute preview for normal date (no shift)
-	var fightPreview = new rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, date );
+	var fightPreview = new com.rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, date );
 	var mintime = 	fightPreview.fightpreview_trou.getTime()  ;
 	var mindate = date ;
 	
@@ -3916,7 +3916,7 @@ com.rigantestools.MainFrame.DephasePreview = function(evt) {
 		if( shift==0 ) continue ;
 		var decalage = shift*60*1000 ; // <shift> minutes
 		var newdate  = new Date( date.getTime() + decalage  ) ; 
-		var preview = new rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, newdate );
+		var preview = new com.rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, newdate );
 		var mytime =  preview.fightpreview_trou.getTime() - decalage  ;
 		if( mytime < mintime )
 		{
@@ -3927,7 +3927,7 @@ com.rigantestools.MainFrame.DephasePreview = function(evt) {
 	}
 	
 	// Compute preview for the worst case
-	fightPreview = new rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, mindate );	
+	fightPreview = new com.rigantestools_FightPreview( this._DefenseList[index].isFortress, this._DefenseList[index].unitList, mindate );	
 	this._DefenseList[index].trou = fightPreview.fightpreview_trou ;
 	
 			
@@ -3963,10 +3963,9 @@ com.rigantestools.MainFrame.DephasePreview = function(evt) {
 
  
 com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
-    //try {
-    
+//    try {
     	var mydeflist = this.initializeDefList() ;
-    
+
         var tabbox = document.getElementById("rigantestools-externaldefense-tabbox");
         while (tabbox.hasChildNodes()) {
             tabbox.removeChild(tabbox.firstChild);
@@ -3977,7 +3976,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
         var tabs = this._util.JSONToDOM([ "xul:tabs", {}], document, {});
         // generate tabpanels element
         var tabpanels = this._util.JSONToDOM([ "xul:tabpanels", { flex : 1 }], document, {});
-        
+
        	var colsDefense = [this._util.getBundleString("mainframe.defenseinprogress.date"), "1", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "1", this._util.getBundleString("mainframe.defenseinprogress.newUnits"), "1", this._util.getBundleString("mainframe.defenseinprogress.status"), "1"];
         var colsDefList = [this._util.getBundleString("mainframe.warinprogress.castle"), "3", this._util.getBundleString("mainframe.warinprogress.date"), "1", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "1"];
         var that = this;
@@ -3986,38 +3985,40 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
         this._DefenseList = [];
 		
 
-        for (var indexHab = 0; indexHab < mydeflist.length; indexHab++) 
-        {
+        for (var indexHab = 0; indexHab < mydeflist.length; indexHab++) {
             var habitat = mydeflist[indexHab];
-            var TTTLLL = habitat.habitatTransitList ;
-            var nbUD = [] ;
-            var nbUDTransit = [] ;
+            var TTTLLL = habitat.habitatTransitList;
+            var nbUD = [];
+            var nbUDTransit = [];
 			
-			var defense_list = [] ;
-			var unitList = [] ;
+			var defense_list = [];
+			var unitList = [];
 			
 			var now = new Date();
-			var mintime=0 ;
+			var mintime=0;
 			
-			nbUD[0] = 0 ;
-			nbUD[1] = 0 ;
-			nbUD[2] = 0 ;
-			nbUDTransit[0] = 0 ;
-			nbUDTransit[1] = 0 ;
-			nbUDTransit[2] = 0 ;
+			nbUD[0] = 0;
+			nbUD[1] = 0;
+			nbUD[2] = 0;
+			nbUDTransit[0] = 0;
+			nbUDTransit[1] = 0;
+			nbUDTransit[2] = 0;
 			  
-		    for ( var key in TTTLLL) 
-		    {
-		    	var dateset = TTTLLL[key].dateset ;
+		    for (var key in TTTLLL) {
+		        var dateset = TTTLLL[key].dateset;
 		    	
 		        var nbud = 0;
-		        if( dateset )
-		        {
-		         	if( mintime==0 || TTTLLL[key].date.getTime() < mintime  ) mintime = TTTLLL[key].date.getTime() ;
+		        if( dateset ) {
+                    if( mintime==0 || TTTLLL[key].date.getTime() < mintime  ) {
+                        mintime = TTTLLL[key].date.getTime();
+                    }
 		       	}
 		       	
-		       	if( dateset )  nbud = this.addUnits(TTTLLL[key], TTTLLL[key].date.getTime(), unitList, nbUDTransit );
-		       	else nbud = this.addUnits(TTTLLL[key], 0, unitList, nbUD );
+                if( dateset )  {
+                    nbud = this.addUnits(TTTLLL[key], TTTLLL[key].date.getTime(), unitList, nbUDTransit);
+                } else {
+                    nbud = this.addUnits(TTTLLL[key], 0, unitList, nbUD);
+                }
 	           
 	            var item = {
 	                'castle' : TTTLLL[key].sourceHabitatName,
@@ -4027,7 +4028,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 	            defense_list.push(item);
 		    }
 		    
-		    var do_it = false ;
+		    var do_it = false;
 		    
 		    if( mintime == 0 ) 
 		    {
@@ -4042,7 +4043,9 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 		    	do_it = true ;
 		    }
 		    
-		    if( !do_it ) continue ;
+		    if( !do_it ) {
+		        continue;
+		    }
 		    
 		    defense_list.sort(function(item1, item2) 
 		    { 
@@ -4060,7 +4063,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 			
 
 			
-			var fightPreview = new rigantestools_FightPreview( isf, unitList, battleDate);
+			var fightPreview = new com.rigantestools_FightPreview( isf, unitList, battleDate);
 
 			// this is used in onGoToDLButtonClick2 to put informations in the SlowDefense tab
 			var item = { 'habitat_link' : habitat.destinationHabitatLink, 'trou' : fightPreview.fightpreview_trou, 'isFortress' : isf, 'unitList': unitList };
@@ -4139,15 +4142,15 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                                ]
                             ]
                         );
+
                     }
-                    
                 }
                              	
 
-                  var totalUD = nbUD[0] + nbUD[1] + nbUD[2] ;
-                  var totalUDDet = nbUD[0] + "/" + nbUD[1] + "/" +  nbUD[2] ;
-                  var totalUDInProgress = nbUDTransit[0] + nbUDTransit[1] + nbUDTransit[2] ;
-                  var totalUDInProgressDet = nbUDTransit[0] + "/" + nbUDTransit[1] + "/" +  nbUDTransit[2] ;
+            var totalUD = nbUD[0] + nbUD[1] + nbUD[2];
+            var totalUDDet = nbUD[0] + "/" + nbUD[1] + "/" +  nbUD[2];
+            var totalUDInProgress = nbUDTransit[0] + nbUDTransit[1] + nbUDTransit[2];
+            var totalUDInProgressDet = nbUDTransit[0] + "/" + nbUDTransit[1] + "/" +  nbUDTransit[2];
   
 
                 // generate tabpanel element
@@ -4207,23 +4210,22 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 
 
 
- 				nbDefenseFound++;
+ 			nbDefenseFound++;
                
  
         }
-
-        if(nbDefenseFound>0) 
-        {
+        
+        this._util.setAttribute('rigantestools-tabExternalDefenseInProgress','label',this._util.getBundleString('mainframe.defexterne.tabtitle').replace("%NB%",nbDefenseFound));
+        if (nbDefenseFound>0) {
             this._util.setVisibility('rigantestools-externalDefenseNoDefense',"collapse");
             arrowscrollbox.appendChild(tabs);
             tabbox.appendChild(arrowscrollbox);
             tabbox.appendChild(tabpanels);
-        }
-        else {
+        } else {
             this._util.setVisibility('rigantestools-externalDefenseNoDefense',"visible");
         }
-  //  }catch(e) {
- //       this._logger.error("initializeExternalDefenseInformation", e);
-  //      this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));  
-  //  }
+//    }catch(e) {
+//        this._logger.error("initializeExternalDefenseInformation", e);
+//        this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
+//    }
 };

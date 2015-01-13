@@ -259,4 +259,6 @@
 <!ENTITY mainframe.tabSimulation.simulationResultAttacker.label "Statistique attaquant">
 <!ENTITY mainframe.tabSimulation.simulationResultDefenseur.label "Statistique défenseur">
 <!-- External Defense dialog -->
-<!ENTITY mainframe.tabExternalDefense.label "Défense externe">
+<!ENTITY mainframe.tabExternalDefense.label "Défenses externes">
+<!ENTITY mainframe.tabExternalDefense.description "Ecran permettant de visualiser les défenses externes en cours">
+<!ENTITY mainframe.tabExternalDefense.noExternalDefenseInProgress "Aucune défense externe en cours détectée.">

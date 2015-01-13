@@ -31,8 +31,8 @@
 			<tab id="rigantestools-tabWarInProgress" label="&mainframe.tabWarInProgress.label;"/>
 			<tab label="&mainframe.tabDefense.label;"/>
 			<tab label="&mainframe.tabAttackDefenseSlow.label;"/>
+			<tab id="rigantestools-tabExternalDefenseInProgress" label="&mainframe.tabExternalDefense.label;"/>
 			<tab label="&mainframe.tabSimulation.label;"/>
-			<tab label="&mainframe.tabExternalDefense.label;"/>
 		</tabs>
 		<tabpanels id="rigantestools-tabpanels" flex="1">
 			<tabpanel id="maintab" orient="vertical">
@@ -417,6 +417,14 @@
 					<button id="rigantestools-attackDefenseSlowPrintButton" style="margin: 2px;" label="&mainframe.tabAttackDefenseSlow.printWarInformation.button;" oncommand="com.rigantestools.MainFrame.onPrintAttackDefenseSlowButtonClick();"/>
 				</hbox>
 			</tabpanel>
+			<tabpanel id="externaldefense" orient="vertical">
+				<label value="&mainframe.tabExternalDefense.description;"/>
+				<spacer style="height: 10px"/>
+				<label id="rigantestools-externalDefenseNoDefense" value="&mainframe.tabExternalDefense.noExternalDefenseInProgress;"/>
+				<tabbox flex="1" id="rigantestools-externaldefense-tabbox">
+				</tabbox>
+				<spacer height="5"/>
+			</tabpanel>
 			<tabpanel id="simulationtab" orient="vertical" flex="1">
 				<label value="&mainframe.tabSimulation.description;"/>
 				<spacer style="height: 10px"/>
@@ -563,14 +571,6 @@
 						</vbox>
 					</hbox>
 				</groupbox>
-			</tabpanel>
-			<tabpanel id="externaldefense" orient="vertical">
-				<label value="Defense externe"/>
-				<spacer style="height: 10px"/>
-				<label id="rigantestools-externalDefenseNoDefense" value="Aucune defense externe"/>
-				<tabbox flex="1" id="rigantestools-externaldefense-tabbox">
-				</tabbox>
-				<spacer height="5"/>
 			</tabpanel>
 		</tabpanels>
 	</tabbox>

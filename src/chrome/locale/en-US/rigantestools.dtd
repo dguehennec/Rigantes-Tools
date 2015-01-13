@@ -155,10 +155,10 @@
 <!ENTITY mainframe.tabWar.area.button "Modify">
 <!-- MainFrame War dialog -->
 <!ENTITY mainframe.tabWarInProgress.label "Attack in progress (0)">
-<!ENTITY mainframe.tabWarInProgress.description "Screen to visualize ongoing attacks (your attacks and those of your attackers).">
+<!ENTITY mainframe.tabWarInProgress.description "Screen to visualize attacks in progress (your attacks and those of your attackers).">
 <!ENTITY mainframe.tabWarInProgress.generateWarInProgressSummaryInformations.button "Generate the summary of attacks">
 <!ENTITY mainframe.tabWarInProgress.generateWarInProgressInformations.button "Generate the informations of this attack">
-<!ENTITY mainframe.tabWarInProgress.noWarInProgress "No ongoing attack detected.">
+<!ENTITY mainframe.tabWarInProgress.noWarInProgress "No attack in progress detected.">
 <!-- MainFrame Defense dialog -->
 <!ENTITY mainframe.tabDefense.label "Defense">
 <!ENTITY mainframe.tabDefense.description "Screen to calculate travel time to the target for all your castles.">
@@ -260,3 +260,5 @@
 <!ENTITY mainframe.tabSimulation.simulationResultDefenseur.label "Defenser Statistics">
 <!-- External Defense dialog -->
 <!ENTITY mainframe.tabExternalDefense.label "External defense">
+<!ENTITY mainframe.tabExternalDefense.description "Screen to visualize external defense in progress">
+<!ENTITY mainframe.tabExternalDefense.noExternalDefenseInProgress "No external defense detected.">
