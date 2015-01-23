@@ -1210,7 +1210,7 @@ com.rigantestools.MainFrame.onGoToDLButtonClick2 = function(evt) {
     var link = "";
     var date = new Date();
     var isFortress = false;
-    var index = this._util.getAttribute('rigantestools-externaldefense-tabbox', 'selectedIndex');
+    var index = this._util.getAttribute('rigantestools-externaldefense-tabbox', 'selectedIndex')-1;
     if (index < this._DefenseList.length) {
         link = this._DefenseList[index].habitat_link;
         date = this._DefenseList[index].trou;
@@ -3879,7 +3879,7 @@ com.rigantestools.MainFrame.GetPreviewDate = function(index) {
 com.rigantestools.MainFrame.RecalculePreview = function(evt) {
 
     //Index of tab
-    var index = this._util.getAttribute('rigantestools-externaldefense-tabbox', 'selectedIndex');
+    var index = this._util.getAttribute('rigantestools-externaldefense-tabbox', 'selectedIndex')-1;
 
 	//Get date of round
 	var date = this.GetPreviewDate( index ) ;
@@ -3899,7 +3899,7 @@ com.rigantestools.MainFrame.RecalculePreview = function(evt) {
 com.rigantestools.MainFrame.DephasePreview = function(evt) {
 
     //Index of tab
-    var index = this._util.getAttribute('rigantestools-externaldefense-tabbox', 'selectedIndex');
+    var index = this._util.getAttribute('rigantestools-externaldefense-tabbox', 'selectedIndex')-1;
 
 	//Get date of round
 	var date = this.GetPreviewDate( index ) ;
@@ -3949,7 +3949,111 @@ com.rigantestools.MainFrame.DephasePreview = function(evt) {
 
 
 
+com.rigantestools.MainFrame.RefreshDefenseList = function() 
+{
+    var treechildrenSummary = document.getElementById("rigantestools-externaldef-summary");
+    while (treechildrenSummary.hasChildNodes()) {
+        treechildrenSummary.removeChild(treechildrenSummary.firstChild);
+	}
 
+
+	for( var index=0 ; index < this._DefenseListItemList.length; ++ index )
+	{
+		var properties = '';
+        if(index%2) {
+            properties = 'inGrey';
+        }
+
+		var item = this._DefenseListItemList[index];
+		
+        var treerow = [ "xul:treerow", {  properties : properties }];
+		treerow.push([ "xul:treecell", {label : item.castle} ]);
+		treerow.push([ "xul:treecell", {label : item.owner} ]);
+		treerow.push([ "xul:treecell", {label : item.totalUD} ]);
+		treerow.push([ "xul:treecell", {label : item.totalUDInProgress} ]);
+		treerow.push([ "xul:treecell", {label : item.totalUDTotal} ]);
+		if( item.maxtime === 0 ) treerow.push([ "xul:treecell", {label : ""} ]);
+		else treerow.push([ "xul:treecell", {label : this._util.secToTimeStr(item.maxtime,true)} ]);
+
+
+        var treeitem = this._util.JSONToDOM([ "xul:treeitem", {}, treerow ], document, {});
+        treechildrenSummary.appendChild(treeitem);
+	}
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+com.rigantestools.MainFrame.SortDefenseList = function(column)  
+{
+    var lastColumn = this._DefenseListColumnTreeSort;
+
+    if (lastColumn !== null && lastColumn !== column) 
+    {
+        lastColumn.removeAttribute("sortDirection");
+    }
+    var name = "castle";
+    var sort = "descending";
+    var mult = 1 ;
+
+    if (column !== null) 
+    {
+        name = column.getAttribute("name");
+        sort = column.getAttribute("sortDirection");
+        this._DefenseListColumnTreeSort = column;
+    }
+    if (sort !== 'ascending')  
+    {
+    	sort = "ascending";
+    	mult = 1 ;
+    }
+    else 
+    {
+    	sort = "descending";
+    	mult = -1 ;
+    }
+
+    if (column !== null) column.setAttribute("sortDirection", sort);
+        
+
+    switch (name) {
+
+    case "totalUD":
+    	this._DefenseListItemList.sort(function(a, b) { return mult*(a.totalUD-b.totalUD) ; } ) ;
+        break;
+    case "totalUDInProgress":
+    	this._DefenseListItemList.sort(function(a, b) { return mult*(a.totalUDInProgress-b.totalUDInProgress) ; } ) ;
+        break;
+    case "totalUDTotal":
+    	this._DefenseListItemList.sort(function(a, b) { return mult*(a.totalUDTotal-b.totalUDTotal) ; } ) ;
+        break;
+    case "maxtime":
+    	this._DefenseListItemList.sort(function(a, b) { return mult*(a.maxtime-b.maxtime) ; } ) ;
+        break;
+    case "owner":
+    	this._DefenseListItemList.sort(function(a, b) { return (a.owner>=b.owner?mult:-mult) ; } ) ;
+        break;
+    case "castle":
+    	this._DefenseListItemList.sort(function(a, b) { return (a.castle>=b.castle?mult:-mult) ; } ) ;
+        break;
+
+    }
+    
+    this.RefreshDefenseList();
+}
+ 
+ 
+ 
+ 
 
 
 
@@ -3963,7 +4067,7 @@ com.rigantestools.MainFrame.DephasePreview = function(evt) {
 
  
 com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
-//    try {
+    try {
     	var mydeflist = this.initializeDefList() ;
 
         var tabbox = document.getElementById("rigantestools-externaldefense-tabbox");
@@ -3981,9 +4085,49 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
         var colsDefList = [this._util.getBundleString("mainframe.warinprogress.castle"), "3", this._util.getBundleString("mainframe.warinprogress.date"), "1", this._util.getBundleString("mainframe.defenseinprogress.totalUnits"), "1"];
         var that = this;
 		var nbDefenseFound = 0 ;
+		var nbDefenseFound2 = 0 ;
 		
         this._DefenseList = [];
+		this._DefenseListItemList = [] ;
+		this._DefenseListColumnTreeSort = null ;
+
+       	var colsName = [
+       		"castle",
+       		"owner",
+       		"totalUD",
+       		"totalUDInProgress",
+        	"totalUDTotal",
+      		"maxtime"
+       		];
 		
+
+       	var colsSummary = [
+       		this._util.getBundleString("mainframe.defexterne.castleTarget"), "1", 
+       		this._util.getBundleString("mainframe.defexterne.owner"), "1", 
+       		this._util.getBundleString("mainframe.defexterne.udsurplace"), "1", 
+       		this._util.getBundleString("mainframe.defexterne.udencours"), "1",
+        	this._util.getBundleString("mainframe.defexterne.udtotal"), "1",
+      		this._util.getBundleString("mainframe.defexterne.maxtime"), "1",
+       		
+       		];
+
+        var treecolsSummary = [ "xul:treecols", {}];
+        for(var indexCol=0; indexCol<colsSummary.length; indexCol = indexCol+2)
+        {
+         	treecolsSummary.push([ "xul:treecol", { 
+         		name  : colsName[indexCol/2],
+         		label :  colsSummary[indexCol], 
+         		flex : colsSummary[indexCol+1], 
+         		ignoreincolumnpicker : true,
+         		onclick : function(evt) { that.SortDefenseList(this); },
+         		class : "sortDirectionIndicator"
+         	}]);
+
+        }
+        
+        var treechildrenSummary = [ "xul:treechildren", { id : "rigantestools-externaldef-summary" }];
+
+
 
         for (var indexHab = 0; indexHab < mydeflist.length; indexHab++) {
             var habitat = mydeflist[indexHab];
@@ -4029,6 +4173,10 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 		    }
 		    
 		    var do_it = false;
+            var totalUD = nbUD[0] + nbUD[1] + nbUD[2];
+            var totalUDDet = nbUD[0] + "/" + nbUD[1] + "/" +  nbUD[2];
+            var totalUDInProgress = nbUDTransit[0] + nbUDTransit[1] + nbUDTransit[2];
+            var totalUDInProgressDet = nbUDTransit[0] + "/" + nbUDTransit[1] + "/" +  nbUDTransit[2];
 		    
 		    if( mintime == 0 ) 
 		    {
@@ -4043,7 +4191,33 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
 		    	do_it = true ;
 		    }
 		    
-		    if( !do_it ) {
+		    nbDefenseFound2++ ;
+		    
+		    if( !do_it ) 
+		    {
+		    			//Update summary
+                        treechildrenSummary.push(
+                            [ "xul:treeitem", {}, 
+                               [ "xul:treerow", { }, 
+                                 [ "xul:treecell", { label : habitat.destinationHabitatName }],
+                                 [ "xul:treecell", { label : habitat.destinationHabitatPlayerName}],
+                                 [ "xul:treecell", { label : totalUD}],
+                                 [ "xul:treecell", { label : totalUDInProgress}],
+                                 [ "xul:treecell", { label : totalUD+totalUDInProgress}],
+                                 [ "xul:treecell", { label : ""}],
+                               ]
+                            ]
+                        );
+                        
+                        var item = {
+                        	'castle' : habitat.destinationHabitatName,
+                        	'owner' : habitat.destinationHabitatPlayerName,
+                        	'totalUD' : totalUD,
+                        	'totalUDInProgress' : totalUDInProgress,
+                        	'totalUDTotal' : totalUD+totalUDInProgress,
+                        	'maxtime' : 0 } ;
+                        this._DefenseListItemList.push( item ) ;
+		    
 		        continue;
 		    }
 		    
@@ -4147,10 +4321,6 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                 }
                              	
 
-            var totalUD = nbUD[0] + nbUD[1] + nbUD[2];
-            var totalUDDet = nbUD[0] + "/" + nbUD[1] + "/" +  nbUD[2];
-            var totalUDInProgress = nbUDTransit[0] + nbUDTransit[1] + nbUDTransit[2];
-            var totalUDInProgressDet = nbUDTransit[0] + "/" + nbUDTransit[1] + "/" +  nbUDTransit[2];
   
 
                 // generate tabpanel element
@@ -4209,14 +4379,65 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                 tabpanels.appendChild(tabpanel);
 
 
+				//Add in Summary list
+
+				var dltime ;
+				dltime = (fightPreview.fightpreview_trou.getTime()-battleDate.getTime())/1000 ;
+		
+
+                        treechildrenSummary.push(
+                            [ "xul:treeitem", {}, 
+                               [ "xul:treerow", { }, 
+                                 [ "xul:treecell", { label : habitat.destinationHabitatName }],
+                                 [ "xul:treecell", { label : habitat.destinationHabitatPlayerName}],
+                                 [ "xul:treecell", { label : totalUD}],
+                                 [ "xul:treecell", { label : totalUDInProgress}],
+                                 [ "xul:treecell", { label : totalUD+totalUDInProgress}],
+                                 [ "xul:treecell", { label : this._util.secToTimeStr(dltime,true)}],
+                               ]
+                            ]
+                        );
+
+                       var item = {
+                        	'castle' : habitat.destinationHabitatName,
+                        	'owner' : habitat.destinationHabitatPlayerName,
+                        	'totalUD' : totalUD,
+                        	'totalUDInProgress' : totalUDInProgress,
+                        	'totalUDTotal' : totalUD+totalUDInProgress,
+                        	'maxtime' : dltime } ;
+                       this._DefenseListItemList.push( item ) ;
+				
 
  			nbDefenseFound++;
                
  
         }
         
+		if( 1 )
+		{
+			var tabSummary = this._util.JSONToDOM([ "xul:tab", { label : this._util.getBundleString("mainframe.defexterne.summaryTabLabel") }], document, {});
+
+               // generate tabpanel element
+               var summaryPanel = this._util.JSONToDOM([ "xul:tabpanel", { orient : "vertical"} ,
+                  [ "xul:hbox", { flex : 1 },
+
+                    [ "xul:vbox", { flex : 5 },
+                      [ "xul:label", { value : this._util.getBundleString("mainframe.defexterne.summarylabel")}],
+                	  [ "xul:spacer", { style : "height: 10px"}],
+                      [ "xul:tree", { flex : 1, hidecolumnpicker : true}, treecolsSummary, treechildrenSummary]
+                    ],
+
+                   ],
+                ], document, {});
+		
+			var first_tab = tabs.firstChild ;
+			tabs.insertBefore(tabSummary,first_tab);
+			var first_panel = tabpanels.firstChild ;
+       	    tabpanels.insertBefore(summaryPanel,first_panel);
+		}    
+        
         this._util.setAttribute('rigantestools-tabExternalDefenseInProgress','label',this._util.getBundleString('mainframe.defexterne.tabtitle').replace("%NB%",nbDefenseFound));
-        if (nbDefenseFound>0) {
+        if (1) {
             this._util.setVisibility('rigantestools-externalDefenseNoDefense',"collapse");
             arrowscrollbox.appendChild(tabs);
             tabbox.appendChild(arrowscrollbox);
@@ -4224,8 +4445,8 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
         } else {
             this._util.setVisibility('rigantestools-externalDefenseNoDefense',"visible");
         }
-//    }catch(e) {
-//        this._logger.error("initializeExternalDefenseInformation", e);
-//        this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
-//    }
+    }catch(e) {
+        this._logger.error("initializeExternalDefenseInformation", e);
+        this._util.showMessage(this._util.getBundleString("error"), this._util.getBundleString("error.data.not.found"));
+    }
 };
