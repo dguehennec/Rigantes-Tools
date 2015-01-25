@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://browser/skin/"?>
+<?xml-stylesheet href="chrome://rigantestools/skin/rigantestools.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://rigantestools/locale/rigantestools.dtd">
+
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	orient="vertical"
+	windowtype="window:about"
+	autostretch="always"
+	title="&option.option.label;"
+	onload="com.rigantestools.Options.init();">    
+
+    <stringbundleset id="stringbundleset">
+		<stringbundle id="rigantestools-bundle" src="chrome://rigantestools/locale/rigantestools.properties" />
+	</stringbundleset>
+	
+	<script type="application/x-javascript" src="chrome://rigantestools/content/options.js"/>
+    
+    <tabbox id="rigantestools-tabbox" flex="1">
+		<tabs>
+			<tab label="&option.tabDefault.label;"/>
+			<tab label="&option.tabAdvanced.label;"/>
+			<tab label="&option.tabWar.label;"/>
+			<tab label="&option.tabDefense.label;"/>
+			<tab label="&option.tabNotification.label;"/>
+		</tabs>
+        <tabpanels>
+            <tabpanel>
+                <vbox flex="1">
+                   <groupbox width="100%">
+    					<caption label="&option.default.access.caption;"/>    
+    					<checkbox id="rigantestools-optionAccessStatusBar" label="&option.default.statusbar;" checked="true"/>
+                   </groupbox> 
+                   <groupbox width="100%">
+    					<caption label="&option.default.export.format.caption;"/>    
+    					<checkbox id="rigantestools-optionXLSExportFormat" label="&option.default.xlsformat;" checked="false"/>
+                   </groupbox> 
+               </vbox>
+            </tabpanel>
+             <tabpanel>
+                <vbox flex="1">
+                	<groupbox flex="1">
+    					<caption label="&option.advanced.area.caption;"/>    
+    					<tree flex="1" id="rigantestools-advanced-area-tree" seltype="single" hidecolumnpicker="true" onselect="com.rigantestools.Options.areaAdvancedSelected();">
+						  <treecols>
+							<treecol name="name" label="&option.advanced.area.name.label;" flex="2"/>
+							<treecol name="centerlink" label="&option.advanced.area.centerlink.label;" flex="2"/>
+							<treecol name="distance" label="&option.advanced.area.distance.label;" flex="1"/>
+						  </treecols>
+						  <treechildren id="rigantestools-advanced-area-treeChildren">
+						  </treechildren>
+						</tree>
+						<hbox align="center">
+							<label value="&option.advanced.area.name.label; :"/>
+							<textbox id="rigantestools-advanced-name" value="" width="220" maxlength="50"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&option.advanced.area.centerlink.label; :"/>
+							<textbox id="rigantestools-advanced-link" value="" width="220" maxlength="50"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&option.advanced.area.distance.label; :"/>
+							<textbox id="rigantestools-advanced-distance" value="" width="50" maxlength="4"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<spacer flex="1"/>
+							<button id="rigantestools-advanced-addButton" label="&option.advanced.area.add.button;" oncommand="com.rigantestools.Options.refreshAdvancedArea();"/>
+							<button id="rigantestools-advanced-upateButton" label="&option.advanced.area.update.button;" oncommand="com.rigantestools.Options.saveAdvancedArea();"/>
+							<button id="rigantestools-advanced-deleteButton" disabled="true" label="&option.advanced.area.delete.button;" oncommand="com.rigantestools.Options.deleteAdvancedArea();"/>
+						</hbox>
+                   </groupbox> 
+               </vbox>
+            </tabpanel>
+            <tabpanel>
+                <vbox flex="1">
+                	<groupbox flex="1">
+    					<caption label="&option.war.area.caption;"/>    
+    					<tree flex="1" id="rigantestools-war-area-tree" seltype="single" hidecolumnpicker="true" onselect="com.rigantestools.Options.areaWarSelected();">
+						  <treecols>
+							<treecol name="start" label="&option.war.area.startHours.label;" flex="1"/>
+							<treecol name="end" label="&option.war.area.endHours.label;" flex="1"/>
+							<treecol name="recurrence" label="&option.war.area.recurrence.label;" flex="2"/>
+							<treecol name="enable" label="&option.war.area.enable.label;" flex="1"/>
+						  </treecols>
+						  <treechildren id="rigantestools-war-area-treeChildren">
+						  </treechildren>
+						</tree>
+						<hbox align="center">
+							<label value="&option.war.area.startHours.label; :"/>
+							<textbox id="rigantestools-startTime" value="00:00" width="50" maxlength="5"/>
+							<label value="&option.war.area.endHours.label; :"/>
+							<textbox id="rigantestools-endTime" value="00:00" width="50" maxlength="5"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&option.war.area.recurrence.label; :"/>
+							<checkbox id="rigantestools-optionRecurrenceMon" label="&option.monday;" checked="true"/>
+							<checkbox id="rigantestools-optionRecurrenceTue" label="&option.tuesday;" checked="true"/>
+							<checkbox id="rigantestools-optionRecurrenceWed" label="&option.wednesday;" checked="true"/>
+							<checkbox id="rigantestools-optionRecurrenceThe" label="&option.thursday;" checked="true"/>
+							<checkbox id="rigantestools-optionRecurrenceFri" label="&option.friday;" checked="true"/>
+							<checkbox id="rigantestools-optionRecurrenceSat" label="&option.saturday;" checked="true"/>
+							<checkbox id="rigantestools-optionRecurrenceSun" label="&option.sunday;" checked="true"/>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<label value="&option.war.area.enable.label; :"/>
+							<radiogroup orient="horizontal">
+							  	<radio id="rigantestools-optionAreaEnable" label="&option.yes;" selected="true"/>
+							  	<radio id="rigantestools-optionAreaDisable" label="&option.no;"/>
+							</radiogroup>
+							<spacer flex="1"/>
+						</hbox>
+						<hbox align="center">
+							<spacer flex="1"/>
+							<button id="rigantestools-addButton" label="&option.war.area.add.button;" oncommand="com.rigantestools.Options.refreshWarArea();"/>
+							<button id="rigantestools-upateButton" label="&option.war.area.update.button;" oncommand="com.rigantestools.Options.saveWarArea();"/>
+							<button id="rigantestools-deleteButton" disabled="true" label="&option.war.area.delete.button;" oncommand="com.rigantestools.Options.deleteWarArea();"/>
+						</hbox>
+                   </groupbox> 
+               </vbox>
+            </tabpanel>
+            <tabpanel>
+                <vbox flex="1">
+                	<groupbox width="100%">
+    					<caption label="&option.defense.caption;"/>    
+    					<hbox align="center">
+    						<label value="&option.defense.spearman.label;" />
+    						<textbox id="rigantestools-optionDefenseSpearman" width="50" style="margin-right: 10px;" value="300" maxlength="4"/>
+							<spacer flex="1"/>
+							<label value="&option.defense.crossbowman.label;"/>
+    						<textbox id="rigantestools-optionDefenseCrossbowman" width="50" style="margin-right: 10px;" value="300" maxlength="4"/>
+    						<spacer flex="1"/>
+    						<label value="&option.defense.scorpionRider.label;"/>
+    						<textbox id="rigantestools-optionDefenseScorpionRider" width="50" style="margin-right: 10px;" value="300" maxlength="4"/>
+    					</hbox>  
+                   </groupbox> 
+               </vbox>
+            </tabpanel>
+            <tabpanel>
+                <vbox flex="1">
+                	<groupbox width="100%">
+    					<caption label="&option.notification.caption;"/>    
+    					<vbox>
+    						<checkbox id="rigantestools-optionNotificationNewMessage" label="&option.notification.newMessage.label;"/>
+    						<checkbox id="rigantestools-optionNotificationNewAllianceMessage" label="&option.notification.newAllianceMessage.label;"/>
+    						<checkbox id="rigantestools-optionNotificationNewReport" label="&option.notification.newReport.label;"/>
+    						<checkbox id="rigantestools-optionNotificationAttaque" label="&option.notification.attaque.label;"/>
+    						<checkbox id="rigantestools-optionNotificationHabitatesMissions" label="&option.notification.habitatesMissions.label;"/>
+    						<checkbox id="rigantestools-optionNotificationHabitatesTransits" label="&option.notification.habitatesTransits.label;"/>
+    						<checkbox id="rigantestools-optionNotificationUnitOrder" label="&option.notification.unitOrder.label;"/>
+    						<checkbox id="rigantestools-optionNotificationKnowledgeOrder" label="&option.notification.knowledgeOrder.label;"/>
+    						<checkbox id="rigantestools-optionNotificationBuildingOrder" label="&option.notification.buildingOrder.label;"/>
+    					</vbox>  
+                   </groupbox> 
+               </vbox>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+	<hbox>
+		<spacer flex="1"/>
+		<button label="&option.save.label;" oncommand="com.rigantestools.Options.save();" style="margin-right: 10px;"/>
+		<button label="&option.close.label;" oncommand="window.close();"/>
+	</hbox>
+</window>

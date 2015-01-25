@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+	<Description about="urn:mozilla:install-manifest">
+
+		<em:id>{33f35432-14bd-6211-fa3b-760976b5ee10}</em:id>
+		<em:version>PROJECT_VERSION</em:version>
+		<em:type>2</em:type>
+		<em:creator>David GUEHENNEC</em:creator>
+		<em:aboutURL>chrome://rigantestools/content/about.xul</em:aboutURL>
+		<em:optionsURL>chrome://rigantestools/content/options.xul</em:optionsURL>
+		<em:homepageURL>http://rigantes.free.fr/</em:homepageURL>
+		<em:iconURL>chrome://rigantestools/skin/images/rigantestools.png</em:iconURL>
+		
+		<em:name>Rigantes Tools</em:name>
+		<em:description>Rigantes Tools is a tool for the game Lords and Knights.</em:description>
+		<em:localized>
+			<Description>
+				<em:locale>en-US</em:locale>
+				<em:name>Rigantes Tools</em:name>
+				<em:description>Rigantes Tools is a tool for the game LordsAndKnights.</em:description>
+			</Description>
+		</em:localized>
+		<em:localized>
+			<Description>
+				<em:locale>fr-FR</em:locale>
+				<em:name>Rigantes Tools</em:name>
+				<em:description>Rigantes Tools est un outil pour le jeu LordsAndKnights</em:description>
+			</Description>
+		</em:localized>
+	    <em:localized>
+			<Description>
+				<em:locale>de-DE</em:locale>
+				<em:name>Rigantes Tools</em:name>
+				<em:description>Rigantes Tools ist ein werkzeug für das spiel Lords And Knights</em:description>
+			</Description>
+		</em:localized>
+		
+	    <em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>3.0</em:minVersion>
+				<em:maxVersion>36.0</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+		
+	</Description>
+
+</RDF>

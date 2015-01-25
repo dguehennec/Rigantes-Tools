@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css"?>
+<?xml-stylesheet href="chrome://rigantestools/skin/rigantestools.css" type="text/css"?>
+
+
+<!DOCTYPE window SYSTEM "chrome://rigantestools/locale/rigantestools.dtd">
+
+<window title="&message.message.label;"	
+	orient="vertical"
+	windowtype="window:rigantestoolsMessage"
+	width="400" height="180"
+    persist="screenX,screenY,width,height,sizemode"
+	onload="com.rigantestools.Message.init();" 
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<stringbundleset id="stringbundleset">
+		<stringbundle id="rigantestools-bundle" src="chrome://rigantestools/locale/rigantestools.properties" />
+	</stringbundleset>
+	
+	<script type="application/x-javascript" src="chrome://rigantestools/content/message.js" />
+	
+	<groupbox orient="vertical" flex="1">
+		<hbox>
+			<image id="rigantestools-message-icon"/>
+			<label id="rigantestools-messageTitle" style="font-weight: bold; font-size: 20px;" />
+		</hbox>
+		<spacer style="height: 10px"/>
+		<textbox readonly="true" flex="1" id="rigantestools-messageMessage" size="500" multiline="true" value=""/>
+	</groupbox>
+
+	<hbox>
+		<spacer flex="1"/>
+		<button label="&message.close.label;" oncommand="window.close();"/>
+	</hbox>
+
+</window>
