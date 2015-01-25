@@ -242,6 +242,11 @@ com.rigantestools.Main.showMainFrame = function(selectedTab, parameters) {
     var topWindow = this._util.getXULWindow("window:rigantestoolsMainFrame");
     if (topWindow) {
         try {
+            var data = JSON.stringify({
+                tab : selectedTab,
+                parameters : parameters
+            });
+            this._util.notifyObservers(com.rigantestools_Constant.OBSERVER.REFRESH_MAINFRAME, data);
             topWindow.focus();
         } catch (e) {
             this._logger.error("showMainFrame", e);

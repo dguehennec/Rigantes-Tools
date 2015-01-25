@@ -94,7 +94,8 @@ rigantestools_Constant.PREF_NB_MIN_SCORPIONRIDER_DEFENSE = "extensions.rigantest
  * 
  */
 rigantestools_Constant.OBSERVER = {
-    REFRESH : "rigantestools.refresh"
+    REFRESH : "rigantestools.refresh",
+    REFRESH_MAINFRAME : "rigantestools.refreshMainFrame"
 };
 
 /**

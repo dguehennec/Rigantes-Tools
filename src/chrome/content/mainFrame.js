@@ -76,6 +76,7 @@ com.rigantestools.MainFrame.init = function() {
     /** @private */
     /** The util tool. */
     this._util = new com.rigantestools_Util(window);
+    this._util.addObserver(this, com.rigantestools_Constant.OBSERVER.REFRESH_MAINFRAME);
     /** @private */
     /** The exporter. */
     this._exporter = new com.rigantestools_Exporter(window);
@@ -135,6 +136,36 @@ com.rigantestools.MainFrame.init = function() {
 };
 
 /**
+ * release MainFrame.
+ * 
+ * @this {MainFrame}
+ */
+com.rigantestools.MainFrame.release = function() {
+    if (this._util) {
+        this._logger.trace("release");
+        this._util.removeObserver(this, com.rigantestools_Constant.OBSERVER.REFRESHMAINFRAME);
+    }
+};
+
+/**
+ * observe
+ * 
+ * @this {MainFrame}
+ * @param {ISupports}
+ *            subject the subject
+ * @param {String}
+ *            topic the topic
+ * @param {Object}
+ *            data the data
+ */
+com.rigantestools.MainFrame.observe = function(subject, topic, data) {
+    if (topic === com.rigantestools_Constant.OBSERVER.REFRESH_MAINFRAME) {
+        this._parameters = JSON.parse(data);
+        this.selectTab();
+    }
+};
+
+/**
  * Gets the player of the LordsOfKnights.
  * 
  * @this {MainFrame}
@@ -144,15 +175,6 @@ com.rigantestools.MainFrame.getPlayer = function() {
     return this._player;
 };
 
-/**
- * Focus MainFrame.
- * 
- * @this {MainFrame}
- */
-com.rigantestools.MainFrame.focus = function() {
-    // select current show tab
-    this.selectTab();
-};
 /**
  * select tab MainFrame.
  * 
@@ -1249,8 +1271,10 @@ com.rigantestools.MainFrame.initializeAttackDefenseSlowUnitCount = function() {
             "400+352 (30')" : "400"
     };
     var items = itemsCastle;
+    var selectedIndex = 3;
     if(this.isAttackDefenseSlowFortress()) {
         items = itemsFortress;
+        selectedIndex = 0;
     }
     var itemsList = [];
     for(var label in items){
@@ -1263,7 +1287,7 @@ com.rigantestools.MainFrame.initializeAttackDefenseSlowUnitCount = function() {
             menulist.removeChild(menulist.lastChild);
         }
         menulist.appendChild(menupopup);
-        menulist.selectedIndex = 3;
+        menulist.selectedIndex = selectedIndex;
     }
 }
 /**

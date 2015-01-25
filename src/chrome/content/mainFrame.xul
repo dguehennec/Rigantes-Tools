@@ -13,8 +13,7 @@
     onkeypress="" commentx="" onclick="" onblur="" 
     persist="width height tab layout textSize textSizeList lxX lxY"
     onload="com.rigantestools.MainFrame.init();" 
-    onunload="" 
-    onfocus="com.rigantestools.MainFrame.focus();" 
+    onunload="com.rigantestools.MainFrame.release();"  
     onclose="">
 
     <stringbundleset id="stringbundleset">
