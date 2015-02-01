@@ -632,13 +632,13 @@ rigantestools_Util.prototype.printContent = function(data) {
  *            afterId indicate after the object Id
  */
 rigantestools_Util.prototype.installButton = function(toolbarId, id, afterId) {
-    if (!document.getElementById(id)) {
-        var toolbar = document.getElementById(toolbarId);
+    if (this._window && !this._window.document.getElementById(id)) {
+        var toolbar = this._window.document.getElementById(toolbarId);
 
         // If no afterId is given, then append the item to the toolbar
         var before = null;
         if (afterId) {
-            var elem = document.getElementById(afterId);
+            var elem = this._window.document.getElementById(afterId);
             if (elem && elem.parentNode === toolbar) {
                 before = elem.nextElementSibling;
             }
@@ -646,7 +646,7 @@ rigantestools_Util.prototype.installButton = function(toolbarId, id, afterId) {
 
         toolbar.insertItem(id, before);
         toolbar.setAttribute("currentset", toolbar.currentSet);
-        document.persist(toolbar.id, "currentset");
+        this._window.document.persist(toolbar.id, "currentset");
 
         if (toolbarId === "addon-bar") {
             toolbar.collapsed = false;
