@@ -5,7 +5,7 @@
 
 	<groupId>com.rigantes</groupId>
 	<artifactId>rigantestools</artifactId>
-	<version>3.0.1</version>
+	<version>3.0.2</version>
 	<packaging>pom</packaging>
 
 	<name>RignantesTools</name>

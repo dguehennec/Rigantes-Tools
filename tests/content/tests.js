@@ -123,14 +123,14 @@ com.rigantestools.Tests.startUtilPlayerClassTests = function() {
         var playerlist = [];
         playerlist.push({
             id : 12345,
-            nick : "aaaa"
+            nick : "aaa\"a"
         });
         assert.equal(that._utilPlayer.updatePlayersList(playerlist, 20), true);
     });
 
     QUnit.test("getPlayer", function(assert) {
         var player = that._utilPlayer.getPlayer(12345, 20);
-        assert.equal(player.nick, "aaaa");
+        assert.equal(player.nick, "aaa\"a");
     });
 
     QUnit.test("updatePlayer-Update", function(assert) {

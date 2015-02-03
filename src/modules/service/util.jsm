@@ -959,7 +959,7 @@ rigantestools_UtilPlayer.getPlayers = function(world) {
             var statement = this._dbConn.createStatement("SELECT * FROM players where world = " + world);
             this._players = [];
             while (statement.executeStep()) {
-                this._players[statement.row.id] = { id: statement.row.id, nick: statement.row.nick};
+                this._players[statement.row.id] = { id: statement.row.id, nick: decodeURI(statement.row.nick)};
             }
             this._world = world;
             statement.finalize();
@@ -988,12 +988,12 @@ rigantestools_UtilPlayer.updatePlayersList = function(list, world) {
         var nick = list[index].nick;
         if(id && nick) {
             if (!this._players[id]) {
-                var statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + id + ", " + world + ", \"" + nick + "\")");
+                var statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + id + ", " + world + ", \"" + encodeURI(nick) + "\")");
                 statement.executeStep();
                 statement.finalize();
                 this._players[id] = { id: id, nick: nick};
             } else if (this._players[id].nick != nick) {
-                var statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + nick + "\" WHERE id = " + id + " AND world = " + world);
+                var statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + encodeURI(nick) + "\" WHERE id = " + id + " AND world = " + world);
                 statement.executeStep();
                 statement.finalize();
                 this._players[id] = { id: id, nick: nick};
@@ -1045,12 +1045,12 @@ rigantestools_UtilPlayer.updatePlayer = function(player, world) {
         this.getPlayers(world);
         // check player
         if (!this._players[player.id]) {
-            var statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + player.id + ", " + world + ", \"" + player.nick + "\")");
+            var statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + player.id + ", " + world + ", \"" + encodeURI(player.nick) + "\")");
             statement.executeStep();
             statement.finalize();
             this._players[player.id] = { id: player.id, nick: player.nick};
         } else if (player.nick != this._players[player.id].nick) {
-            var statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + player.nick + "\" WHERE id = " + player.id + " AND world = " + world);
+            var statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + encodeURI(player.nick) + "\" WHERE id = " + player.id + " AND world = " + world);
             statement.executeStep();
             statement.finalize();
             this._players[player.id] = { id: player.id, nick: player.nick};
