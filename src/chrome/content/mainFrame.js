@@ -3935,7 +3935,7 @@ com.rigantestools.MainFrame.DephasePreview = function(evt) {
 	var mindate = date ;
 	
 	// Compute preview with shifts
-	for( var shift=-4; shift<=5; ++shift )
+	for( var shift=0; shift<=9; ++shift )
 	{
 		if( shift==0 ) continue ;
 		var decalage = shift*60*1000 ; // <shift> minutes
