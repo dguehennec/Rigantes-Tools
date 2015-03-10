@@ -265,7 +265,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.Allowed = function(unit, allo
     } else if (unit === rigantestools_Constant.UNITTYPE.CROSSBOWMAN) {
         return (allow == 0 || allow == 2 || allow == 3)
     } else if (unit === rigantestools_Constant.UNITTYPE.SPEARMAN) {
-        return (allow == 0 || allow == 2 || allow == 3)
+        return (allow == 0 || allow == 2 || allow == 3 || allow == 4 )
     } else if (unit === rigantestools_Constant.UNITTYPE.SWORDMAN) {
         return (allow == 1 || allow == 2 || allow == 3);
     } else if (unit === rigantestools_Constant.UNITTYPE.PUSHCART) {
@@ -295,6 +295,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.FindUnitIndex = function(inde
     // 1 = UO
     // 2 = UD+UO
     // 3 = UD+UO sauf lances
+    // 4 = Hastaires uniquement
 
     var i = index;
     var habitat = this.bufferUnits[i].habitatName;
@@ -615,7 +616,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.getNewUDList = function(allow
             'type' : rigantestools_Constant.UNITTYPE.SWORDMAN,
             priority : 2
         });
-    if (allow == 0 || allow == 2 || allow == 3 || ralentit)
+    if (allow == 0 || allow == 2 || allow == 3 || allow == 4 || ralentit)
         unitTypeList.push({
             'type' : rigantestools_Constant.UNITTYPE.SPEARMAN,
             priority : 5

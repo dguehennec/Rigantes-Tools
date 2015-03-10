@@ -198,6 +198,7 @@
 <!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitOnlyUO.label "UO only">
 <!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitBoth.label "UD+UO">
 <!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitBothButLancers.label "UD+UO except lancers">
+<!ENTITY mainframe.tabAttackDefenseSlow.typeUnit.UnitOnlySpearmen.label "Spearmen only">
 <!ENTITY mainframe.tabAttackDefenseSlow.UnitCount.label "by packs of">
 <!ENTITY mainframe.tabAttackDefenseSlow.UseOnlyCastles.label "Use only these castles">
 <!ENTITY mainframe.tabAttackDefenseSlow.DoNotUseCastles.label "Do not use">

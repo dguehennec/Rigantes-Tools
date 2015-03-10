@@ -336,6 +336,7 @@
 							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnit.UnitOnlyUO.label;" value="1"/>
 							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnit.UnitBoth.label;" value="2"/>
 							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnit.UnitBothButLancers.label;" value="3"/>
+							    	<menuitem label="&mainframe.tabAttackDefenseSlow.typeUnit.UnitOnlySpearmen.label;" value="4"/>
 							  	</menupopup>
 							</menulist>
 							<label value="&mainframe.tabAttackDefenseSlow.UnitCount.label;"/>

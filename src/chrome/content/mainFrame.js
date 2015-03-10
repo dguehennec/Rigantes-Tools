@@ -3789,6 +3789,7 @@ com.rigantestools.MainFrame.initializeDefList = function()
 							'destinationHabitatPlayerLink' : myHabitat.destinationHabitatPlayerLink,
 							'destinationHabitatPlayerId' : myHabitat.destinationHabitatPlayerId,
 							'destinationHabitatPoints': myHabitat.destinationHabitatPoints,
+							'sourceHabitatName' : myHabitat.sourceHabitatName,
 							'habitatTransitList' : ll 
 						}
 						mydeflist.push( item ) ;
@@ -3838,6 +3839,7 @@ com.rigantestools.MainFrame.initializeDefList = function()
 							'destinationHabitatPlayerLink' : myHabitat.destinationHabitatPlayerLink,
 							'destinationHabitatPlayerId' : myHabitat.destinationHabitatPlayerId,
 							'destinationHabitatPoints': myHabitat.destinationHabitatPoints,
+							'sourceHabitatName': myHabitat.sourceHabitatName,
 							'habitatTransitList' : ll 
 						}
 						mydeflist.push( item ) ;
@@ -3935,7 +3937,7 @@ com.rigantestools.MainFrame.DephasePreview = function(evt) {
 	var mindate = date ;
 	
 	// Compute preview with shifts
-	for( var shift=-4; shift<=5; ++shift )
+	for( var shift=0; shift<=9; ++shift )
 	{
 		if( shift==0 ) continue ;
 		var decalage = shift*60*1000 ; // <shift> minutes
@@ -3993,6 +3995,7 @@ com.rigantestools.MainFrame.RefreshDefenseList = function()
         var treerow = [ "xul:treerow", {  properties : properties }];
 		treerow.push([ "xul:treecell", {label : item.castle} ]);
 		treerow.push([ "xul:treecell", {label : item.owner} ]);
+		treerow.push([ "xul:treecell", {label : item.source} ]);
 		treerow.push([ "xul:treecell", {label : item.totalUD} ]);
 		treerow.push([ "xul:treecell", {label : item.totalUDInProgress} ]);
 		treerow.push([ "xul:treecell", {label : item.totalUDTotal} ]);
@@ -4069,6 +4072,9 @@ com.rigantestools.MainFrame.SortDefenseList = function(column)
     case "castle":
     	this._DefenseListItemList.sort(function(a, b) { return (a.castle>=b.castle?mult:-mult) ; } ) ;
         break;
+    case "source":
+    	this._DefenseListItemList.sort(function(a, b) { return (a.source>=b.source?mult:-mult) ; } ) ;
+        break;
 
     }
     
@@ -4118,6 +4124,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
        	var colsName = [
        		"castle",
        		"owner",
+       		"source",
        		"totalUD",
        		"totalUDInProgress",
         	"totalUDTotal",
@@ -4128,6 +4135,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
        	var colsSummary = [
        		this._util.getBundleString("mainframe.defexterne.castleTarget"), "1", 
        		this._util.getBundleString("mainframe.defexterne.owner"), "1", 
+       		this._util.getBundleString("mainframe.defexterne.source"), "1", 
        		this._util.getBundleString("mainframe.defexterne.udsurplace"), "1", 
        		this._util.getBundleString("mainframe.defexterne.udencours"), "1",
         	this._util.getBundleString("mainframe.defexterne.udtotal"), "1",
@@ -4225,6 +4233,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                                [ "xul:treerow", { }, 
                                  [ "xul:treecell", { label : habitat.destinationHabitatName }],
                                  [ "xul:treecell", { label : habitat.destinationHabitatPlayerName}],
+                                 [ "xul:treecell", { label : habitat.sourceHabitatName}],
                                  [ "xul:treecell", { label : totalUD}],
                                  [ "xul:treecell", { label : totalUDInProgress}],
                                  [ "xul:treecell", { label : totalUD+totalUDInProgress}],
@@ -4236,6 +4245,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                         var item = {
                         	'castle' : habitat.destinationHabitatName,
                         	'owner' : habitat.destinationHabitatPlayerName,
+                        	'source' : habitat.sourceHabitatName,
                         	'totalUD' : totalUD,
                         	'totalUDInProgress' : totalUDInProgress,
                         	'totalUDTotal' : totalUD+totalUDInProgress,
@@ -4414,6 +4424,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                                [ "xul:treerow", { }, 
                                  [ "xul:treecell", { label : habitat.destinationHabitatName }],
                                  [ "xul:treecell", { label : habitat.destinationHabitatPlayerName}],
+                                 [ "xul:treecell", { label : habitat.sourceHabitatName}],
                                  [ "xul:treecell", { label : totalUD}],
                                  [ "xul:treecell", { label : totalUDInProgress}],
                                  [ "xul:treecell", { label : totalUD+totalUDInProgress}],
@@ -4425,6 +4436,7 @@ com.rigantestools.MainFrame.initializeExternalDefenseInformation = function() {
                        var item = {
                         	'castle' : habitat.destinationHabitatName,
                         	'owner' : habitat.destinationHabitatPlayerName,
+                        	'source' : habitat.sourceHabitatName,
                         	'totalUD' : totalUD,
                         	'totalUDInProgress' : totalUDInProgress,
                         	'totalUDTotal' : totalUD+totalUDInProgress,
