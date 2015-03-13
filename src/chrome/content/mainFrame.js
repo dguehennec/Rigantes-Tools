@@ -1546,7 +1546,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                 var totalUODet = " ("+xx1+"/"+xx2+"/"+xx3+")";
 				
 				var chtext = nbchateaux ;
-				if( nbfortress > 0 ) chtext += " +" + nbfortress + "fo" ;
+				if( nbfortress > 0 ) chtext = this._util.getBundleString("mainframe.warinprogress.nbCastlesWithFortress").replace("%NBCASTLES%",(nbchateaux + nbfortress)).replace("%NBFORTRESS%",nbfortress);
 
                 // generate tabpanel element
                 var tabpanel = this._util.JSONToDOM([ "xul:tabpanel", { orient : "vertical"} ,
