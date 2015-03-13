@@ -660,8 +660,7 @@ rigantestools_SlowAttackDefenseCalculate.prototype.getNewUDList = function(allow
             continue;
         }
 
-        // This is currently without effect. isAttacked5 should mean attacked by less than 5 castles, but it's not set at initalization time of habitats yet
-        if (!this.allCastles && habitat.isAttacked5) {
+        if (!this.allCastles && habitat.isAttackedByMinCastles(5)) {
             continue;
         }
 

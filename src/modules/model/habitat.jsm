@@ -606,6 +606,24 @@ rigantestools_Habitat.prototype.isFortress = function() {
 };
 
 /**
+ * indicate if the castle is attacked by a minimum of castles or attack in progress on the castle
+ * 
+ * @this {Habitat}
+ * @param {number}
+ *          nbCastles the minimum of castles.
+ * @return {boolean} true if attacked, false else.
+ */
+rigantestools_Habitat.prototype.isAttackedByMinCastles = function(nbCastles) {
+    if(this.getUnitAttackersCount() > 0) {
+        return true;
+    }
+    if(this.getHabitatTransits(rigantestools_Constant.TRANSITTYPE.ATTACKER, true).length >= nbCastles) {
+        return true;
+    }
+    return false;
+}
+
+/**
  * Freeze the interface
  */
 Object.freeze(rigantestools_Habitat);
