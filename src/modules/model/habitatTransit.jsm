@@ -162,6 +162,14 @@ rigantestools_HabitatTransit.prototype.getUnitCount = function(unitType) {
     return nb;
 };
 
+rigantestools_HabitatTransit.prototype.isFortress = function() {
+    if(this.sourceHabitatPoints>1000) {
+        return true;
+    }
+    return false;
+};
+
+
 /**
  * Get the resource count.
  * 
@@ -351,3 +359,9 @@ var rigantestools_HabitatExternal = function(mhabitatExternal, world, mhabitat) 
 };
 
 
+rigantestools_HabitatExternal.prototype.isFortress = function() {
+    if(this.sourceHabitatPoints>1000) {
+        return true;
+    }
+    return false;
+};

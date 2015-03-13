@@ -1327,6 +1327,8 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
             var habitatTransits = habitat.getHabitatTransits(com.rigantestools_Constant.TRANSITTYPE.ATTACKER, true);
             var listAttackers = [];
             var listCastlesAttackers = [];
+            var nbfortress=0 ;
+            var nbchateaux = 0 ;
             // var listImpactTimes = [];
             if( (habitatTransits.length>0) || (habitat.getUnitAttackersCount()>0) ) {
                 nbAttackFound++;
@@ -1368,6 +1370,8 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     if(!found){
                         var item = {'name':habitatTransits[indexHabTrans].sourceHabitatName,'link':habitatTransits[indexHabTrans].sourceHabitatLink};
                         listCastlesAttackers.push(item);
+                        if( habitatTransits[indexHabTrans].isFortress() ) nbfortress++ ;
+                        else nbchateaux++ ;
                     }
                     if(minDate===null || minDate>habitatTransits[indexHabTrans].date) {
                         minDate = habitatTransits[indexHabTrans].date;
@@ -1540,6 +1544,9 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                 var xx3 = Math.round(habitat.getUnitAttackersCount(com.rigantestools_Constant.UNITTYPE.LANCER) + habitat.getUnitAttackersCount(com.rigantestools_Constant.UNITTYPE.SCORPIONRIDER)/3) ;
                 var totalUO = xx1+xx2+xx3 ;
                 var totalUODet = " ("+xx1+"/"+xx2+"/"+xx3+")";
+				
+				var chtext = nbchateaux ;
+				if( nbfortress > 0 ) chtext += " +" + nbfortress + "fo" ;
 
                 // generate tabpanel element
                 var tabpanel = this._util.JSONToDOM([ "xul:tabpanel", { orient : "vertical"} ,
@@ -1585,7 +1592,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     ],
                     [ "xul:vbox", {}, 
                       [ "xul:label", { value : listAttackers.length}],
-                      [ "xul:label", { value : listCastlesAttackers.length}],
+                      [ "xul:label", { value : chtext}],
                       [ "xul:label", { value : this._util.formatDateTime(minDate)}],
                       [ "xul:label", { value : this._util.formatDateTime(maxDate)}],
                       [ "xul:label", { value : this._util.formatDateTime(defense.maxDefenseDate) + " (" + this._util.secToTimeStr(defense.maxDefenseTime, true) + ")"}]
@@ -1636,8 +1643,10 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                 if( this._generatedAttacksSummary.length==0 ) {
                     this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.LabelSummaryDetails") + "\n\n" ;
                 }
-
-                this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryLink").replace("%LINK%", habitat.link).replace("%NAME%", habitat.name);
+				
+				if( habitat.isFortress() ) this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryFortress") ;
+				else this._generatedAttacksSummary += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryNormal") ;
+				this._generatedAttacksSummary += habitat.link + " " + habitat.name + "\n" ;
                 
                 if(listAttackers.length>0) {
                     if(listAttackers[0].name) {
@@ -1673,7 +1682,11 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     else {
                            this._generatedAttacksSummary += " " + this._util.getBundleString("mainframe.warinprogress.AttacksSummaryDate").replace("%FISRTDATE%", this._util.formatDayTime(minDate)).replace("%LASTDATE%", this._util.formatDayTime(maxDate));
                     }
+                    if( nbfortress > 0 ) {
+                    	this._generatedAttacksSummary += " dont " + nbfortress + " fo." ;
+                    }
                     this._generatedAttacksSummary += "\n" ; 
+                    	
                 }
                 
                 
@@ -1686,6 +1699,7 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
                     this._generatedAttacksSummary += defense.comment ;
                 }
                 this._generatedAttacksSummary += "\n";
+                this._generatedAttacksSummary += "\n";
 
      			if( habitat.nextBattleDate !==null )
     			{
@@ -1694,7 +1708,9 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
     					this._generatedAttacksSummary2OnTarget += this._util.getBundleString("mainframe.warinprogress.LabelSummaryFight") + "\n" ;
     				}
     				this._generatedAttacksSummary2OnTarget += habitat.link ;
-    				this._generatedAttacksSummary2OnTarget += ", " + totalUO + " UO" ;
+    				if( habitat.isFortress() ) this._generatedAttacksSummary2OnTarget += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryFortress") ;
+    				this._generatedAttacksSummary2OnTarget += "\n"  ;
+    				this._generatedAttacksSummary2OnTarget += totalUO + " UO" ;
      				this._generatedAttacksSummary2OnTarget += ", " + (totalUD+totalUDInProgress) + " UD" ;
    					this._generatedAttacksSummary2OnTarget += ", " + this._util.formatTime(habitat.nextBattleDate) ;
    					this._generatedAttacksSummary2OnTarget += "\n" ;
@@ -1708,9 +1724,13 @@ com.rigantestools.MainFrame.initializeWarInProgressInformation = function() {
    						this._generatedAttacksSummary2OnTransit += this._util.getBundleString("mainframe.warinprogress.LabelSummaryProgress") + "\n" ;
     				}
     				this._generatedAttacksSummary2OnTransit += habitat.link ;
-    				this._generatedAttacksSummary2OnTransit += ", " + this._util.formatDayTime(minDate) ;
-     				this._generatedAttacksSummary2OnTransit += ", " + listCastlesAttackers.length + " ch" ;
-   					this._generatedAttacksSummary2OnTransit += "\n" ;
+   					if( habitat.isFortress() ) this._generatedAttacksSummary2OnTransit += this._util.getBundleString("mainframe.warinprogress.AttacksSummaryFortress") ;
+    				this._generatedAttacksSummary2OnTransit += "\n"  ;
+    				this._generatedAttacksSummary2OnTransit += this._util.formatDayTime(minDate) ;
+     				this._generatedAttacksSummary2OnTransit += ", " + nbchateaux + " ch" ;
+     				if( nbfortress > 0 ) {
+     					this._generatedAttacksSummary2OnTransit += " + "+nbfortress+" fo" ;
+     				}
      				
      				if( totalUDInProgress > 0 || totalUD > 5000 )
      				{
