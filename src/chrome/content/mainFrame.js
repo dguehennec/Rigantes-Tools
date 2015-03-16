@@ -3528,7 +3528,7 @@ com.rigantestools.MainFrame.sortcolumnAttackDefenseSlowTree = function(column) {
     if (lastColumn !== null && lastColumn !== column) {
         lastColumn.removeAttribute("sortDirection");
     }
-    var name = "duration";
+    var name = "startDate";
     var sort = "descending";
     if (column !== null) {
         name = column.getAttribute("name");
