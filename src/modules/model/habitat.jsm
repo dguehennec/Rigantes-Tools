@@ -435,7 +435,7 @@ rigantestools_Habitat.prototype.getUnitDurationTo = function(unitType, link) {
     for (var index = 0; index < this._units.length; index++) {
         var unit = this._units[index];
         if (unit.getType() === unitType) {
-            unitsTime[index] = Math.floor(unit.getSecondsPerField() * speed);
+            unitsTime[index] = Math.round(unit.getSecondsPerField() * speed);
         }
     }
 
