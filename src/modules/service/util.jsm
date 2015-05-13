@@ -455,7 +455,7 @@ rigantestools_Util.prototype.openURL = function(UrlToGoTo) {
             var numTabs = browserInstance.mPanelContainer.childNodes.length;
             for (var index = 0; index < numTabs; index++) {
                 var currentTab = browserInstance.getBrowserAtIndex(index);
-                if (currentTab.currentURI.spec.indexOf(UrlToGoTo) >= 0) {
+                if (currentTab && currentTab.currentURI.spec.indexOf(UrlToGoTo) >= 0) {
                     browserInstance.selectedTab = browserInstance.tabContainer.childNodes[index];
                     try {
                         browserInstance.contentWindow.focus();
