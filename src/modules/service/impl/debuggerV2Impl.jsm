@@ -106,7 +106,7 @@ rigantestools_DebuggerV2.prototype.initialize = function(contentWinWrapper) {
                         script.setBreakpoint(0, this);
                         this._logger.trace("foundCastleLinkBreakpoint");
                         this.foundCastleLinkBreakpoint = true;
-                    } else if (!this.foundPlayerBreakpoint && functionSource.indexOf("(){this.stats={units:{own:this.getOwnUnits()") === 0) {
+                    } else if (!this.foundPlayerBreakpoint && functionSource.indexOf("(){if(t.unreadDiscussionCount>0){") === 0) {
                         script.setBreakpoint(0, this);
                         this._logger.trace("foundPlayerBreakpoint");
                         this.foundPlayerBreakpoint = true;
@@ -115,7 +115,6 @@ rigantestools_DebuggerV2.prototype.initialize = function(contentWinWrapper) {
                         this._logger.trace("foundPlayerProfilBreakpoint");
                         this.foundPlayerProfilBreakpoint = true;
                     }
-
                 }
             }
             if (this.foundCastleLinkBreakpoint && this.foundPlayerBreakpoint && this.foundPlayerProfilBreakpoint) {
@@ -190,11 +189,11 @@ rigantestools_DebuggerV2.prototype.hit = function(frame) {
                 this._parent.refreshPlayerProfile(object);
             }
         } else if (this._parent._mplayer === null) {
-            var object = frame.eval("this")["return"];
+            var object = frame.eval("t")["return"];
             if (typeof (object) == "object") {
                 object = XPCNativeWrapper.unwrap(object.unsafeDereference());
             }
-            if (object.lastReadForumDate || object.lastReadReportDate) {
+            if (object && (object.lastReadForumDate || object.lastReadReportDate)) {
                 this._logger.trace("Found player");
                 this._parent._mplayer = object;
                 frame.script.clearBreakpoint(this);

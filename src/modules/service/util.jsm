@@ -69,7 +69,7 @@ var rigantestools_Util = function(window) {
  * @return the window page
  */
 rigantestools_Util.prototype.getWindow = function(doc) {
-    if (doc === null) {
+    if (!doc) {
         return null;
     }
     if (typeof (doc.defaultView) === 'undefined') {
