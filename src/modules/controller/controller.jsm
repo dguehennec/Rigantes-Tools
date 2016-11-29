@@ -142,6 +142,7 @@ rigantestools_Controller.lordAndKnightsInterfaceUnloaded = function(listener) {
     }
     this._currentInterfaceListener = undefined;
     this._document = undefined;
+    rigantestools_UtilPlayer.release();
     this._util.notifyObservers(rigantestools_Constant.OBSERVER.REFRESH);
 };
 

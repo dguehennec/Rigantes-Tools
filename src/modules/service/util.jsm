@@ -38,6 +38,9 @@
 
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://gre/modules/FileUtils.jsm");
+Components.utils.import("resource://gre/modules/Sqlite.jsm")
+Components.utils.import("resource://gre/modules/Task.jsm");
+
 Components.utils.import("resource://rigantestools/service/logger.jsm");
 Components.utils.import("resource://rigantestools/constant/constants.jsm");
 
@@ -933,13 +936,20 @@ var rigantestools_UtilPlayer = {
 rigantestools_UtilPlayer.isInitialized = function() {
     if (!this._dbConn) {
         try {
-            var file = FileUtils.getFile("ProfD", [ "rigantesTools.sqlite" ]);
-            this._dbConn = Services.storage.openDatabase(file);
-            this._dbConn.executeSimpleSQL("CREATE TABLE IF NOT EXISTS players (id INTEGER, world INTEGER, nick TEXT)");
+            var that = this;
+            Sqlite.openConnection({ path: "rigantesTools.sqlite", sharedMemoryCache: false }).then(
+                    function onConnection(connection) {
+                        that._dbConn = connection;
+                        that._dbConn.execute("CREATE TABLE IF NOT EXISTS players (id INTEGER, world INTEGER, nick TEXT)");
+                    },
+                    function onError(error) {
+                        that._dbConn = undefined;
+                    }
+            );
         } catch (e) {
             this._dbConn = undefined;
-            return false;
         }
+        return false;
     }
     return true;
 };
@@ -951,20 +961,30 @@ rigantestools_UtilPlayer.isInitialized = function() {
  * @param {Number}
  *            world the world of the player.
  */
-rigantestools_UtilPlayer.getPlayers = function(world) {
+rigantestools_UtilPlayer.getPlayers = function(world, callback) {
     if (!this.isInitialized()) {
         return false;
     }
     if ((this._players.length == 0) || (this._world != world)) {
-            var statement = this._dbConn.createStatement("SELECT * FROM players where world = " + world);
-            this._players = [];
-            while (statement.executeStep()) {
-                this._players[statement.row.id] = { id: statement.row.id, nick: decodeURI(statement.row.nick)};
+        this._players = [];
+        this._world = world;
+        var that = this;
+        this._dbConn.execute("SELECT * FROM players where world = ?", [world]).then(
+            function onStatementComplete(result) {
+                for(var index = 0; index < result.length; index++) {
+                    var row = result[index];
+                    that._players[row.id] = { id: row.id, nick: decodeURI(row.nick)};
+                }
+                if(callback) {
+                    callback(that._players);
+                }
             }
-            this._world = world;
-            statement.finalize();
+        );
+    } else {
+        if(callback) {
+            callback(this._players);
+        }
     }
-    return this._players;
 }
 
 /**
@@ -981,25 +1001,23 @@ rigantestools_UtilPlayer.updatePlayersList = function(list, world) {
         return false;
     }
     // load players if necessary
-    this.getPlayers(world);
-    // check players
-    for (var index = 0; index < list.length; index++) {
-        var id = list[index].id;
-        var nick = list[index].nick;
-        if(id && nick) {
-            if (!this._players[id]) {
-                var statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + id + ", " + world + ", \"" + encodeURI(nick) + "\")");
-                statement.executeStep();
-                statement.finalize();
-                this._players[id] = { id: id, nick: nick};
-            } else if (this._players[id].nick != nick) {
-                var statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + encodeURI(nick) + "\" WHERE id = " + id + " AND world = " + world);
-                statement.executeStep();
-                statement.finalize();
-                this._players[id] = { id: id, nick: nick};
+    var that = this;
+    this.getPlayers(world, function() {
+        // check players
+        for (var index = 0; index < list.length; index++) {
+            var id = list[index].id;
+            var nick = list[index].nick;
+            if(id && nick) {
+                if (!that._players[id]) {
+                    that._dbConn.execute("INSERT INTO players VALUES (?, ?, ?)", [id, world, encodeURI(nick)]);
+                    that._players[id] = { id: id, nick: nick};
+                } else if (that._players[id].nick != nick) {
+                    that._dbConn.execute("UPDATE players SET nick = ? WHERE id = ? AND world = ?", [encodeURI(nick), id, world]);
+                    that._players[id] = { id: id, nick: nick};
+                }
             }
         }
-    }
+    });
     return true;
 };
 
@@ -1021,7 +1039,7 @@ rigantestools_UtilPlayer.getPlayer = function(id, world) {
     this.getPlayers(world);
     // get player
     if(this._players[id]) {
-        player = this._players[id]; 
+        player = this._players[id];
     }
     return player;
 };
@@ -1045,17 +1063,29 @@ rigantestools_UtilPlayer.updatePlayer = function(player, world) {
         this.getPlayers(world);
         // check player
         if (!this._players[player.id]) {
-            var statement = this._dbConn.createStatement("INSERT INTO players VALUES (" + player.id + ", " + world + ", \"" + encodeURI(player.nick) + "\")");
-            statement.executeStep();
-            statement.finalize();
+            this._dbConn.execute("INSERT INTO players VALUES (?, ?, ?)", [player.id, world, encodeURI(player.nick)]);
             this._players[player.id] = { id: player.id, nick: player.nick};
         } else if (player.nick != this._players[player.id].nick) {
-            var statement = this._dbConn.createStatement("UPDATE players SET nick = \"" + encodeURI(player.nick) + "\" WHERE id = " + player.id + " AND world = " + world);
-            statement.executeStep();
-            statement.finalize();
+            this._dbConn.execute("UPDATE players SET nick = ? WHERE id = ? AND world = ?", [encodeURI(player.nick), player.id, world]);
             this._players[player.id] = { id: player.id, nick: player.nick};
         }
         return true;
     }
     return false;
+};
+
+/**
+ * update the player.
+ *
+ * @this {UtilPlayer}
+ * @param {Object}
+ *            player the player to update.
+ * @param {Number}
+ *            world the world of the player.
+ */
+rigantestools_UtilPlayer.release = function() {
+    if(this._dbConn) {
+        this._dbConn.close();
+        this._dbConn = undefined;
+    }
 };

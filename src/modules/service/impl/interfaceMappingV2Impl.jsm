@@ -284,7 +284,6 @@ rigantestools_InterfaceMappingV2.prototype.copyAttackReport = function(target) {
         var classname = [ "wood-hl" ];
         for ( var key in classname) {
             var nodeTable = nodeReport.getElementsByClassName(classname[key]);
-            dump("nodeTable length" + nodeTable.length + "\n");
             for (var index = 0; index < nodeTable.length; index++) {
                 var isDefense = false;
                 // TODO find another way to check if it's a defense or attack

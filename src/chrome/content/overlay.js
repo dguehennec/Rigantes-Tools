@@ -205,7 +205,7 @@ com.rigantestools.Main.refresh = function() {
  * @return {Boolean} true, if URL is browser.rigantestools.com
  */
 com.rigantestools.Main.isLordsAndKnightsWebSite = function(href) {
-    return (href.indexOf("browser.lordsandknights.com") >= 0);
+    return (href.indexOf("browser.lordsandknights.com") >= 0) || (href.indexOf("browsergame.lordsandknights.com") >= 0);
 };
 
 /**

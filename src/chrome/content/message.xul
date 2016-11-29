@@ -8,7 +8,7 @@
 <window title="&message.message.label;"	
 	orient="vertical"
 	windowtype="window:rigantestoolsMessage"
-	width="400" height="180"
+	width="400" height="220"
     persist="screenX,screenY,width,height,sizemode"
 	onload="com.rigantestools.Message.init();" 
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">

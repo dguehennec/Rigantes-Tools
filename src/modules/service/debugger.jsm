@@ -40,6 +40,7 @@ Components.utils.import("resource://rigantestools/service/util.jsm");
 Components.utils.import("resource://rigantestools/service/logger.jsm");
 Components.utils.import("resource://rigantestools/service/impl/debuggerV1Impl.jsm");
 Components.utils.import("resource://rigantestools/service/impl/debuggerV2Impl.jsm");
+Components.utils.import("resource://rigantestools/service/impl/debuggerV3Impl.jsm");
 Components.utils.import("resource://rigantestools/constant/constants.jsm");
 
 var EXPORTED_SYMBOLS = [ "rigantestools_Debugger" ];
@@ -61,7 +62,8 @@ var rigantestools_Debugger = function(parent) {
     /** @private */
     /** the debuggers */
     this._jsd = new rigantestools_DebuggerV1(parent);
-    this._dbg = new rigantestools_DebuggerV2(parent);
+    this._dbg2 = new rigantestools_DebuggerV2(parent);
+    this._dbg3 = new rigantestools_DebuggerV3(parent);
     /** the current debugger */
     this._currentdebugger = null;
 
@@ -82,9 +84,11 @@ rigantestools_Debugger.prototype.initialize = function(contentWinWrapper) {
         this._currentdebugger.release();
         this._currentdebugger = null;
     }
-
-    if (this._dbg.initialize(contentWinWrapper)) {
-        this._currentdebugger = this._dbg;
+    if (this._dbg3.initialize(contentWinWrapper)) {
+        this._currentdebugger = this._dbg3;
+        return true;
+    } else if (this._dbg2.initialize(contentWinWrapper)) {
+        this._currentdebugger = this._dbg2;
         return true;
     } else if (this._jsd.initialize(contentWinWrapper)) {
         this._currentdebugger = this._jsd;

@@ -41,6 +41,7 @@ Components.utils.import("resource://rigantestools/service/logger.jsm");
 Components.utils.import("resource://rigantestools/service/notifier.jsm");
 Components.utils.import("resource://rigantestools/service/impl/interfaceMappingV1Impl.jsm");
 Components.utils.import("resource://rigantestools/service/impl/interfaceMappingV2Impl.jsm");
+Components.utils.import("resource://rigantestools/service/impl/interfaceMappingV3Impl.jsm");
 Components.utils.import("resource://rigantestools/constant/constants.jsm");
 
 var EXPORTED_SYMBOLS = [ "rigantestools_InterfaceMapping" ];
@@ -63,6 +64,9 @@ var rigantestools_InterfaceMapping = function(parent) {
     /** @private */
     /** The v2 interface. */
     this._interfaceV2 = new rigantestools_InterfaceMappingV2(this);
+    /** @private */
+    /** The v3 interface. */
+    this._interfaceV3 = new rigantestools_InterfaceMappingV3(this);
     /** @private */
     /** The notifier. */
     this._notifier = new rigantestools_Notifier(this);
@@ -92,7 +96,10 @@ rigantestools_InterfaceMapping.prototype.initialize = function() {
         this._currentInterface = this._interfaceV1;
     } else if (typeof (contentWinWrapper.cred) !== 'undefined') {
         this._currentInterface = this._interfaceV2;
+    } else if (this._parent.getDocument() && this._parent.getDocument().location.toString().indexOf("browsergame.lordsandknights.com") >= 0) {
+        this._currentInterface = this._interfaceV3;
     } else {
+        this._logger.warning('no interface found');
         return false;
     }
 
@@ -112,6 +119,7 @@ rigantestools_InterfaceMapping.prototype.reset = function() {
     // reset interfaces
     this._interfaceV1.reset();
     this._interfaceV2.reset();
+    this._interfaceV3.reset();
     // stop notifier
     this._notifier.stop();
 };
@@ -124,6 +132,7 @@ rigantestools_InterfaceMapping.prototype.reset = function() {
 rigantestools_InterfaceMapping.prototype.release = function() {
     this._interfaceV1.release();
     this._interfaceV2.release();
+    this._interfaceV3.release();
 };
 
 /**
